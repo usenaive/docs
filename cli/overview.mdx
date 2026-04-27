@@ -1,0 +1,92 @@
+---
+title: "CLI Overview"
+description: "The Naive CLI handles setup, configuration, tool discovery, and key management — everything except executing primitives."
+icon: "terminal"
+sidebarTitle: "Overview"
+---
+
+The Naive CLI (`naive`) is a command-line tool for setting up and managing your Naive integration. It handles initial configuration, API key management, tool discovery, and connection diagnostics.
+
+<Note>
+  The CLI is for **setup and management**. It does not execute primitives directly — that's the job of the [MCP server](/mcp/overview), which your agent runtime calls at inference time.
+</Note>
+
+## Installation
+
+```bash
+npm install -g @usenaive/sdk
+```
+
+This installs both the CLI (`naive`) and the MCP server (`naive mcp start`) as a single package.
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| [`naive init`](/cli/init) | Interactive setup wizard — API key, runtime config, Cursor rule |
+| [`naive status`](/cli/status) | Show connection health, agent identity, and credit balance |
+| [`naive whoami`](/cli/status#naive-whoami) | Show agent identity (subset of status) |
+| [`naive tools`](/cli/tools) | List all tools grouped by category |
+| [`naive tools search <query>`](/cli/tools#search) | Search tools by keyword |
+| [`naive tools help <name>`](/cli/tools#help) | Get full documentation for a tool |
+| [`naive keys list`](/cli/keys) | List API keys |
+| [`naive keys create [name]`](/cli/keys#create) | Create a new API key |
+| [`naive keys revoke <id>`](/cli/keys#revoke) | Revoke an API key |
+| [`naive mcp start`](/cli/mcp-start) | Start the MCP server (used by agent runtimes) |
+
+## Configuration
+
+The CLI stores its configuration in `~/.naive/config.json`, written by `naive init`:
+
+```json
+{
+  "apiKey": "nv_sk_...",
+  "baseUrl": "https://api.usenaive.ai"
+}
+```
+
+### API Key Resolution
+
+The CLI resolves the API key from two sources, in order of priority:
+
+<Steps>
+  <Step title="Environment variable">
+    If `NAIVE_API_KEY` is set, the CLI uses it. This takes precedence over the config file.
+  </Step>
+  <Step title="Config file">
+    Falls back to the `apiKey` field in `~/.naive/config.json`.
+  </Step>
+</Steps>
+
+<Warning>
+  Commands that call the Naive API (`status`, `whoami`, `keys`) require a valid API key. Tool discovery commands (`tools`, `tools search`, `tools help`) read from local YAML definitions and do not need an API key or network access.
+</Warning>
+
+## Quick Start
+
+<Steps>
+  <Step title="Install">
+    ```bash
+    npm install -g @usenaive/sdk
+    ```
+  </Step>
+  <Step title="Run the setup wizard">
+    ```bash
+    naive init
+    ```
+    Enter your API key, choose your agent runtime, and the CLI configures everything automatically.
+  </Step>
+  <Step title="Verify the connection">
+    ```bash
+    naive status
+    ```
+    Confirms your API key is valid and shows your agent identity.
+  </Step>
+  <Step title="Explore available tools">
+    ```bash
+    naive tools
+    naive tools search "social media"
+    naive tools help create_social_post
+    ```
+  </Step>
+</Steps>

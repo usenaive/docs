@@ -1,0 +1,36 @@
+---
+title: "Get Social Post"
+description: "Get full details of a specific social media post by ID."
+api: "GET /v1/social/posts/:postId"
+---
+
+<ParamField path="postId" type="string" required>
+  Social post ID.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/social/posts/sp_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="post" type="object">
+  Full post object with `id`, `title`, `content`, `platforms`, `status`, `mediaUrls`, `postedAt`, `scheduledAt`, `createdAt`, and `bundlePostId`.
+</ResponseField>
+
+```json Example Response
+{
+  "post": {
+    "id": "sp_abc123",
+    "title": "Launch Announcement",
+    "content": "Excited to announce our new product!",
+    "platforms": ["TWITTER", "LINKEDIN"],
+    "status": "posted",
+    "mediaUrls": [],
+    "postedAt": "2026-04-27T12:00:00Z",
+    "createdAt": "2026-04-27T11:55:00Z",
+    "bundlePostId": "bp_xyz789"
+  }
+}
+```

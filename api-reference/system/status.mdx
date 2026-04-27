@@ -1,0 +1,38 @@
+---
+title: "Status"
+description: "Get agent identity, credits, and available primitives."
+api: "GET /v1/status"
+---
+
+No parameters required. Returns the identity and capabilities of the agent associated with the API key.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/status \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+```json Example Response
+{
+  "agent": {
+    "id": "agent_abc123",
+    "name": "writer",
+    "company": "Acme Corp"
+  },
+  "credits": {
+    "remaining": 4500,
+    "total": 5000
+  },
+  "primitives": {
+    "email": true,
+    "phone": true,
+    "social": true,
+    "images": true,
+    "heygen": true,
+    "submagic": true,
+    "search": true,
+    "browser": true
+  }
+}
+```

@@ -1,0 +1,65 @@
+---
+title: "Create HeyGen Video"
+description: "Create an AI avatar video using HeyGen with realistic lip-sync."
+api: "POST /v1/heygen/create"
+---
+
+<ParamField body="prompt" type="string" required>
+  Text for the avatar to speak.
+</ParamField>
+
+<ParamField body="orientation" type="string">
+  Video orientation: `landscape` or `portrait`.
+</ParamField>
+
+<ParamField body="style_id" type="string">
+  Avatar style ID from [List HeyGen Styles](/api-reference/creation/list-heygen-styles).
+</ParamField>
+
+<ParamField body="faceless" type="boolean">
+  If `true`, generates video without an avatar face.
+</ParamField>
+
+<ParamField body="mode" type="string">
+  Generation mode. Controls quality vs speed tradeoff.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/heygen/create \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Welcome to Acme Corp! We are revolutionizing the way businesses operate with AI-powered automation.",
+    "orientation": "landscape",
+    "style_id": "style_business_01"
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="sessionId" type="string">
+  Session ID for polling status.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Initial status (typically `pending`).
+</ResponseField>
+
+<ResponseField name="callbackId" type="string">
+  Callback reference.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "sessionId": "hs_abc123",
+  "status": "pending",
+  "callbackId": "cb_xyz789"
+}
+```
+
+Video generation is async — poll with [Get HeyGen Session](/api-reference/creation/get-heygen-session). Costs ~5–10 credits per video.

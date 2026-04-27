@@ -1,0 +1,35 @@
+---
+title: "List Payment Cards"
+description: "List virtual payment cards assigned to the agent."
+api: "GET /v1/payments/cards"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/payments/cards \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="cards" type="array">
+  Payment cards. Each contains `id`, `name`, `provider`, `last4`, `brand`, `spendingLimitCents`, `spentCents`, and `remainingCents`.
+</ResponseField>
+
+```json Example Response
+{
+  "cards": [
+    {
+      "id": "card_abc123",
+      "name": "Marketing Budget",
+      "provider": "stripe_issuing",
+      "last4": "4242",
+      "brand": "Visa",
+      "spendingLimitCents": 50000,
+      "spentCents": 12500,
+      "remainingCents": 37500
+    }
+  ]
+}
+```

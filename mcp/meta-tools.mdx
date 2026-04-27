@@ -1,0 +1,257 @@
+---
+title: "Meta-Tools"
+description: "The 4 tools that let your agent discover and use all 54 available primitives without bloating the context window."
+icon: "compass"
+sidebarTitle: "Meta-Tools"
+---
+
+The Naive MCP server exposes 54 tools, but only 8 are registered as core tools in the context window. The remaining 46 **extended tools** are accessible through 4 meta-tools that handle discovery, documentation, and execution.
+
+This design keeps the agent's context window lean while giving it access to the full tool catalog on demand.
+
+## The Discovery Flow
+
+Extended tools follow a three-step pattern:
+
+<Steps>
+  <Step title="Search for tools">
+    Use `naive_search` to find tools by keyword or category.
+
+    ```json
+    { "query": "phone" }
+    ```
+
+    Returns matching tools: `claim_phone_number`, `get_phone_number`, `get_sms_inbox`
+  </Step>
+  <Step title="Get full documentation">
+    Use `naive_tool_help` to read the complete schema, examples, and error recovery for a specific tool.
+
+    ```json
+    { "tool_name": "claim_phone_number" }
+    ```
+
+    Returns parameters, output schema, usage examples, and error codes.
+  </Step>
+  <Step title="Execute the tool">
+    Use `naive_execute` to call the tool with runtime-validated parameters.
+
+    ```json
+    {
+      "tool_name": "claim_phone_number",
+      "params": {}
+    }
+    ```
+
+    Validates input against the tool's Zod schema before making the API call.
+  </Step>
+</Steps>
+
+---
+
+## naive_context
+
+Get your Naive agent identity, capabilities, and workflow guides.
+
+<ParamField body="" type="">
+  No parameters. This tool returns contextual information for the current session.
+</ParamField>
+
+### What it returns
+
+<ResponseField name="identity" type="object">
+  Agent name, company, email address, phone number, and credit balance.
+</ResponseField>
+
+<ResponseField name="capabilities" type="object">
+  Complete capability map: all 54 tools organized by category with core/extended status.
+</ResponseField>
+
+<ResponseField name="workflows" type="object">
+  Step-by-step guides for email, social media, video creation, payments, integrations, and credential management.
+</ResponseField>
+
+<ResponseField name="security_rules" type="object">
+  Rules for handling sensitive data: card details, untrusted email content, credential storage.
+</ResponseField>
+
+### When to call it
+
+Call `naive_context` at the **start of any conversation** where you might need to use Naive tools. It loads your identity and gives you the full picture of what's available.
+
+```json Example response (abbreviated)
+{
+  "identity": {
+    "agent": "writer",
+    "company": "Acme Corp",
+    "email": "writer@acme.usenaive.ai",
+    "phone": "+1 (555) 123-4567",
+    "credits": 450
+  },
+  "capabilities": {
+    "communication": ["send_email ★", "list_inbox ★", "get_email_body", ...],
+    "distribution": ["create_social_post ★", "get_social_media_status ★", ...],
+    "creation": ["generate_images ★", "search_stock_media ★", ...]
+  }
+}
+```
+
+<Note>
+  Tools marked with ★ are core tools you can call directly. Others require the `naive_search → naive_tool_help → naive_execute` flow.
+</Note>
+
+For a deep dive on this tool, see the [Agent Context](/mcp/context-tool) page.
+
+---
+
+## naive_search
+
+Search all available Naive tools by keyword or category. Returns matching tool names and descriptions.
+
+<ParamField body="query" type="string">
+  Search query — matches against tool name, title, description, and tags.
+</ParamField>
+
+<ParamField body="category" type="string">
+  Filter by category: `communication`, `distribution`, `creation`, `research`, `integrations`, `domains`, `payments`, `connections`, `browser`, `credentials`, `billing`.
+</ParamField>
+
+### Examples
+
+<Tabs>
+  <Tab title="Keyword search">
+    ```json
+    { "query": "video" }
+    ```
+
+    ```text Response
+    - create_heygen_video (creation): Create an AI avatar video using HeyGen
+    - get_heygen_video (creation): Get the final video URL for a completed HeyGen video
+    - get_heygen_session (creation): Check HeyGen video session status and progress
+    - create_magic_clips (creation): Create short-form clips from a YouTube video
+    - search_stock_media (creation): Search Pexels for free stock videos and photos
+    ```
+  </Tab>
+  <Tab title="Category filter">
+    ```json
+    { "category": "domains" }
+    ```
+
+    ```text Response
+    - register_domain (domains): Register a custom domain for email and hosting
+    - list_company_domains (domains): List all registered domains
+    - check_domain_dns (domains): Check DNS propagation and verification status
+    - retry_domain_dns (domains): Retry DNS provisioning for a failed domain
+    - connect_domain_to_app (domains): Connect a domain to an app
+    - disconnect_domain_from_app (domains): Disconnect a domain from an app
+    - delete_domain (domains): Permanently remove a registered domain
+    ```
+  </Tab>
+  <Tab title="Combined">
+    ```json
+    { "query": "connect", "category": "integrations" }
+    ```
+
+    ```text Response
+    - check_integrations (integrations): List all available integrations
+    - get_composio_auth_url (integrations): Get OAuth URL for third-party integrations
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## naive_tool_help
+
+Get detailed documentation for a specific tool including full description, parameters, outputs, hints, and error recovery.
+
+<ParamField body="tool_name" type="string" required>
+  The exact tool name to get help for (e.g., `send_email`, `claim_phone_number`).
+</ParamField>
+
+### Example
+
+```json
+{ "tool_name": "claim_phone_number" }
+```
+
+```text Response
+# Claim Phone Number (claim_phone_number)
+
+Provision and claim a phone number for the agent via Twilio.
+Auto-selects an available number. This is a one-time operation
+per agent — if a phone number already exists, it returns the
+existing one.
+
+## Input
+  (none)
+
+## Output
+  phoneNumber (object): { id, phoneNumber, friendlyName, status }
+
+## Hints
+Available actions:
+- get_sms_inbox: Check for inbound SMS messages
+
+## Error Recovery
+  already_claimed: Agent already has a phone number.
+  no_numbers_available: No Twilio numbers available. Contact support.
+```
+
+<Note>
+  If the tool name doesn't match, `naive_tool_help` returns suggestions based on fuzzy matching. For example, asking for `"phone"` might suggest `claim_phone_number`, `get_phone_number`, and `get_sms_inbox`.
+</Note>
+
+---
+
+## naive_execute
+
+Execute any Naive tool by name with parameters. Validates input against the tool's Zod schema at runtime before making the API call.
+
+<ParamField body="tool_name" type="string" required>
+  The tool name to execute.
+</ParamField>
+
+<ParamField body="params" type="object">
+  Tool parameters as key-value pairs. Validated against the tool's schema.
+</ParamField>
+
+### Example
+
+```json
+{
+  "tool_name": "register_domain",
+  "params": {
+    "domain": "acme.com"
+  }
+}
+```
+
+```json Response
+{
+  "domain": {
+    "id": "dom_abc123",
+    "domain": "acme.com",
+    "status": "pending_verification",
+    "dnsRecords": [
+      { "type": "MX", "name": "acme.com", "value": "feedback-smtp.usenaive.ai", "status": "pending" },
+      { "type": "TXT", "name": "acme.com", "value": "v=spf1 include:amazonses.com ~all", "status": "pending" }
+    ]
+  }
+}
+```
+
+### Validation errors
+
+If parameters don't match the schema, `naive_execute` returns a clear validation error instead of making the API call:
+
+```text
+Parameter validation failed for send_email:
+- to: Required
+- reason: Required
+
+Use naive_tool_help(tool_name: "send_email") to see required parameters.
+```
+
+<Warning>
+  `naive_execute` only works for extended tools. Core tools should be called directly — they're already in the agent's tool list with full schemas.
+</Warning>

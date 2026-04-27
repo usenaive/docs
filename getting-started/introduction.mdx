@@ -1,0 +1,132 @@
+---
+title: Introduction
+description: "Naive gives AI agents real-world capabilities: email, social media, video, payments, browser automation, and 100+ integrations — accessible via REST API, MCP server, or CLI."
+icon: "rocket"
+---
+
+# What is Naive?
+
+Naive is a primitives platform for AI agents. It provides the building blocks agents need to interact with the real world — sending emails, posting to social media, generating videos, making purchases, browsing the web, and connecting to third-party services.
+
+Instead of building and maintaining integrations yourself, you give your agent a single API key and it gets access to **54 tools across 11 categories**.
+
+<CardGroup cols={2}>
+  <Card title="Communication" icon="envelope">
+    Email (send, receive, inbox) and SMS via provisioned addresses and phone numbers
+  </Card>
+  <Card title="Social Media" icon="share-nodes">
+    Post to Twitter, LinkedIn, Instagram, TikTok, YouTube, Reddit, and 7 more platforms
+  </Card>
+  <Card title="Video Creation" icon="video">
+    AI avatar videos (HeyGen), YouTube clip extraction (Submagic), and JSON-spec rendering
+  </Card>
+  <Card title="Image Generation" icon="image">
+    AI image generation via Gemini and free stock media search via Pexels
+  </Card>
+  <Card title="Payments" icon="credit-card">
+    Virtual payment cards for agent purchasing with transaction logging and spend limits
+  </Card>
+  <Card title="Browser Automation" icon="globe">
+    Chrome DevTools Protocol sessions for Playwright/Puppeteer with stored credentials
+  </Card>
+  <Card title="Integrations" icon="plug">
+    100+ SaaS integrations via Composio (Slack, GitHub, HubSpot) plus CMS platforms (Webflow, Ghost, Shopify)
+  </Card>
+  <Card title="Web Research" icon="magnifying-glass">
+    Real-time web search, URL content extraction, and multi-step research with citations
+  </Card>
+</CardGroup>
+
+## Architecture
+
+```
+Your AI Agent (Claude, Cursor, GPT, custom)
+    │
+    │  MCP protocol (stdio) or REST API (HTTPS)
+    ▼
+naive-mcp / API client
+    │
+    │  HTTPS + Bearer token
+    ▼
+api.usenaive.ai (public API gateway)
+    │
+    │  Authenticated proxy
+    ▼
+Naive internal services
+    │
+    ▼
+PostgreSQL, Resend, bundle.social, HeyGen, Submagic,
+Pexels, Tavily, Composio, Stripe Issuing, Twilio, etc.
+```
+
+Your agent authenticates with a single API key. The key resolves to a specific agent and company — all resources (email addresses, social accounts, payment cards, credentials) are scoped automatically.
+
+## Three Ways to Use Naive
+
+<Tabs>
+  <Tab title="MCP Server">
+    The **Model Context Protocol** server exposes Naive's primitives as tools that any MCP-compatible agent can call directly. This is the recommended approach for Claude Desktop, Cursor, and other MCP runtimes.
+
+    ```bash
+    npm install -g @usenaive/sdk
+    naive init
+    ```
+
+    The MCP server registers **13 tools** in the agent's context window: 10 core primitives with full schemas, plus 3 meta-tools (`naive_search`, `naive_tool_help`, `naive_execute`) for discovering and calling the remaining tools without bloating context.
+  </Tab>
+  <Tab title="REST API">
+    Call any primitive directly over HTTPS with Bearer token authentication. Works with any language or framework.
+
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/email/send \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{"to":"user@example.com","subject":"Hello","body":"Welcome!","reason":"onboarding"}'
+    ```
+  </Tab>
+  <Tab title="CLI">
+    The `naive` CLI handles setup, configuration, and tool exploration from your terminal.
+
+    ```bash
+    naive status          # Connection status and agent info
+    naive tools           # List all 54 tools by category
+    naive tools help send_email   # Full docs for any tool
+    ```
+  </Tab>
+</Tabs>
+
+## Tool Categories
+
+| Category | Tools | Core | Description |
+|----------|-------|------|-------------|
+| Communication | 6 | `send_email`, `list_inbox` | Email and SMS |
+| Distribution | 8 | `create_social_post`, `get_social_media_status` | Social media posting and analytics |
+| Creation | 10 | `generate_images`, `search_stock_media` | Images, video, stock media |
+| Research | 3 | `web_search` | Web search, URL reading, deep research |
+| Integrations | 3 | `check_integrations` | CMS and SaaS integrations |
+| Domains | 7 | — | Custom domain registration and DNS |
+| Payment Cards | 3 | — | Virtual cards and transaction logging |
+| Connections | 5 | — | Browser integration credentials |
+| Browser | 3 | — | CDP sessions for web automation |
+| Credentials | 3 | — | Encrypted secret storage |
+
+<Info>
+**Core tools** are registered directly in the MCP context with full schemas. Extended tools are discovered via `naive_search` and called via `naive_execute` — keeping the context window lean while still providing access to all 54 tools.
+</Info>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="bolt" href="/getting-started/quickstart">
+    Get up and running in under 5 minutes
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference">
+    Complete endpoint documentation
+  </Card>
+  <Card title="MCP Server" icon="server" href="/getting-started/installation">
+    Configure for Claude Desktop, Cursor, or custom runtimes
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/getting-started/installation#cli-commands">
+    Setup, tool discovery, and key management
+  </Card>
+</CardGroup>

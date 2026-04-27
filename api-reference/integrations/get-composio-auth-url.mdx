@@ -1,0 +1,26 @@
+---
+title: "Get Composio Auth URL"
+description: "Get the Composio authentication URL for connecting third-party integrations."
+api: "GET /v1/integrations/composio-url"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/integrations/composio-url \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="url" type="string | null">
+  Composio auth URL. `null` if Composio is not configured.
+</ResponseField>
+
+```json Example Response
+{
+  "url": "https://app.composio.dev/auth/connect/abc123"
+}
+```
+
+Share this URL with the user to authorize third-party integrations (GitHub, Slack, HubSpot, etc.) via Composio's OAuth flow.

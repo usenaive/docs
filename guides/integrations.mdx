@@ -1,0 +1,225 @@
+---
+title: Third-Party Integrations
+description: "Connect to 100+ SaaS tools via Composio and CMS platforms like Webflow, Ghost, and Shopify."
+icon: "plug"
+---
+
+Naive integrates with over 100 third-party services through two systems: **Composio** for SaaS integrations (Slack, GitHub, HubSpot, etc.) and **CMS connectors** for content platforms (Webflow, Ghost, Shopify, Framer).
+
+## Discovery
+
+Start by checking what's available:
+
+```bash
+curl https://api.usenaive.ai/v1/integrations \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "integrations": {
+    "cms": [
+      { "id": "int_abc", "type": "webflow", "name": "Acme Marketing Site", "status": "connected" },
+      { "id": "int_def", "type": "ghost", "name": "Acme Blog", "status": "connected" }
+    ],
+    "composio": [
+      { "toolkit": "SLACK", "status": "connected" },
+      { "toolkit": "GITHUB", "status": "connected" },
+      { "toolkit": "HUBSPOT", "status": "available" }
+    ],
+    "connections": [
+      { "id": "conn_1", "platform_name": "LinkedIn", "status": "connected" }
+    ]
+  }
+}
+```
+
+## Workflow
+
+All integrations follow the same three-step pattern: discover, inspect, execute.
+
+<Steps>
+  <Step title="Check available integrations">
+    ```bash
+    check_integrations()
+    ```
+    Returns all CMS, Composio, and browser integrations with their current status.
+  </Step>
+
+  <Step title="Get available tools for an integration">
+    ```bash
+    # For a CMS integration
+    curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=cms&integration_id=int_abc" \
+      -H "Authorization: Bearer nv_sk_your_key"
+
+    # For a Composio toolkit
+    curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=SLACK" \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "tools": [
+        { "name": "SLACK_SEND_MESSAGE", "description": "Send a message to a Slack channel", "parameters": { ... } },
+        { "name": "SLACK_LIST_CHANNELS", "description": "List Slack channels", "parameters": { ... } }
+      ]
+    }
+    ```
+  </Step>
+
+  <Step title="Execute a tool">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/integrations/execute \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "integration_type": "composio",
+        "toolkit": "SLACK",
+        "tool_name": "SLACK_SEND_MESSAGE",
+        "params": {
+          "channel": "#general",
+          "text": "Weekly metrics report is ready!"
+        }
+      }'
+    ```
+  </Step>
+</Steps>
+
+## Composio Integrations
+
+Composio provides OAuth-based integrations with 100+ SaaS platforms. Here are some commonly used toolkits:
+
+<CardGroup cols={3}>
+  <Card title="Slack" icon="slack">
+    Send messages, list channels, manage reactions
+  </Card>
+  <Card title="GitHub" icon="github">
+    Create issues, PRs, list repos, manage branches
+  </Card>
+  <Card title="HubSpot" icon="hubspot">
+    Manage contacts, deals, companies, notes
+  </Card>
+  <Card title="Notion" icon="book">
+    Create pages, update databases, search content
+  </Card>
+  <Card title="Google Sheets" icon="table">
+    Read/write spreadsheet data, create sheets
+  </Card>
+  <Card title="Google Calendar" icon="calendar">
+    Create events, list upcoming, check availability
+  </Card>
+  <Card title="Gmail" icon="envelope">
+    Send emails, search inbox, manage labels
+  </Card>
+  <Card title="Shopify" icon="cart-shopping">
+    Manage products, orders, customers, inventory
+  </Card>
+  <Card title="Stripe" icon="stripe">
+    Create customers, manage subscriptions, payments
+  </Card>
+</CardGroup>
+
+### Connecting Composio Integrations
+
+To connect a new Composio integration, get the OAuth authorization URL:
+
+```bash
+curl https://api.usenaive.ai/v1/integrations/composio-url \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+Response:
+```json
+{
+  "url": "https://app.composio.dev/auth/abc123"
+}
+```
+
+Share this URL with the user. They'll authorize the integration through Composio's OAuth flow, and it will appear in `check_integrations` once connected.
+
+## CMS Integrations
+
+Native connectors for content management systems. CMS integrations support both reading and writing content.
+
+### Supported Platforms
+
+| Platform | Read | Write | Notes |
+|----------|------|-------|-------|
+| Webflow | Yes | **Draft only** | Collections, pages, CMS items |
+| Ghost | Yes | **Draft only** | Posts, pages, tags |
+| Shopify | Yes | **Draft only** | Products, collections, blog posts |
+| Framer | Yes | **Draft only** | Pages, CMS collections |
+
+<Info>
+**All CMS writes create drafts.** Nothing is published directly. This gives the user a chance to review content before it goes live.
+</Info>
+
+### CMS Example: Create a Blog Post
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/integrations/execute \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "integration_type": "cms",
+    "integration_id": "int_def",
+    "tool_name": "create_post",
+    "params": {
+      "title": "10 Ways AI is Transforming Marketing",
+      "content": "<p>Artificial intelligence is reshaping how teams approach...</p>",
+      "tags": ["AI", "Marketing", "Automation"]
+    }
+  }'
+```
+
+The post is created as a **draft** in Ghost — the user publishes it when ready.
+
+## Tools Reference
+
+| Tool | Method | Path | Description |
+|------|--------|------|-------------|
+| `check_integrations` | GET | `/v1/integrations` | List all available integrations (core tool) |
+| `get_integration_tools` | GET | `/v1/integrations/tools` | List tools for a specific integration |
+| `execute_integration` | POST | `/v1/integrations/execute` | Execute a tool on an integration |
+| `get_composio_auth_url` | GET | `/v1/integrations/composio-url` | Get OAuth URL for connecting new integrations |
+
+### execute_integration Parameters
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `integration_type` | string | Yes | `cms` or `composio` |
+| `tool_name` | string | Yes | Tool to execute |
+| `params` | object | No | Tool parameters (default `{}`) |
+| `integration_id` | string | Conditional | Required for CMS integrations |
+| `toolkit` | string | Conditional | Required for Composio integrations |
+
+## Typical Agent Flow
+
+```
+Task: "Post our new blog article to Ghost and share it on Slack"
+
+1. check_integrations()
+   → Ghost CMS connected, Slack connected
+
+2. get_integration_tools({ integration_type: "cms", integration_id: "int_def" })
+   → Available: create_post, list_posts, get_post, ...
+
+3. execute_integration({
+     integration_type: "cms",
+     integration_id: "int_def",
+     tool_name: "create_post",
+     params: { title: "...", content: "..." }
+   })
+   → Draft created in Ghost
+
+4. execute_integration({
+     integration_type: "composio",
+     toolkit: "SLACK",
+     tool_name: "SLACK_SEND_MESSAGE",
+     params: { channel: "#content", text: "New blog draft ready for review: ..." }
+   })
+   → Slack notification sent
+```

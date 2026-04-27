@@ -1,0 +1,50 @@
+---
+title: "Generate Images"
+description: "Generate images from a text prompt using Gemini AI."
+api: "POST /v1/images/generate"
+---
+
+<ParamField body="prompt" type="string" required>
+  Image generation prompt describing what to create.
+</ParamField>
+
+<ParamField body="count" type="number">
+  Number of images to generate. Range: 1–4. Default `1`.
+</ParamField>
+
+<ParamField body="size" type="string">
+  Image dimensions. Default `1024x1024`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/images/generate \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A minimalist logo for a tech startup called Acme, blue gradient",
+    "count": 2
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="images" type="array">
+  Generated images. Each contains `path` (workspace path) and `url` (public HTTPS URL).
+</ResponseField>
+
+```json Example Response
+{
+  "images": [
+    {
+      "path": "brand/logo-options/image-1.png",
+      "url": "https://cdn.usenaive.ai/images/abc123-1.png"
+    },
+    {
+      "path": "brand/logo-options/image-2.png",
+      "url": "https://cdn.usenaive.ai/images/abc123-2.png"
+    }
+  ]
+}
+```
+
+Use the `url` values (HTTPS) when referencing images in social posts or external services.

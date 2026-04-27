@@ -1,0 +1,33 @@
+---
+title: "Retry Domain DNS"
+description: "Retry DNS provisioning for a domain that failed verification."
+api: "POST /v1/domains/:domainId/retry-dns"
+---
+
+<ParamField path="domainId" type="string" required>
+  Domain ID.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  New verification status.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "status": "pending_verification"
+}
+```
+
+Use after the user has corrected their DNS records at their registrar. Then verify again with [Check Domain DNS](/api-reference/domains/check-domain-dns).

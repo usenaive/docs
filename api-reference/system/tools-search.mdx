@@ -1,0 +1,46 @@
+---
+title: "Search Tools"
+description: "Search available tool definitions. No authentication required."
+api: "GET /v1/tools"
+---
+
+<Note>This endpoint is **unauthenticated** — no API key required.</Note>
+
+<ParamField query="query" type="string">
+  Search query to filter tools by name or description.
+</ParamField>
+
+<ParamField query="category" type="string">
+  Filter by category (e.g., `communication`, `distribution`, `creation`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/tools?query=email"
+```
+</CodeGroup>
+
+```json Example Response
+[
+  {
+    "name": "send_email",
+    "category": "communication",
+    "description": "Send an outbound email from the agent's provisioned email address.",
+    "core": true
+  },
+  {
+    "name": "list_inbox",
+    "category": "communication",
+    "description": "List recent inbound emails received at the agent's email address.",
+    "core": true
+  },
+  {
+    "name": "get_email_body",
+    "category": "communication",
+    "description": "Read the full body of a specific inbound email by ID.",
+    "core": false
+  }
+]
+```
+
+Use [Get Tool Detail](/api-reference/system/tools-detail) to get the full schema for a specific tool.

@@ -1,0 +1,149 @@
+---
+title: "MCP Server Overview"
+description: "How the Naive MCP server connects your AI agent to real-world primitives via the Model Context Protocol."
+icon: "server"
+sidebarTitle: "Overview"
+---
+
+The Naive MCP server gives any MCP-compatible AI agent access to email, social media, image generation, video creation, web search, payments, browser automation, and 100+ third-party integrations — all through a single connection.
+
+## Architecture
+
+Every tool call flows through a simple chain from your agent to the Naive platform:
+
+```
+Agent Runtime (Claude, Cursor, etc.)
+        │
+        │  MCP protocol (stdio)
+        ▼
+    naive-mcp
+        │
+        │  HTTPS + Bearer token
+        ▼
+  api.usenaive.ai
+        │
+        │  Internal proxy
+        ▼
+  Naive platform services
+```
+
+The MCP server runs as a local subprocess launched by your agent runtime. It communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io), translating tool calls into authenticated HTTPS requests against the Naive public API.
+
+<Note>
+  The MCP server never stores data locally. All state — email, social accounts, credentials, billing — lives on the Naive platform and is scoped to your API key.
+</Note>
+
+## Tool Registration Strategy
+
+The server registers **12 tools** in your agent's context window to keep it lean and focused:
+
+<CardGroup cols={2}>
+  <Card title="8 Core Tools" icon="star">
+    Registered with full Zod schemas. Your agent calls them directly — no discovery step needed. These cover the highest-frequency actions: email, social media, images, search, stock media, and integrations.
+  </Card>
+  <Card title="4 Meta-Tools" icon="compass">
+    `naive_context`, `naive_search`, `naive_tool_help`, and `naive_execute` let your agent discover and use all **54 tools** in the catalog without bloating the context window.
+  </Card>
+</CardGroup>
+
+This two-tier approach means your agent always has the most useful tools at hand, while the full catalog remains accessible on demand.
+
+## Getting Started
+
+<Steps>
+  <Step title="Install the SDK">
+    ```bash
+    npm install -g @usenaive/sdk
+    ```
+  </Step>
+  <Step title="Run the setup wizard">
+    ```bash
+    naive init
+    ```
+    This validates your API key, writes the MCP config for your agent runtime, and saves settings to `~/.naive/config.json`.
+  </Step>
+  <Step title="Restart your agent runtime">
+    Restart Claude Desktop or Cursor to load the new MCP server configuration.
+  </Step>
+  <Step title="Start using tools">
+    Ask your agent to perform a real-world action:
+
+    > "Send an email to alice@example.com about our product launch"
+
+    The agent will call `send_email` through the MCP connection.
+  </Step>
+</Steps>
+
+## Starting the Server
+
+In most cases, your agent runtime launches the MCP server automatically based on the config written by `naive init`. You can also start it manually:
+
+```bash
+NAIVE_API_KEY=nv_sk_... naive mcp start
+```
+
+Or configure it directly in your runtime's MCP config:
+
+<CodeGroup>
+```json Claude Desktop
+{
+  "mcpServers": {
+    "naive": {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_..."
+      }
+    }
+  }
+}
+```
+
+```json Cursor
+{
+  "mcpServers": {
+    "naive": {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_..."
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `NAIVE_API_KEY` | Yes | — | Your Naive API key (starts with `nv_sk_`) |
+| `NAIVE_API_URL` | No | `https://api.usenaive.ai` | API base URL (override for local development) |
+
+<Warning>
+  Never commit your API key to version control. Use environment variables or the config file at `~/.naive/config.json`.
+</Warning>
+
+## How Responses Work
+
+Every tool response includes **contextual hints** suggesting what to do next. For example, after a successful `send_email`:
+
+```json
+{
+  "sent": true,
+  "emailId": "em_abc123"
+}
+
+// ---
+// Available actions:
+// - list_inbox: Check for replies to this email
+// - create_social_post: Cross-post this content to social media
+// - generate_images: Create visual content for campaigns
+```
+
+These hints help your agent chain actions together without needing explicit instructions.
+
+## Authentication
+
+All tools authenticate via the API key bound to your agent. The key resolves to a specific company and agent on the Naive platform — you never need to pass `agent_id` or company identifiers. Email addresses, phone numbers, social accounts, and credit balances are all scoped automatically.

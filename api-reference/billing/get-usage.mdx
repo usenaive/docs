@@ -1,0 +1,41 @@
+---
+title: "Get Usage"
+description: "Get credit usage and billing information."
+api: "GET /v1/usage"
+---
+
+<ParamField query="days" type="number">
+  Number of days of usage history to return.
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of usage records to return.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/usage?days=30&limit=100" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+```json Example Response
+{
+  "credits_remaining": 4500,
+  "credits_used": 550,
+  "usage": [
+    {
+      "date": "2026-04-27",
+      "tool": "generate_images",
+      "credits": 5,
+      "count": 2
+    },
+    {
+      "date": "2026-04-26",
+      "tool": "create_heygen_video",
+      "credits": 10,
+      "count": 1
+    }
+  ]
+}
+```

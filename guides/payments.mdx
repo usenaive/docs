@@ -1,0 +1,201 @@
+---
+title: Virtual Cards
+description: "Give your agent purchasing power with virtual payment cards, spend limits, and mandatory transaction logging."
+icon: "credit-card"
+---
+
+Naive provides virtual payment cards that agents can use to make purchases online. Cards are issued via Stripe Issuing or Reloadly, assigned to specific agents, and come with configurable spend limits.
+
+<Warning>
+**Critical Security Rules**
+
+1. **Never display full card numbers to users** — the agent uses card details for checkout only
+2. **Always call `log_card_transaction` after every purchase** — this is mandatory, not optional
+3. **Never log card details** — treat card numbers, CVVs, and expiry like passwords
+</Warning>
+
+## Workflow
+
+The payment card workflow is straightforward: list available cards, get details for checkout, make the purchase, and log the transaction.
+
+<Steps>
+  <Step title="List available cards">
+    ```bash
+    curl https://api.usenaive.ai/v1/payments/cards \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "cards": [
+        {
+          "id": "card_abc123",
+          "name": "Marketing Budget",
+          "provider": "stripe_issuing",
+          "last4": "4242",
+          "brand": "Visa",
+          "spendingLimitCents": 50000,
+          "spentCents": 12500,
+          "remainingCents": 37500
+        }
+      ]
+    }
+    ```
+
+    The `remainingCents` field tells you how much the card can still spend.
+  </Step>
+
+  <Step title="Get card details for checkout">
+    ```bash
+    curl https://api.usenaive.ai/v1/payments/cards/card_abc123 \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "cardId": "card_abc123",
+      "name": "Marketing Budget",
+      "provider": "stripe_issuing",
+      "number": "4242424242424242",
+      "cvc": "123",
+      "expMonth": 12,
+      "expYear": 2027,
+      "last4": "4242",
+      "brand": "Visa",
+      "cardholderName": "ACME CORP",
+      "billingAddress": {
+        "line1": "123 Main St",
+        "city": "San Francisco",
+        "state": "CA",
+        "postalCode": "94102",
+        "country": "US"
+      },
+      "spendingLimitCents": 50000,
+      "spentCents": 12500,
+      "remainingCents": 37500
+    }
+    ```
+
+    The agent uses these details to fill in checkout forms during browser automation.
+  </Step>
+
+  <Step title="Make the purchase">
+    The agent uses the card details in a browser session (via `ensure_browser_session`) or through an API that accepts card payments.
+  </Step>
+
+  <Step title="Log the transaction">
+    **This step is mandatory.** After every purchase, log the transaction:
+
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/payments/transactions \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "card_id": "card_abc123",
+        "amount_cents": 2999,
+        "merchant_name": "Envato Elements",
+        "description": "Monthly subscription for stock assets"
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "transactionId": "txn_xyz789"
+    }
+    ```
+  </Step>
+</Steps>
+
+## Storing Purchase Credentials
+
+When a purchase results in login credentials (e.g., buying a SaaS subscription), store them in the transaction log using the `credential_data` field:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/payments/transactions \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "card_id": "card_abc123",
+    "amount_cents": 4900,
+    "merchant_name": "Canva",
+    "description": "Canva Pro annual subscription",
+    "credential_data": {
+      "service": "Canva",
+      "url": "https://canva.com/login",
+      "username": "agent@acme.com",
+      "password": "generated_password_here",
+      "notes": "Annual plan, renews April 2027"
+    }
+  }'
+```
+
+The `credential_data` object supports these fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `service` | string | Service name |
+| `url` | string | Login URL |
+| `username` | string | Login username or email |
+| `password` | string | Login password |
+| `api_key` | string | API key (if applicable) |
+| `notes` | string | Additional notes |
+
+<Tip>
+Storing credentials in the transaction log keeps a complete record: what was purchased, how much it cost, and how to access it. Use `store_credential` for long-term credential storage.
+</Tip>
+
+## Tools Reference
+
+| Tool | Method | Path | Description |
+|------|--------|------|-------------|
+| `list_payment_cards` | GET | `/v1/payments/cards` | List cards assigned to the agent |
+| `get_card_details` | GET | `/v1/payments/cards/:cardId` | Get full card details for checkout |
+| `log_card_transaction` | POST | `/v1/payments/transactions` | Log a purchase (mandatory after every use) |
+
+## Transaction Log Parameters
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `card_id` | string | Yes | Card ID from `list_payment_cards` |
+| `amount_cents` | number | Yes | Purchase amount in cents |
+| `merchant_name` | string | Yes | Where the purchase was made |
+| `description` | string | Yes | What was purchased |
+| `credential_data` | object | No | Login credentials received from the purchase |
+
+## Typical Agent Flow
+
+```
+Task: "Subscribe to Canva Pro for the marketing team"
+
+1. list_payment_cards()
+   → Find card with sufficient balance
+
+2. get_card_details({ card_id: "card_abc123" })
+   → Get full card number, CVV, expiry, billing address
+
+3. ensure_browser_session()
+   → Get CDP URL for browser automation
+
+4. [Agent navigates to canva.com, creates account, enters card details, completes checkout]
+
+5. log_card_transaction({
+     card_id: "card_abc123",
+     amount_cents: 4900,
+     merchant_name: "Canva",
+     description: "Canva Pro annual subscription",
+     credential_data: {
+       service: "Canva",
+       url: "https://canva.com/login",
+       username: "agent@acme.com",
+       password: "..."
+     }
+   })
+   → Transaction logged, credentials stored
+
+6. stop_browser_session()
+   → Clean up
+```

@@ -1,0 +1,32 @@
+---
+title: "List Company Domains"
+description: "List all registered domains for the company."
+api: "GET /v1/domains"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/domains \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="domains" type="array">
+  Domain objects. Each contains `id`, `domain`, `status`, `verified`, and `createdAt`.
+</ResponseField>
+
+```json Example Response
+{
+  "domains": [
+    {
+      "id": "dom_abc123",
+      "domain": "acme.com",
+      "status": "verified",
+      "verified": true,
+      "createdAt": "2026-04-20T10:00:00Z"
+    }
+  ]
+}
+```

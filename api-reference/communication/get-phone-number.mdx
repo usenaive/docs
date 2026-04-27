@@ -1,0 +1,31 @@
+---
+title: "Get Phone Number"
+description: "Get the agent's assigned phone number, if one has been provisioned."
+api: "GET /v1/phone"
+---
+
+No parameters required. The agent is resolved from the API key.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/phone \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="phoneNumber" type="object | null">
+  Phone number object with `id`, `phoneNumber`, `friendlyName`, and `status`. Returns `null` if no number is assigned.
+</ResponseField>
+
+```json Example Response
+{
+  "phoneNumber": {
+    "id": "pn_abc123",
+    "phoneNumber": "+15551234567",
+    "friendlyName": "Agent Line",
+    "status": "active"
+  }
+}
+```
+
+If `null` is returned, use [Claim Phone Number](/api-reference/communication/claim-phone-number) to provision one.

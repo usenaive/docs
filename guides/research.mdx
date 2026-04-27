@@ -1,0 +1,203 @@
+---
+title: Web Research
+description: "Search the web, extract content from URLs, and run multi-step research with citations."
+icon: "magnifying-glass"
+---
+
+Naive provides three research tools at different levels of depth and cost. Use the lightest tool that meets your needs.
+
+## Three Tools, Three Levels
+
+| Tool | What it does | Speed | Cost |
+|------|-------------|-------|------|
+| `web_search` | Search query → ranked results with snippets | Fast (~1s) | Low |
+| `read_url` | Fetch URL → extracted text content | Fast (~2s) | Low |
+| `research` | Search + fetch + synthesize → answer with citations | Slow (~10-15s) | Higher |
+
+## web_search
+
+Real-time web search via Tavily or Brave. Returns titles, URLs, and snippets — no page fetching.
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/search \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "AI agent frameworks comparison 2026",
+    "count": 5
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {
+      "title": "The Best AI Agent Frameworks in 2026 - TechReview",
+      "url": "https://techreview.com/ai-agent-frameworks-2026",
+      "snippet": "We compared the top 10 AI agent frameworks across performance, ecosystem, and developer experience..."
+    },
+    {
+      "title": "LangChain vs CrewAI vs AutoGen: A Developer's Guide",
+      "url": "https://dev.to/comparison-langchain-crewai-autogen",
+      "snippet": "After building production agents with all three frameworks..."
+    }
+  ]
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `query` | string | Yes | — | Search query |
+| `count` | number | No | 5 | Number of results (1-10) |
+
+### When to use
+
+- Quick fact checks
+- Finding URLs to read in detail
+- Getting recent news or pricing
+- Any time-sensitive information your training data might not cover
+
+## read_url
+
+Fetch a webpage and extract the main text content. Optionally uses Groq for intelligent extraction focused on a specific topic.
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/url/read \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://techreview.com/ai-agent-frameworks-2026",
+    "focus": "pricing and free tiers"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "url": "https://techreview.com/ai-agent-frameworks-2026",
+  "content": "# AI Agent Frameworks Pricing\n\nLangChain: Open source, free...\nCrewAI: Free tier available, Pro at $49/mo...\n..."
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `url` | string | Yes | — | URL to fetch |
+| `focus` | string | No | — | What to focus on when extracting |
+
+### When to use
+
+- Reading a specific article after `web_search`
+- Extracting structured data from a known URL
+- Getting documentation or pricing from a product page
+- The `focus` parameter makes extraction smarter — instead of returning the full page, it focuses on the relevant sections
+
+<Warning>
+Local and private URLs (localhost, 127.*, 10.*, 192.168.*) are blocked for security.
+</Warning>
+
+## research
+
+Multi-step deep research: searches the web, fetches the top results, and synthesizes a comprehensive answer with inline citations. This is the heavyweight tool.
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/research \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "What are the most effective go-to-market strategies for AI developer tools in 2026?",
+    "max_results": 5
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "summary": "Based on analysis of current market trends and successful launches, the most effective GTM strategies for AI developer tools in 2026 center on three approaches:\n\n1. **Developer-first content marketing** — Companies like Vercel and Supabase have shown that technical blog posts and tutorials drive higher-quality leads than traditional advertising [1][2].\n\n2. **Open-source core with managed cloud** — ...[3]\n\n3. **Community-driven growth** — ...[4][5]",
+  "sources": [
+    { "title": "GTM Playbook for Dev Tools - a16z", "url": "https://a16z.com/gtm-dev-tools" },
+    { "title": "How Vercel Grew to $3B - TechCrunch", "url": "https://techcrunch.com/vercel-growth" },
+    { "title": "The Open Source Business Model in 2026", "url": "https://oss.report/business-models" },
+    { "title": "Building Developer Communities - DevRel Guide", "url": "https://devrel.guide/communities" },
+    { "title": "Reddit: What GTM strategies worked for your dev tool?", "url": "https://reddit.com/r/startups/..." }
+  ]
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `query` | string | Yes | — | Research question |
+| `max_results` | number | No | 3 | Number of sources to analyze (1-5) |
+
+### What happens under the hood
+
+1. Searches the web via Tavily for relevant sources
+2. Fetches and extracts content from the top results
+3. Sends all content to Groq for synthesis
+4. Returns a structured summary with inline citations and source list
+
+### When to use
+
+- Comprehensive market research
+- Competitive analysis
+- Strategy development
+- Any question that requires multiple sources synthesized into a coherent answer
+
+## Choosing the Right Tool
+
+<Tabs>
+  <Tab title="Quick answer needed">
+    Use `web_search` → scan snippets for the answer.
+
+    ```
+    web_search({ query: "OpenAI API pricing per token 2026" })
+    ```
+
+    Cost: 1 API call. Time: ~1 second.
+  </Tab>
+  <Tab title="Need detail from a specific source">
+    Use `web_search` → `read_url` on the best result.
+
+    ```
+    web_search({ query: "Stripe API changelog April 2026" })
+    → Found: https://stripe.com/docs/changelog
+
+    read_url({ url: "https://stripe.com/docs/changelog", focus: "April 2026 changes" })
+    ```
+
+    Cost: 2 API calls. Time: ~3 seconds.
+  </Tab>
+  <Tab title="Comprehensive analysis needed">
+    Use `research` for an end-to-end answer.
+
+    ```
+    research({
+      query: "How are B2B SaaS companies using AI agents for customer support in 2026?",
+      max_results: 5
+    })
+    ```
+
+    Cost: 1 API call (but runs multiple searches and fetches internally). Time: ~10-15 seconds.
+  </Tab>
+</Tabs>
+
+## Cost Comparison
+
+| Approach | API Calls | Internal Operations | Relative Cost |
+|----------|-----------|---------------------|---------------|
+| `web_search` only | 1 | 1 search | $ |
+| `web_search` + `read_url` | 2 | 1 search + 1 fetch | $$ |
+| `research` | 1 | 1 search + 3-5 fetches + 1 LLM synthesis | $$$ |
+
+<Tip>
+Start with `web_search`. If snippets aren't enough, follow up with `read_url`. Only use `research` when you need a synthesized multi-source answer — it's significantly more expensive but produces better results for complex questions.
+</Tip>

@@ -1,0 +1,91 @@
+---
+title: "naive keys"
+description: "Manage API keys: list, create, and revoke keys from the command line."
+icon: "key"
+sidebarTitle: "naive keys"
+---
+
+The `keys` command manages API keys for your Naive account. Keys authenticate both the MCP server and CLI commands against the Naive API.
+
+<Note>
+  Key management calls the developer portal API and requires a valid API key. You can also manage keys at [usenaive.ai/developers](https://usenaive.ai/developers).
+</Note>
+
+## List Keys
+
+```bash
+naive keys list
+```
+
+Displays all API keys associated with your account:
+
+```text
+  API Keys:
+
+  ID                       Name                 Created                  Last Used
+  ————————————————————————  ————————————————————  ————————————————————————  ————————————————————
+  key_abc123               production           2026-03-15T10:30:00Z     2026-04-27T14:22:00Z
+  key_def456               development          2026-04-01T08:00:00Z     2026-04-25T09:15:00Z
+  key_ghi789               ci-pipeline          2026-04-20T12:00:00Z     never
+```
+
+---
+
+## Create a Key {#create}
+
+```bash
+naive keys create [name]
+```
+
+Creates a new API key with an optional name. If no name is provided, it defaults to `cli-generated`.
+
+```bash
+naive keys create staging
+```
+
+```text
+  API key created:
+
+  ID:  key_xyz987
+  Key: nv_sk_live_a1b2c3d4e5f6...
+
+  Save this key now — it will not be shown again.
+```
+
+<Warning>
+  The full API key is displayed **only once** at creation time. Copy it immediately and store it securely. If lost, you'll need to create a new key and revoke the old one.
+</Warning>
+
+---
+
+## Revoke a Key {#revoke}
+
+```bash
+naive keys revoke <id>
+```
+
+Permanently revokes an API key. Any MCP servers or integrations using this key will stop working immediately.
+
+```bash
+naive keys revoke key_def456
+```
+
+```text
+  Key key_def456 revoked.
+```
+
+<Warning>
+  Revocation is immediate and irreversible. Make sure no active services depend on the key before revoking it. If you revoke the key used by your MCP server, you'll need to update your runtime config with a new key.
+</Warning>
+
+---
+
+## Key Format
+
+Naive API keys follow the format `nv_sk_` followed by a random string. For example:
+
+```
+nv_sk_live_a1b2c3d4e5f6g7h8i9j0...
+```
+
+Keys are hashed (SHA-256) at rest on the server — the full key value is never stored. Each key is scoped to a specific company and agent.

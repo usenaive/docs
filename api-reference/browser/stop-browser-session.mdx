@@ -1,0 +1,24 @@
+---
+title: "Stop Browser Session"
+description: "Stop a running browser session for the agent."
+api: "POST /v1/browser/stop"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/browser/stop \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

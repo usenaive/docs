@@ -1,0 +1,36 @@
+---
+title: "Update Connection Status"
+description: "Update the status of a browser integration connection."
+api: "PUT /v1/connections/:connectionId"
+---
+
+<ParamField path="connectionId" type="string" required>
+  Connection ID.
+</ParamField>
+
+<ParamField body="status" type="string" required>
+  `connected` or `disconnected`.
+</ParamField>
+
+<ParamField body="cookie_status" type="string">
+  Cookie freshness status.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PUT https://api.usenaive.ai/v1/connections/conn_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "connected", "cookie_status": "fresh"}'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

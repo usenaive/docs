@@ -1,0 +1,176 @@
+---
+title: "naive tools"
+description: "List, search, and inspect the full catalog of available tools from the command line."
+icon: "wrench"
+sidebarTitle: "naive tools"
+---
+
+The `tools` command lets you explore all 54 available tools without leaving the terminal. It reads from the local YAML tool definitions bundled with the SDK — no API key or network access required.
+
+## List All Tools
+
+```bash
+naive tools
+```
+
+Displays every tool grouped by category:
+
+```text
+  54 tools available
+
+  billing
+    get_usage                      Get Usage & Credits
+
+  browser
+    ensure_browser_session         Ensure Browser Session
+    get_browser_session            Get Browser Session
+    stop_browser_session           Stop Browser Session
+
+  communication
+    claim_phone_number             Claim Phone Number
+    get_email_body                 Get Email Body
+    get_phone_number               Get Phone Number
+    get_sms_inbox                  Get SMS Inbox
+    list_inbox                     List Inbox
+    send_email                     Send Email
+
+  connections
+    create_connection              Create Connection
+    delete_connection              Delete Connection
+    get_connection_credentials     Get Connection Credentials
+    list_connections               List Connections
+    update_connection_status       Update Connection Status
+
+  creation
+    create_heygen_video            Create HeyGen Video
+    create_magic_clips             Create Magic Clips
+    edit_submagic_clip             Edit Submagic Clip
+    generate_images                Generate Images
+    get_heygen_session             Get HeyGen Session
+    ...
+```
+
+---
+
+## Search Tools {#search}
+
+```bash
+naive tools search <query>
+```
+
+Search by keyword across tool names, titles, descriptions, and tags. Returns ranked results with relevance scores.
+
+### Examples
+
+<Tabs>
+  <Tab title="Search for 'email'">
+    ```bash
+    naive tools search email
+    ```
+
+    ```text
+      3 result(s) for "email"
+
+        send_email                     Send Email                     [communication] (score: 12)
+        list_inbox                     List Inbox                     [communication] (score: 8)
+        get_email_body                 Get Email Body                 [communication] (score: 8)
+    ```
+  </Tab>
+  <Tab title="Search for 'video'">
+    ```bash
+    naive tools search video
+    ```
+
+    ```text
+      5 result(s) for "video"
+
+        create_heygen_video            Create HeyGen Video            [creation] (score: 10)
+        get_heygen_video               Get HeyGen Video               [creation] (score: 10)
+        get_heygen_session             Get HeyGen Session             [creation] (score: 6)
+        search_stock_media             Search Stock Media             [creation] (score: 4)
+        create_magic_clips             Create Magic Clips             [creation] (score: 3)
+    ```
+  </Tab>
+  <Tab title="Search for 'domain'">
+    ```bash
+    naive tools search domain
+    ```
+
+    ```text
+      7 result(s) for "domain"
+
+        register_domain                Register Domain                [domains] (score: 12)
+        list_company_domains           List Company Domains           [domains] (score: 10)
+        check_domain_dns               Check Domain DNS               [domains] (score: 8)
+        retry_domain_dns               Retry Domain DNS               [domains] (score: 8)
+        connect_domain_to_app          Connect Domain to App          [domains] (score: 6)
+        disconnect_domain_from_app     Disconnect Domain from App     [domains] (score: 6)
+        delete_domain                  Delete Domain                  [domains] (score: 6)
+    ```
+  </Tab>
+</Tabs>
+
+---
+
+## Tool Help {#help}
+
+```bash
+naive tools help <name>
+```
+
+Get the full documentation for a specific tool, including description, parameters, output schema, hints, and error recovery.
+
+### Example
+
+```bash
+naive tools help send_email
+```
+
+```text
+  Send Email (send_email)
+  Category: communication (core)
+  Tags: email, send, outbound, resend, communication
+
+  Send an email from the agent's provisioned email address via Resend.
+
+  Sends an outbound email from the agent's assigned email address.
+  The email is delivered via the Resend transactional email service.
+
+  The agent must have a provisioned email address (set up via domain
+  verification). If no address is configured, the call fails with
+  `no_email_address`.
+
+  A `reason` field is required — it is logged for audit purposes and
+  helps the user understand why the email was sent.
+
+  Example:
+    send_email(
+      to: "alice@example.com",
+      subject: "Weekly report",
+      body: "Hi Alice, here is your weekly summary…",
+      reason: "Sending scheduled weekly report to stakeholder"
+    )
+
+  Input (* = required):
+    * to                   string     Recipient email address.
+    * subject              string     Email subject line.
+    * body                 string     Plain-text email body.
+    * reason               string     Audit reason explaining why the email is being sent.
+
+  Output:
+      sent                 boolean    Whether the email was accepted for delivery.
+      emailId              string     Resend message ID, or null if sending failed.
+
+  Hints (after success):
+    → list_inbox: Check for replies in the inbox.
+
+  On success: Email queued for delivery. Use list_inbox to monitor for replies.
+  Error recovery:
+    no_email_address: The agent does not have a provisioned email address.
+    rate_limited: Too many emails sent in a short window.
+    blocked_sensitive: The email body was flagged for containing sensitive content.
+```
+
+<Note>
+  Tool help is loaded from YAML definitions bundled with the SDK. It works completely offline — no API key or network connection needed. This is the same documentation returned by `naive_tool_help` in the MCP server.
+</Note>

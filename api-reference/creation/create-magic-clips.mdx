@@ -1,0 +1,42 @@
+---
+title: "Create Magic Clips"
+description: "Create short-form clips from a YouTube video using Submagic."
+api: "POST /v1/submagic/clips"
+---
+
+<ParamField body="youtube_url" type="string" required>
+  YouTube video URL to create clips from.
+</ParamField>
+
+<ParamField body="template_name" type="string">
+  Submagic template to apply for styling and captions.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/submagic/clips \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "template_name": "bold-captions"
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="projectId" type="string">
+  Project ID for polling status.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "projectId": "sm_abc123"
+}
+```
+
+Clip generation is async. Poll with [Get Submagic Status](/api-reference/creation/get-submagic-status) until completed.

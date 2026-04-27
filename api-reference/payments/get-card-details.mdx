@@ -1,0 +1,60 @@
+---
+title: "Get Card Details"
+description: "Get full card details (number, CVV, expiry) for checkout use."
+api: "GET /v1/payments/cards/:cardId"
+---
+
+<ParamField path="cardId" type="string" required>
+  Card ID from [List Payment Cards](/api-reference/payments/list-payment-cards).
+</ParamField>
+
+<Warning>
+  **Critical Security:** Card details are highly sensitive. Never display full card numbers to users. Never log card details. Always call [Log Card Transaction](/api-reference/payments/log-card-transaction) after every purchase.
+</Warning>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/payments/cards/card_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="cardId" type="string">Card ID.</ResponseField>
+<ResponseField name="name" type="string">Card name.</ResponseField>
+<ResponseField name="provider" type="string">`stripe_issuing` or `reloadly`.</ResponseField>
+<ResponseField name="number" type="string">Full card number.</ResponseField>
+<ResponseField name="cvc" type="string">CVV code.</ResponseField>
+<ResponseField name="expMonth" type="number">Expiry month.</ResponseField>
+<ResponseField name="expYear" type="number">Expiry year.</ResponseField>
+<ResponseField name="last4" type="string">Last 4 digits.</ResponseField>
+<ResponseField name="brand" type="string">Card brand (Visa, etc.).</ResponseField>
+<ResponseField name="cardholderName" type="string">Name on card.</ResponseField>
+<ResponseField name="billingAddress" type="object">`line1`, `city`, `state`, `postalCode`, `country`.</ResponseField>
+<ResponseField name="spendingLimitCents" type="number">Total limit in cents.</ResponseField>
+<ResponseField name="spentCents" type="number">Amount spent.</ResponseField>
+<ResponseField name="remainingCents" type="number">Remaining balance.</ResponseField>
+
+```json Example Response
+{
+  "cardId": "card_abc123",
+  "name": "Marketing Budget",
+  "provider": "stripe_issuing",
+  "number": "4242424242424242",
+  "cvc": "123",
+  "expMonth": 12,
+  "expYear": 2027,
+  "last4": "4242",
+  "brand": "Visa",
+  "cardholderName": "Acme Corp Agent",
+  "billingAddress": {
+    "line1": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "postalCode": "94105",
+    "country": "US"
+  },
+  "spendingLimitCents": 50000,
+  "spentCents": 12500,
+  "remainingCents": 37500
+}
+```

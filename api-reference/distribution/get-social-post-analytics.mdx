@@ -1,0 +1,39 @@
+---
+title: "Get Social Post Analytics"
+description: "Get engagement metrics for a published social post."
+api: "GET /v1/social/posts/:postId/analytics"
+---
+
+<ParamField path="postId" type="string" required>
+  Social post ID.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/social/posts/sp_abc123/analytics \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="analytics" type="object | null">
+  Platform-specific metrics (impressions, likes, shares, comments, views). Returns `null` for very recent posts where data hasn't been collected yet.
+</ResponseField>
+
+<ResponseField name="source" type="string">
+  Data source identifier.
+</ResponseField>
+
+```json Example Response
+{
+  "analytics": {
+    "impressions": 1250,
+    "likes": 48,
+    "shares": 12,
+    "comments": 5,
+    "views": 980
+  },
+  "source": "bundle.social"
+}
+```
+
+Analytics become available after the post is published and data is collected by the platform. May return `null` for very recent posts.

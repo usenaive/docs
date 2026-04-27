@@ -1,0 +1,30 @@
+---
+title: "Disconnect Domain from App"
+description: "Disconnect a domain from its connected app."
+api: "POST /v1/domains/:domainId/disconnect-app"
+---
+
+<ParamField path="domainId" type="string" required>
+  Domain ID.
+</ParamField>
+
+<ParamField body="app_id" type="string">
+  App ID to disconnect from.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/disconnect-app \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

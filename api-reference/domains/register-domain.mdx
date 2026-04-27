@@ -1,0 +1,38 @@
+---
+title: "Register Domain"
+description: "Register a custom domain for email and app hosting."
+api: "POST /v1/domains/register"
+---
+
+<ParamField body="domain" type="string" required>
+  Domain name to register (e.g., `acme.com`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/domains/register \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"domain": "acme.com"}'
+```
+</CodeGroup>
+
+<ResponseField name="domain" type="object">
+  Domain object with `id`, `domain`, `status`, and `dnsRecords`.
+</ResponseField>
+
+```json Example Response
+{
+  "domain": {
+    "id": "dom_abc123",
+    "domain": "acme.com",
+    "status": "pending_verification",
+    "dnsRecords": [
+      {"type": "MX", "name": "acme.com", "value": "feedback-smtp.us-east-1.amazonses.com", "priority": 10},
+      {"type": "TXT", "name": "acme.com", "value": "v=spf1 include:amazonses.com ~all"}
+    ]
+  }
+}
+```
+
+After registration, configure the DNS records at your domain registrar. Use [Check Domain DNS](/api-reference/domains/check-domain-dns) to verify propagation.

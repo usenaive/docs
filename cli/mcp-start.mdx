@@ -1,0 +1,116 @@
+---
+title: "naive mcp start"
+description: "Start the MCP server process in stdio mode for use by agent runtimes."
+icon: "play"
+sidebarTitle: "naive mcp start"
+---
+
+```bash
+naive mcp start
+```
+
+Starts the Naive MCP server in **stdio mode**. This command is designed to be called by agent runtimes (Claude Desktop, Cursor) — you typically don't run it manually.
+
+## How It Works
+
+When the server starts, it:
+
+1. Reads the `NAIVE_API_KEY` environment variable
+2. Loads all 54 tool definitions from bundled YAML files
+3. Registers 8 core tools and 4 meta-tools in the MCP context
+4. Builds the search index for `naive_search`
+5. Begins listening for MCP messages on stdin/stdout
+
+```text
+Naive MCP server started — 8 core tools registered, 54 total tools available
+```
+
+<Note>
+  The startup message is written to **stderr**, not stdout. The stdout stream is reserved for MCP protocol messages. This is standard behavior for MCP servers using stdio transport.
+</Note>
+
+## Requirements
+
+<ParamField header="NAIVE_API_KEY" type="string" required>
+  Your Naive API key. The server exits immediately if this is not set.
+</ParamField>
+
+<ParamField header="NAIVE_API_URL" type="string">
+  API base URL. Defaults to `https://api.usenaive.ai`.
+</ParamField>
+
+## How Agent Runtimes Launch It
+
+When you run `naive init`, the setup wizard writes MCP config that tells your agent runtime how to launch the server. The runtime spawns `naive mcp start` as a child process with the API key passed via environment variable.
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Config location: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+
+    ```json
+    {
+      "mcpServers": {
+        "naive": {
+          "command": "naive",
+          "args": ["mcp", "start"],
+          "env": {
+            "NAIVE_API_KEY": "nv_sk_..."
+          }
+        }
+      }
+    }
+    ```
+
+    Claude Desktop reads this config on startup, launches the process, and communicates with it over stdio using the MCP protocol.
+  </Tab>
+  <Tab title="Cursor">
+    Config location: `~/.cursor/mcp.json`
+
+    ```json
+    {
+      "mcpServers": {
+        "naive": {
+          "command": "naive",
+          "args": ["mcp", "start"],
+          "env": {
+            "NAIVE_API_KEY": "nv_sk_..."
+          }
+        }
+      }
+    }
+    ```
+
+    Cursor reads the MCP config and launches the server when a conversation begins that may need tool access.
+  </Tab>
+</Tabs>
+
+After writing the config, **restart your agent runtime** to pick up the new MCP server. Both Claude Desktop and Cursor require a restart to detect config changes.
+
+## Manual Usage
+
+While the server is typically launched automatically, you can run it manually for testing or debugging:
+
+<CodeGroup>
+```bash With environment variable
+NAIVE_API_KEY=nv_sk_... naive mcp start
+```
+
+```bash From config file
+# If you've run naive init, the key is in ~/.naive/config.json
+# but naive mcp start reads ONLY from the environment variable
+NAIVE_API_KEY=nv_sk_... naive mcp start
+```
+</CodeGroup>
+
+<Warning>
+  `naive mcp start` reads the API key **exclusively from the `NAIVE_API_KEY` environment variable**, not from `~/.naive/config.json`. This is by design — agent runtimes pass the key via the `env` field in MCP config, which sets the environment variable for the spawned process.
+</Warning>
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| `NAIVE_API_KEY is required` | Set the `NAIVE_API_KEY` environment variable before starting |
+| Server starts but agent can't see tools | Restart your agent runtime to reload MCP config |
+| `naive: command not found` | Install the SDK globally: `npm install -g @usenaive/sdk` |
+| Tools return authentication errors | Verify your key with `naive status` — it may be expired or revoked |

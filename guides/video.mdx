@@ -1,0 +1,224 @@
+---
+title: Video Creation
+description: "Create AI avatar videos with HeyGen and extract short-form clips from YouTube with Submagic."
+icon: "video"
+---
+
+Naive provides two video creation workflows: **HeyGen** for AI avatar videos where a digital presenter speaks your script, and **Submagic** for extracting viral-ready clips from existing YouTube content.
+
+## HeyGen — AI Avatar Videos
+
+HeyGen creates videos with AI-generated avatars that speak your text with realistic lip-sync and natural expressions.
+
+### Workflow
+
+<Steps>
+  <Step title="Browse avatar styles">
+    ```bash
+    curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "styles": [
+        { "id": "style_abc", "name": "Professional Presenter", "tag": "business", "preview": "https://..." },
+        { "id": "style_def", "name": "Casual Speaker", "tag": "casual", "preview": "https://..." }
+      ]
+    }
+    ```
+
+    Filter by tags like `business`, `casual`, or omit for all styles.
+  </Step>
+
+  <Step title="Create the video">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/heygen/create \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "prompt": "Welcome to Acme Corp! In this video, I will walk you through our three core products and show you how they can transform your workflow."
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "sessionId": "sess_abc123",
+      "status": "pending",
+      "callbackId": "cb_xyz"
+    }
+    ```
+
+    Video generation is asynchronous — it takes a few minutes.
+  </Step>
+
+  <Step title="Poll for completion">
+    ```bash
+    curl https://api.usenaive.ai/v1/heygen/session/sess_abc123 \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "sessionId": "sess_abc123",
+      "status": "processing",
+      "progress": 45,
+      "title": "Acme Corp Welcome Video"
+    }
+    ```
+
+    Poll every 15-30 seconds until `status` is `completed`. The `progress` field shows percentage.
+  </Step>
+
+  <Step title="Iterate with follow-up messages (optional)">
+    Send additional instructions to refine the video while the session is active:
+
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/heygen/session/sess_abc123 \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{ "message": "Add a call-to-action at the end: Visit acme.com to get started" }'
+    ```
+  </Step>
+
+  <Step title="Get the final video">
+    Once the session status shows `completed` with a `videoId`:
+
+    ```bash
+    curl https://api.usenaive.ai/v1/heygen/video/vid_abc123 \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "status": "completed",
+      "videoUrl": "https://cdn.heygen.com/video/abc123.mp4",
+      "duration": 45,
+      "thumbnailUrl": "https://cdn.heygen.com/thumb/abc123.jpg"
+    }
+    ```
+
+    Use `videoUrl` to distribute the video — post it to social media, embed it on your site, or download it.
+  </Step>
+</Steps>
+
+### HeyGen Tools Reference
+
+| Tool | Method | Description |
+|------|--------|-------------|
+| `list_heygen_styles` | GET | Browse available avatar styles |
+| `create_heygen_video` | POST | Create a new video from a text prompt |
+| `get_heygen_session` | GET | Poll session status and progress |
+| `send_heygen_message` | POST | Send follow-up instructions to an active session |
+| `get_heygen_video` | GET | Get the final video URL (credits billed on first retrieval) |
+
+### Cost
+
+Each HeyGen video costs approximately **5-10 credits**. Credits are billed when you first retrieve the final video with `get_heygen_video`.
+
+### Error Recovery
+
+| Error | Recovery |
+|-------|----------|
+| `insufficient_credits` | Top up credits at the developer portal |
+| `session_not_found` | Session doesn't exist or has already completed — start a new one |
+
+## Submagic — YouTube Clip Extraction
+
+Submagic takes a YouTube video URL and generates short-form clips optimized for social media — with auto-generated captions, smart cropping, and engaging formatting.
+
+### Workflow
+
+<Steps>
+  <Step title="Create clips from a YouTube URL">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/submagic/clips \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{ "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }'
+    ```
+
+    Response:
+    ```json
+    {
+      "ok": true,
+      "projectId": "proj_abc123"
+    }
+    ```
+  </Step>
+
+  <Step title="Poll for completion">
+    ```bash
+    curl https://api.usenaive.ai/v1/submagic/status/proj_abc123 \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response when complete:
+    ```json
+    {
+      "status": "completed",
+      "clips": [
+        { "id": "clip_1", "title": "Key Insight", "duration": 30, "url": "https://..." },
+        { "id": "clip_2", "title": "Best Moment", "duration": 45, "url": "https://..." }
+      ]
+    }
+    ```
+  </Step>
+
+  <Step title="Edit clips (optional)">
+    Trim, adjust captions, or modify formatting:
+
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/submagic/edit \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{ "clip_id": "clip_1", "trim_start": 5, "trim_end": 25 }'
+    ```
+  </Step>
+
+  <Step title="Distribute">
+    Use the clip URLs to post directly to social media:
+
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/social/posts \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "content": "The key insight from our latest episode",
+        "platforms": ["TIKTOK", "INSTAGRAM", "YOUTUBE"],
+        "media_urls": ["https://cdn.submagic.com/clip_1.mp4"],
+        "youtube_type": "SHORT"
+      }'
+    ```
+  </Step>
+</Steps>
+
+### Submagic Tools Reference
+
+| Tool | Method | Description |
+|------|--------|-------------|
+| `create_magic_clips` | POST | Generate clips from a YouTube URL |
+| `get_submagic_status` | GET | Check clip generation progress |
+| `edit_submagic_clip` | POST | Edit a generated clip |
+
+## Choosing Between HeyGen and Submagic
+
+| | HeyGen | Submagic |
+|---|--------|---------|
+| **Input** | Text script | YouTube URL |
+| **Output** | AI avatar video | Short-form clips |
+| **Best for** | Product demos, announcements, tutorials | Repurposing long-form content |
+| **Duration** | Custom (based on script length) | Auto-generated clips (15-60s) |
+| **Cost** | ~5-10 credits | Per-project cost |
+
+<Tip>
+Combine both: create a long-form HeyGen video, upload it to YouTube, then use Submagic to generate short clips for TikTok and Instagram Reels.
+</Tip>

@@ -1,0 +1,51 @@
+---
+title: "Get HeyGen Session"
+description: "Check HeyGen video session status and progress."
+api: "GET /v1/heygen/session/:sessionId"
+---
+
+<ParamField path="sessionId" type="string" required>
+  Session ID from [Create HeyGen Video](/api-reference/creation/create-heygen-video).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="sessionId" type="string">
+  Session ID.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  `pending`, `processing`, `completed`, or `failed`.
+</ResponseField>
+
+<ResponseField name="progress" type="number">
+  Progress percentage (0–100).
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Generated video title.
+</ResponseField>
+
+<ResponseField name="videoId" type="string">
+  Video ID — available when status is `completed`. Use with [Get HeyGen Video](/api-reference/creation/get-heygen-video).
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "sessionId": "hs_abc123",
+  "status": "completed",
+  "progress": 100,
+  "title": "Welcome to Acme Corp",
+  "videoId": "hv_def456"
+}
+```

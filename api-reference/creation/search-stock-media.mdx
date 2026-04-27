@@ -1,0 +1,56 @@
+---
+title: "Search Stock Media"
+description: "Search Pexels for free stock videos and photos."
+api: "GET /v1/stock-media/search"
+---
+
+<ParamField query="query" type="string" required>
+  Search keywords.
+</ParamField>
+
+<ParamField query="type" type="string">
+  `video` or `photo`. Default `video`.
+</ParamField>
+
+<ParamField query="orientation" type="string">
+  `landscape`, `portrait`, or `square`.
+</ParamField>
+
+<ParamField query="per_page" type="number">
+  Number of results. Range: 1–10. Default `3`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/stock-media/search?query=office+teamwork&type=video&per_page=3" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="results" type="array">
+  Media results. Each contains `id`, `url`, `thumbnail`, `alt`, `duration`, `width`, `height`, and `photographer`.
+</ResponseField>
+
+<ResponseField name="total" type="number">
+  Total matching results available.
+</ResponseField>
+
+```json Example Response
+{
+  "results": [
+    {
+      "id": "px_123",
+      "url": "https://videos.pexels.com/video/123.mp4",
+      "thumbnail": "https://images.pexels.com/video/123/thumb.jpg",
+      "alt": "Team collaborating in modern office",
+      "duration": 15,
+      "width": 1920,
+      "height": 1080,
+      "photographer": "John Doe"
+    }
+  ],
+  "total": 42
+}
+```
+
+URLs are direct HTTPS links — use them in social posts or HeyGen video prompts. Credit: Pexels.

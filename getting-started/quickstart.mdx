@@ -1,0 +1,175 @@
+---
+title: Quickstart
+description: "Get your AI agent connected to Naive in under 5 minutes."
+icon: "bolt"
+---
+
+<Steps>
+  <Step title="Get your API key">
+    Sign up at [usenaive.ai/developers](https://usenaive.ai/developers) and create an API key.
+
+    Your key will look like `nv_sk_...` — it's bound to a specific agent and company. All resources (email addresses, social accounts, payment cards) are scoped to this key automatically.
+
+    <Warning>
+    Copy your API key immediately. It's only shown once — after that, only the key hash is stored.
+    </Warning>
+  </Step>
+
+  <Step title="Install the SDK">
+    ```bash
+    npm install -g @usenaive/sdk
+    ```
+
+    This installs two binaries:
+    - **`naive`** — CLI for setup, configuration, and tool exploration
+    - **`naive-mcp`** — MCP server that connects your agent to Naive's primitives
+  </Step>
+
+  <Step title="Initialize">
+    ```bash
+    naive init
+    ```
+
+    The init wizard will:
+    1. Ask for your API key
+    2. Detect your agent runtime (Claude Desktop, Cursor, or custom)
+    3. Write MCP configuration to the correct location
+    4. Save your config to `~/.naive/config.json`
+
+    After init, **restart your agent runtime** to pick up the new MCP server.
+  </Step>
+</Steps>
+
+## Verify the Connection
+
+Once your runtime restarts, check that everything is working:
+
+```bash
+naive status
+```
+
+You should see your agent name, company, and a list of available primitives.
+
+Or ask your agent directly: *"Check my Naive connection status"* — it will call the status endpoint and confirm.
+
+## Your First API Call
+
+<Tabs>
+  <Tab title="Via your agent">
+    Just tell your agent what to do in natural language:
+
+    > "Send an email to hello@example.com introducing our product"
+
+    The agent will call `send_email` through the MCP connection, providing the required `to`, `subject`, `body`, and `reason` parameters.
+  </Tab>
+
+  <Tab title="Via curl">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/email/send \
+      -H "Authorization: Bearer nv_sk_your_key" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "to": "hello@example.com",
+        "subject": "Hello from Naive",
+        "body": "This is my first email sent through the Naive API.",
+        "reason": "Testing API connection"
+      }'
+    ```
+
+    Response:
+    ```json
+    {
+      "sent": true,
+      "emailId": "em_abc123"
+    }
+    ```
+  </Tab>
+
+  <Tab title="Via JavaScript">
+    ```javascript
+    const response = await fetch("https://api.usenaive.ai/v1/email/send", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: "hello@example.com",
+        subject: "Hello from Naive",
+        body: "This is my first email sent through the Naive API.",
+        reason: "Testing API connection",
+      }),
+    });
+
+    const data = await response.json();
+    console.log(data.emailId);
+    ```
+  </Tab>
+</Tabs>
+
+## MCP Configuration Output
+
+After running `naive init`, your MCP config will look like this:
+
+<CodeGroup>
+```json Claude Desktop
+{
+  "mcpServers": {
+    "naive": {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_..."
+      }
+    }
+  }
+}
+```
+
+```json Cursor
+{
+  "mcpServers": {
+    "naive": {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_..."
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+<Tip>
+The MCP server communicates over **stdio** — the agent runtime launches it as a subprocess. No ports, no HTTP server, no configuration beyond the API key.
+</Tip>
+
+## What's Available
+
+Once connected, your agent has access to 54 tools. Here are a few things to try:
+
+| Try this | What happens |
+|----------|-------------|
+| "Search the web for AI agent frameworks" | Calls `web_search` via Tavily |
+| "Generate a logo for my company" | Calls `generate_images` via Gemini |
+| "Post to Twitter about our launch" | Calls `create_social_post` (after social setup) |
+| "Check what integrations are available" | Calls `check_integrations` to list CMS + Composio |
+| "Research the competitive landscape for AI tools" | Calls `research` for multi-step synthesis with citations |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key" href="/getting-started/authentication">
+    API key format, rate limits, and error handling
+  </Card>
+  <Card title="Installation" icon="download" href="/getting-started/installation">
+    Runtime-specific setup for Claude, Cursor, and custom agents
+  </Card>
+  <Card title="Email Guide" icon="envelope" href="/guides/email">
+    Send your first email and set up custom domains
+  </Card>
+  <Card title="Social Media Guide" icon="share-nodes" href="/guides/social-media">
+    Connect accounts and start posting
+  </Card>
+</CardGroup>

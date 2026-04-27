@@ -1,0 +1,41 @@
+---
+title: "Get Tool Detail"
+description: "Get the full definition and parameter schema for a specific tool. No authentication required."
+api: "GET /v1/tools/:toolName"
+---
+
+<Note>This endpoint is **unauthenticated** — no API key required.</Note>
+
+<ParamField path="toolName" type="string" required>
+  Tool name (e.g., `send_email`, `create_social_post`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/tools/send_email
+```
+</CodeGroup>
+
+```json Example Response
+{
+  "name": "send_email",
+  "category": "communication",
+  "description": "Send an outbound email from the agent's provisioned email address.",
+  "core": true,
+  "api": {
+    "method": "POST",
+    "path": "/v1/email/send"
+  },
+  "parameters": {
+    "to": {"type": "string", "required": true, "description": "Recipient email address"},
+    "subject": {"type": "string", "required": true, "description": "Email subject line"},
+    "body": {"type": "string", "required": true, "description": "Plain text email body"},
+    "reason": {"type": "string", "required": true, "description": "Why you are sending (audit trail)"}
+  },
+  "response": {
+    "sent": {"type": "boolean"},
+    "emailId": {"type": "string"}
+  },
+  "errors": ["no_email_address", "rate_limited", "blocked_sensitive"]
+}
+```

@@ -1,0 +1,42 @@
+---
+title: "Get Social Media Status"
+description: "Check whether social media is activated and list connected accounts."
+api: "GET /v1/social/status"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/social/status \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="activated" type="boolean">
+  Whether the social media module is active.
+</ResponseField>
+
+<ResponseField name="bundleTeamId" type="string">
+  bundle.social team ID (if activated).
+</ResponseField>
+
+<ResponseField name="accounts" type="array">
+  Connected accounts. Each contains `id`, `type`, `username`, `displayName`, and `label`.
+</ResponseField>
+
+```json Example Response
+{
+  "activated": true,
+  "bundleTeamId": "bt_abc123",
+  "accounts": [
+    {
+      "id": "acc_1",
+      "type": "TWITTER",
+      "username": "acme_corp",
+      "displayName": "Acme Corp",
+      "label": "Main Account"
+    }
+  ]
+}
+```

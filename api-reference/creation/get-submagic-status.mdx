@@ -1,0 +1,44 @@
+---
+title: "Get Submagic Status"
+description: "Check Submagic clip generation status."
+api: "GET /v1/submagic/status/:projectId"
+---
+
+<ParamField path="projectId" type="string" required>
+  Project ID from [Create Magic Clips](/api-reference/creation/create-magic-clips).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/submagic/status/sm_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="status" type="string">
+  `pending`, `processing`, `completed`, or `failed`.
+</ResponseField>
+
+<ResponseField name="clips" type="array">
+  Generated clip objects (available when `completed`).
+</ResponseField>
+
+<ResponseField name="error" type="string">
+  Error message (when `failed`).
+</ResponseField>
+
+```json Example Response
+{
+  "status": "completed",
+  "clips": [
+    {
+      "id": "clip_1",
+      "url": "https://cdn.submagic.co/clips/clip_1.mp4",
+      "duration": 30,
+      "title": "Best Moment - 0:45"
+    }
+  ]
+}
+```
+
+Use [Edit Submagic Clip](/api-reference/creation/edit-submagic-clip) to modify generated clips.

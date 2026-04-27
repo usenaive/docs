@@ -1,0 +1,174 @@
+---
+title: Authentication
+description: "API key format, Bearer token authentication, rate limits, and error handling."
+icon: "key"
+---
+
+## API Keys
+
+Every request to the Naive API requires a Bearer token in the `Authorization` header. API keys are created at [usenaive.ai/developers](https://usenaive.ai/developers).
+
+### Key Format
+
+```
+nv_sk_a1b2c3d4e5f6...
+```
+
+All keys start with `nv_sk_` followed by a random string. Keys are shown only once at creation — Naive stores a **SHA-256 hash** of the key, never the raw value.
+
+### Key Scoping
+
+Each API key is bound to a specific **agent** and **company**. When you authenticate:
+
+1. The API hashes your key with SHA-256
+2. Looks up the hash in the `agent_api_keys` table
+3. Resolves the `agentId` and `companyId`
+4. All resources are automatically scoped — email addresses, social accounts, payment cards, and credentials belong to that agent's company
+
+You never need to pass `agent_id` in your requests. It's resolved from your key.
+
+## Making Authenticated Requests
+
+Pass your API key as a Bearer token:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/email/send \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "user@example.com",
+    "subject": "Hello",
+    "body": "Test email",
+    "reason": "testing"
+  }'
+```
+
+### MCP Server Authentication
+
+When using the MCP server, the API key is set via environment variable:
+
+```bash
+NAIVE_API_KEY=nv_sk_your_key naive mcp start
+```
+
+Or configured in your runtime's MCP config (written automatically by `naive init`):
+
+```json
+{
+  "mcpServers": {
+    "naive": {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_..."
+      }
+    }
+  }
+}
+```
+
+The CLI can also read the key from `~/.naive/config.json`, written during `naive init`.
+
+## Rate Limiting
+
+API requests are rate-limited per key:
+
+| Limit | Value |
+|-------|-------|
+| Default rate | **60 requests/minute** per key |
+| Email sends | Monthly caps per company |
+| Image generation | Per-request credit cost |
+| Video creation | ~5-10 credits per video |
+
+Rate limit headers are included in every response:
+
+```
+X-RateLimit-Limit: 60
+X-RateLimit-Remaining: 58
+X-RateLimit-Reset: 1714250400
+```
+
+## Error Responses
+
+### 401 Unauthorized
+
+Returned when the API key is missing, invalid, or revoked.
+
+```json
+{
+  "error": "unauthorized",
+  "message": "Invalid or missing API key"
+}
+```
+
+**Common causes:**
+- Missing `Authorization` header
+- Key doesn't start with `nv_sk_`
+- Key has been revoked via `naive keys revoke`
+- Typo in the key value
+
+### 429 Too Many Requests
+
+Returned when you've exceeded the rate limit.
+
+```json
+{
+  "error": "rate_limited",
+  "message": "Rate limit exceeded. Try again in 45 seconds.",
+  "retryAfter": 45
+}
+```
+
+**Handling:** Wait for the `retryAfter` duration, then retry. Implement exponential backoff for production use.
+
+### 403 Forbidden
+
+Returned when the authenticated agent doesn't have permission for the requested operation.
+
+```json
+{
+  "error": "forbidden",
+  "message": "This operation requires an active social media integration"
+}
+```
+
+## Key Management
+
+Manage your API keys via the CLI:
+
+```bash
+naive keys list             # List all keys (shows last 4 chars, creation date, last used)
+naive keys create "prod"    # Create a new key with a label
+naive keys revoke key_id    # Revoke a key (immediate, irreversible)
+```
+
+<Warning>
+Revoking a key takes effect immediately. Any MCP servers or API clients using that key will start receiving 401 errors. Make sure to update your configuration before revoking an active key.
+</Warning>
+
+## Unauthenticated Endpoints
+
+Two endpoints don't require authentication — they serve tool documentation:
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/v1/tools` | Search tool definitions (`?query=email`) |
+| GET | `/v1/tools/:name` | Get full tool definition and schema |
+| GET | `/health` | Health check |
+
+## Security Best Practices
+
+<Steps>
+  <Step title="Never commit keys to source control">
+    Use environment variables or `~/.naive/config.json` (written by `naive init`). Add `.naive/` to your `.gitignore`.
+  </Step>
+  <Step title="Use separate keys per environment">
+    Create distinct keys for development, staging, and production. Label them clearly.
+  </Step>
+  <Step title="Rotate keys periodically">
+    Create a new key, update your configuration, verify it works, then revoke the old key.
+  </Step>
+  <Step title="Monitor key usage">
+    The `last_used_at` timestamp is updated on every request. Check `naive keys list` to spot unused keys.
+  </Step>
+</Steps>

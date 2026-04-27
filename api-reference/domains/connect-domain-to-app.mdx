@@ -1,0 +1,32 @@
+---
+title: "Connect Domain to App"
+description: "Connect a verified domain to an app for production hosting."
+api: "POST /v1/domains/:domainId/connect-app"
+---
+
+<ParamField path="domainId" type="string" required>
+  Domain ID.
+</ParamField>
+
+<ParamField body="app_id" type="string">
+  App ID to connect to. Defaults to the current app.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/connect-app \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+<Note>Domain must be DNS-verified before connecting. Check with [Check Domain DNS](/api-reference/domains/check-domain-dns).</Note>

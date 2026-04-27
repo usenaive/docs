@@ -1,0 +1,58 @@
+---
+title: "Create Connection"
+description: "Create a new browser integration connection with login credentials."
+api: "POST /v1/connections"
+---
+
+<ParamField body="platform_name" type="string" required>
+  Platform name (e.g., `"GitHub"`, `"LinkedIn"`).
+</ParamField>
+
+<ParamField body="login_url" type="string" required>
+  Login page URL.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the integration.
+</ParamField>
+
+<ParamField body="username" type="string">
+  Login username.
+</ParamField>
+
+<ParamField body="password" type="string">
+  Login password. Encrypted at rest.
+</ParamField>
+
+<ParamField body="has_2fa" type="boolean">
+  Whether 2FA is required for this account.
+</ParamField>
+
+<ParamField body="instructions" type="string">
+  Special login instructions for the agent.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/connections \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "platform_name": "GitHub",
+    "login_url": "https://github.com/login",
+    "username": "agent@acme.com",
+    "password": "secure_password",
+    "has_2fa": false
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Created connection ID.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "conn_abc123"
+}
+```

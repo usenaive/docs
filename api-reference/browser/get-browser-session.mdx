@@ -1,0 +1,29 @@
+---
+title: "Get Browser Session"
+description: "Get the current browser session status."
+api: "GET /v1/browser"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/browser \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="active" type="boolean">
+  Whether a session is currently running.
+</ResponseField>
+
+<ResponseField name="cdpUrl" type="string">
+  CDP WebSocket URL (if active).
+</ResponseField>
+
+```json Example Response
+{
+  "active": true,
+  "cdpUrl": "wss://browser.usenaive.ai/devtools/browser/abc123"
+}
+```

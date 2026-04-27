@@ -1,0 +1,36 @@
+---
+title: "Activate Social Media"
+description: "Activate social media integration for the company."
+api: "POST /v1/social/activate"
+---
+
+No parameters required. This endpoint is idempotent — safe to call multiple times.
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/social/activate \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="bundleTeamId" type="string">
+  Created or existing bundle.social team ID.
+</ResponseField>
+
+<ResponseField name="bundleTeamName" type="string">
+  Team name.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "bundleTeamId": "bt_abc123",
+  "bundleTeamName": "Acme Corp"
+}
+```
+
+After activation, the user must connect their social accounts. Use [Get Social Portal Link](/api-reference/distribution/get-social-portal-link) to generate a URL for them.

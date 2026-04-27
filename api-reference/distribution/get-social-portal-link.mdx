@@ -1,0 +1,37 @@
+---
+title: "Get Social Portal Link"
+description: "Generate a portal URL where the user can connect their social media accounts."
+api: "POST /v1/social/portal-link"
+---
+
+<ParamField body="redirect_url" type="string" required>
+  URL to redirect the user to after they finish connecting accounts.
+</ParamField>
+
+<ParamField body="platforms" type="string[]">
+  Optional list of platforms to show in the portal. Omit to show all available platforms.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/social/portal-link \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"redirect_url": "https://myapp.com/settings"}'
+```
+</CodeGroup>
+
+<ResponseField name="url" type="string">
+  Portal URL for the user to visit and connect their social accounts.
+</ResponseField>
+
+```json Example Response
+{
+  "url": "https://portal.bundle.social/connect/abc123"
+}
+```
+
+Share this URL with the user. After they connect accounts, verify with [Get Social Media Status](/api-reference/distribution/get-social-media-status).
+
+**Error codes:**
+- `not_activated` — Call [Activate Social Media](/api-reference/distribution/activate-social-media) first.

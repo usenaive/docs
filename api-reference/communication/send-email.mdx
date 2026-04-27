@@ -1,0 +1,61 @@
+---
+title: "Send Email"
+description: "Send an outbound email from the agent's provisioned email address."
+api: "POST /v1/email/send"
+---
+
+<ParamField body="to" type="string" required>
+  Recipient email address.
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  Email subject line.
+</ParamField>
+
+<ParamField body="body" type="string" required>
+  Plain text email body.
+</ParamField>
+
+<ParamField body="reason" type="string" required>
+  Why you are sending this email. Used for audit trail.
+</ParamField>
+
+<Warning>
+  Emails containing sensitive data (API keys, passwords, JWTs) are automatically blocked. Remove sensitive content and retry.
+</Warning>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/send \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "partner@example.com",
+    "subject": "Partnership Inquiry",
+    "body": "Hi, I would love to discuss a potential partnership.",
+    "reason": "Outreach to potential partner from lead list"
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="sent" type="boolean">
+  Whether the email was delivered successfully.
+</ResponseField>
+
+<ResponseField name="emailId" type="string">
+  Resend email ID. `null` on failure.
+</ResponseField>
+
+```json Example Response
+{
+  "sent": true,
+  "emailId": "em_abc123"
+}
+```
+
+The "from" address is automatically set to the agent's provisioned address (e.g., `writer@yourcompany.usenaive.ai`). A domain must be registered via [Register Domain](/api-reference/domains/register-domain) before sending.
+
+**Error codes:**
+- `no_email_address` — No email configured. Register a domain first.
+- `rate_limited` — Daily send limit reached.
+- `blocked_sensitive` — Body contains sensitive data.

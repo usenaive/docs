@@ -1,0 +1,183 @@
+---
+title: Installation
+description: "Install the Naive SDK and configure it for Claude Desktop, Cursor, or any MCP-compatible runtime."
+icon: "download"
+---
+
+## Install the SDK
+
+```bash
+npm install -g @usenaive/sdk
+```
+
+**Requires:** Node.js 22+
+
+This installs two binaries:
+
+| Binary | Purpose |
+|--------|---------|
+| `naive` | CLI for setup, tool discovery, key management |
+| `naive-mcp` | MCP server that exposes Naive primitives to your agent |
+
+Verify the installation:
+
+```bash
+naive --version
+```
+
+## Configure Your Runtime
+
+Run the interactive setup:
+
+```bash
+naive init
+```
+
+This detects your agent runtime and writes the MCP configuration automatically. You can also configure manually for each runtime:
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    Config location: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
+
+    ```json
+    {
+      "mcpServers": {
+        "naive": {
+          "command": "naive",
+          "args": ["mcp", "start"],
+          "env": {
+            "NAIVE_API_KEY": "nv_sk_your_key"
+          }
+        }
+      }
+    }
+    ```
+
+    After saving, **restart Claude Desktop** to load the MCP server.
+  </Tab>
+
+  <Tab title="Cursor">
+    Config location: `.cursor/mcp.json` (project root) or `~/.cursor/mcp.json` (global)
+
+    ```json
+    {
+      "mcpServers": {
+        "naive": {
+          "command": "naive",
+          "args": ["mcp", "start"],
+          "env": {
+            "NAIVE_API_KEY": "nv_sk_your_key"
+          }
+        }
+      }
+    }
+    ```
+
+    Cursor picks up MCP config changes automatically — no restart needed in most cases.
+  </Tab>
+
+  <Tab title="Custom Runtime">
+    For any MCP-compatible runtime, launch the MCP server as a subprocess communicating over **stdio**:
+
+    ```bash
+    NAIVE_API_KEY=nv_sk_your_key naive mcp start
+    ```
+
+    The server speaks the [Model Context Protocol](https://modelcontextprotocol.io/) over stdin/stdout. Your runtime sends JSON-RPC tool calls, and the server returns results.
+
+    If your runtime uses a config file, the entry looks like:
+
+    ```json
+    {
+      "command": "naive",
+      "args": ["mcp", "start"],
+      "env": {
+        "NAIVE_API_KEY": "nv_sk_your_key"
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `NAIVE_API_KEY` | Yes (for MCP) | — | Your Naive API key (`nv_sk_...`) |
+| `NAIVE_API_URL` | No | `https://api.usenaive.ai` | API base URL (override for local development) |
+
+The CLI can also read the API key from `~/.naive/config.json`, which is written by `naive init`.
+
+## What Gets Registered
+
+When the MCP server starts, it registers **13 tools** in your agent's context:
+
+**10 Core Primitives** with full Zod schemas — your agent calls these directly:
+
+| Tool | Category |
+|------|----------|
+| `send_email` | Communication |
+| `list_inbox` | Communication |
+| `create_social_post` | Distribution |
+| `get_social_media_status` | Distribution |
+| `generate_images` | Creation |
+| `search_stock_media` | Creation |
+| `web_search` | Research |
+| `check_integrations` | Integrations |
+
+**3 Meta-Tools** for the remaining 44 tools:
+
+| Tool | Purpose |
+|------|---------|
+| `naive_search` | Search all tools by keyword or category |
+| `naive_tool_help` | Get full docs, schema, and examples for any tool |
+| `naive_execute` | Call any tool by name with runtime validation |
+
+<Info>
+This two-tier approach keeps the agent's context window lean. Core tools are always available. Extended tools are discovered on demand — the agent calls `naive_search` to find what it needs, `naive_tool_help` to learn the schema, then `naive_execute` to run it.
+</Info>
+
+## CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `naive init` | Interactive setup — API key, runtime detection, MCP config |
+| `naive mcp start` | Start the MCP server (called by your runtime, not manually) |
+| `naive status` | Connection status, agent info, available primitives |
+| `naive whoami` | Show agent identity |
+| `naive tools` | List all tools grouped by category |
+| `naive tools search <query>` | Search tools by keyword |
+| `naive tools help <name>` | Full documentation for a specific tool |
+| `naive keys list` | List API keys |
+| `naive keys create [name]` | Create a new API key |
+| `naive keys revoke <id>` | Revoke an API key |
+
+## Local Development
+
+If you're running a local instance of the Naive API:
+
+```bash
+# Point the SDK at your local API
+export NAIVE_API_URL=http://localhost:3100
+export NAIVE_API_KEY=nv_sk_your_local_key
+
+# Start the MCP server
+naive mcp start
+
+# Or use the CLI
+naive status
+```
+
+## Troubleshooting
+
+<Steps>
+  <Step title="MCP server not detected by your agent">
+    Verify the config file is in the correct location for your runtime. Restart the runtime after making changes. Check that `naive` is on your `PATH` by running `which naive`.
+  </Step>
+  <Step title="Authentication errors">
+    Run `naive status` to test your key. If it fails, verify `NAIVE_API_KEY` is set correctly. Create a new key with `naive keys create` if needed.
+  </Step>
+  <Step title="Tools not appearing">
+    The MCP server registers tools at startup. If tools are missing, check the server logs. Run `naive mcp start` manually to see any startup errors.
+  </Step>
+</Steps>

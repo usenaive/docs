@@ -1,0 +1,34 @@
+---
+title: "List Social Posts"
+description: "List recent social media posts with optional status filter."
+api: "GET /v1/social/posts"
+---
+
+<ParamField query="status" type="string">
+  Filter by status: `draft`, `scheduled`, `publishing`, `posted`, or `failed`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/social/posts?status=posted \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="posts" type="array">
+  List of post objects. Each contains `id`, `title`, `content`, `platforms`, `status`, `postedAt`, `scheduledAt`, and `createdAt`.
+</ResponseField>
+
+```json Example Response
+[
+  {
+    "id": "sp_abc123",
+    "title": "Launch Announcement",
+    "content": "Excited to announce our new product!",
+    "platforms": ["TWITTER", "LINKEDIN"],
+    "status": "posted",
+    "postedAt": "2026-04-27T12:00:00Z",
+    "createdAt": "2026-04-27T11:55:00Z"
+  }
+]
+```

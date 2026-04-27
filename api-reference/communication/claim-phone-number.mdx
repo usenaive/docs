@@ -1,0 +1,35 @@
+---
+title: "Claim Phone Number"
+description: "Provision and claim a phone number for the agent via Twilio."
+api: "POST /v1/phone/claim"
+---
+
+No parameters required. A phone number is automatically selected and assigned.
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/phone/claim \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="phoneNumber" type="object">
+  Provisioned phone number with `id`, `phoneNumber`, `friendlyName`, and `status`.
+</ResponseField>
+
+```json Example Response
+{
+  "phoneNumber": {
+    "id": "pn_abc123",
+    "phoneNumber": "+15551234567",
+    "friendlyName": "Agent Line",
+    "status": "active"
+  }
+}
+```
+
+This is a one-time operation per agent. If the agent already has a phone number, the existing one is returned. The number can receive SMS — check with [Get SMS Inbox](/api-reference/communication/get-sms-inbox).
+
+**Error codes:**
+- `already_claimed` — Agent already has a phone number.
+- `no_numbers_available` — No Twilio numbers available. Contact support.

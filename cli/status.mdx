@@ -1,0 +1,78 @@
+---
+title: "naive status"
+description: "Check connection health, agent identity, primitives availability, and credit balance."
+icon: "heart-pulse"
+sidebarTitle: "naive status"
+---
+
+```bash
+naive status
+```
+
+The `status` command verifies your connection to the Naive API and displays your agent's current state. Use it after `naive init` to confirm everything is working, or anytime you need to check your account.
+
+## Example Output
+
+```text
+  Naive SDK v0.1.0
+  API: https://api.usenaive.ai
+
+  Agent:   writer
+  Company: Acme Corp
+  Email:   writer@acme.usenaive.ai
+  Phone:   +1 (555) 123-4567
+
+  Primitives:
+    email: active
+    social: active
+    images: active
+    video: active
+    search: active
+    integrations: active
+    domains: active
+    payments: not configured
+    browser: not configured
+
+  Credits: 450
+  Rate limit: 12/1000 (resets 2026-05-01T00:00:00Z)
+```
+
+## What It Shows
+
+| Field | Description |
+|-------|-------------|
+| **SDK version** | The installed version of `@usenaive/sdk` |
+| **API** | The API base URL being used |
+| **Agent** | Your agent's shortname |
+| **Company** | The company the API key is scoped to |
+| **Email** | The agent's provisioned email address |
+| **Phone** | The agent's phone number (if provisioned) |
+| **Primitives** | Status of each capability module (`active` or `not configured`) |
+| **Credits** | Remaining credit balance for paid operations |
+| **Rate limit** | Current usage against the rate limit window |
+
+<Note>
+  If the API is unreachable or the key is invalid, the command prints an error and exits with code 1. This makes it useful in CI/CD scripts or health checks.
+</Note>
+
+---
+
+## naive whoami {#naive-whoami}
+
+```bash
+naive whoami
+```
+
+A lighter alternative that shows only the agent identity without primitives or rate limit details.
+
+### Example Output
+
+```text
+  Agent:   writer
+  Company: Acme Corp
+  Email:   writer@acme.usenaive.ai
+  Phone:   +1 (555) 123-4567
+  Plan:    pro
+```
+
+Both commands call `GET /v1/status` under the hood. Use `naive status` for full diagnostics and `naive whoami` for a quick identity check.

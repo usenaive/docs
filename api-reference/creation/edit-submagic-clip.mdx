@@ -1,0 +1,43 @@
+---
+title: "Edit Submagic Clip"
+description: "Edit a previously generated Submagic clip (trim, adjust captions, etc.)."
+api: "POST /v1/submagic/edit"
+---
+
+<ParamField body="clip_url" type="string" required>
+  URL of the clip to edit, from [Get Submagic Status](/api-reference/creation/get-submagic-status).
+</ParamField>
+
+<ParamField body="template_name" type="string">
+  New template to apply for styling and captions.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/submagic/edit \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "clip_url": "https://cdn.submagic.co/clips/clip_1.mp4",
+    "template_name": "neon-captions"
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="result" type="object">
+  Updated clip data with new URL and metadata.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "result": {
+    "url": "https://cdn.submagic.co/clips/clip_1_edited.mp4",
+    "template": "neon-captions"
+  }
+}
+```

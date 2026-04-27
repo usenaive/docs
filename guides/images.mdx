@@ -1,0 +1,171 @@
+---
+title: Image Generation
+description: "Generate AI images with Gemini and search free stock media with Pexels."
+icon: "image"
+---
+
+Naive provides two ways to get visual content: **AI image generation** powered by Gemini, and **stock media search** powered by Pexels.
+
+## Generating Images
+
+The `generate_images` tool creates images from text prompts using Gemini. It returns both a workspace file path and a public HTTPS URL for each image.
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/images/generate \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A minimalist illustration of an AI robot working at a desk, flat design, blue and white color scheme",
+    "count": 2,
+    "size": "1024x1024"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "images": [
+    { "path": "brand/generated/img_001.png", "url": "https://cdn.usenaive.ai/images/abc123.png" },
+    { "path": "brand/generated/img_002.png", "url": "https://cdn.usenaive.ai/images/def456.png" }
+  ]
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `prompt` | string | Yes | — | Image generation prompt |
+| `count` | number | No | 1 | Number of images to generate (1-4) |
+| `size` | string | No | `1024x1024` | Image dimensions |
+
+### Using Generated Images
+
+The `url` field returns a public HTTPS link. Use these URLs directly in:
+
+- **Social media posts** — pass as `media_urls` to `create_social_post`
+- **HeyGen videos** — reference in video creation prompts
+- **Email content** — embed in email body
+- **External services** — any system that accepts image URLs
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/social/posts \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Our new AI-powered dashboard is here!",
+    "platforms": ["INSTAGRAM", "LINKEDIN"],
+    "media_urls": ["https://cdn.usenaive.ai/images/abc123.png"]
+  }'
+```
+
+## Prompt Tips
+
+Good prompts produce dramatically better results. Here are patterns that work well:
+
+<Tabs>
+  <Tab title="Marketing Assets">
+    ```
+    A professional product mockup of a SaaS dashboard on a laptop screen,
+    clean UI with charts and metrics, soft gradient background in blue and purple,
+    photorealistic, high detail
+    ```
+  </Tab>
+  <Tab title="Social Media Graphics">
+    ```
+    Bold typographic social media card with the text "Launch Day" in large white
+    letters on a dark blue gradient background, minimalist design, 16:9 aspect ratio
+    ```
+  </Tab>
+  <Tab title="Illustrations">
+    ```
+    Flat vector illustration of a team collaborating around a whiteboard,
+    modern tech office setting, warm pastel colors, simple geometric shapes,
+    no text
+    ```
+  </Tab>
+  <Tab title="Icons & Logos">
+    ```
+    Minimal app icon for a note-taking app, single pencil glyph on solid
+    indigo background, rounded square shape, flat design, no text, white background
+    ```
+  </Tab>
+</Tabs>
+
+### Logo Generation Workflow
+
+For professional logo creation, generate multiple batches and iterate:
+
+```
+1. generate_images({
+     prompt: "Minimal logo mark for a fintech company called Apex,
+              abstract geometric shape suggesting growth and stability,
+              single color on white background, no text, vector style",
+     count: 4
+   })
+
+2. Review the 4 options with the user
+
+3. generate_images({
+     prompt: "Refined version of [selected concept]: make the angles
+              sharper, use navy blue (#1a365d), ensure it works at small
+              sizes, white background, no text",
+     count: 4
+   })
+```
+
+<Tip>
+For logos, always specify **"no text"** and **"white background"**. Text in AI-generated images is often garbled. Add text separately in a design tool.
+</Tip>
+
+## Stock Media Search
+
+Search Pexels for free stock photos and videos with `search_stock_media`.
+
+```bash
+curl "https://api.usenaive.ai/v1/stock-media/search?query=team%20meeting&type=photo&orientation=landscape&per_page=5" \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "results": [
+    {
+      "id": 3184339,
+      "url": "https://www.pexels.com/video/3184339",
+      "thumbnail": "https://images.pexels.com/videos/3184339/thumb.jpg",
+      "alt": "Team meeting in modern office",
+      "width": 1920,
+      "height": 1080,
+      "photographer": "Kampus Production"
+    }
+  ],
+  "total": 2847
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `query` | string | Yes | — | Search keywords |
+| `type` | string | No | `video` | `video` or `photo` |
+| `orientation` | string | No | — | `landscape`, `portrait`, or `square` |
+| `per_page` | number | No | 3 | Results per page (1-10) |
+
+<Info>
+Stock media URLs are direct HTTPS links from Pexels. They work in social posts, video creation, and anywhere you need free media. Credit: Pexels.
+</Info>
+
+## When to Use Each
+
+| Need | Tool | Why |
+|------|------|-----|
+| Custom branded visuals | `generate_images` | Unique content matching your brand |
+| Logo or icon concepts | `generate_images` | No stock option for custom brand marks |
+| Generic b-roll or backgrounds | `search_stock_media` | Fast, free, high quality |
+| Video backgrounds | `search_stock_media` | Professional footage, no generation wait |
+| Social media graphics | `generate_images` | Custom content stands out more |

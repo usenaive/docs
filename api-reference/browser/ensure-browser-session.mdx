@@ -1,0 +1,35 @@
+---
+title: "Ensure Browser Session"
+description: "Start or ensure a browser CDP session is running for the agent."
+api: "POST /v1/browser/ensure"
+---
+
+No parameters required. The agent is resolved from the API key.
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/browser/ensure \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="available" type="boolean">
+  Whether a browser session is available.
+</ResponseField>
+
+<ResponseField name="cdpUrl" type="string">
+  Chrome DevTools Protocol WebSocket URL (if available).
+</ResponseField>
+
+<ResponseField name="reason" type="string">
+  Why the session is not available (if not).
+</ResponseField>
+
+```json Example Response
+{
+  "available": true,
+  "cdpUrl": "wss://browser.usenaive.ai/devtools/browser/abc123"
+}
+```
+
+Connect to the `cdpUrl` with Playwright or Puppeteer for automated browsing. Use with [Get Connection Credentials](/api-reference/connections/get-connection-credentials) for authenticated browsing.

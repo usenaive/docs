@@ -1,0 +1,39 @@
+---
+title: "Read URL"
+description: "Fetch a URL and extract main text content with optional AI-powered focus."
+api: "POST /v1/url/read"
+---
+
+<ParamField body="url" type="string" required>
+  URL to fetch and extract content from.
+</ParamField>
+
+<ParamField body="focus" type="string">
+  What to focus on when extracting (e.g., `"pricing"`, `"installation steps"`). Uses Groq for intelligent extraction when provided.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/url/read \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/docs/pricing", "focus": "pricing tiers"}'
+```
+</CodeGroup>
+
+<ResponseField name="url" type="string">
+  Final URL after redirects.
+</ResponseField>
+
+<ResponseField name="content" type="string">
+  Extracted text content.
+</ResponseField>
+
+```json Example Response
+{
+  "url": "https://example.com/docs/pricing",
+  "content": "## Pricing\n\nFree: $0/mo - 100 requests\nPro: $29/mo - 10,000 requests..."
+}
+```
+
+<Note>Local/private URLs (`localhost`, `127.*`, `10.*`, etc.) are blocked for security.</Note>

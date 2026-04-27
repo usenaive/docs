@@ -1,0 +1,39 @@
+---
+title: "Upload Social Media"
+description: "Upload media from a public URL to the CDN for use in social posts."
+api: "POST /v1/social/upload"
+---
+
+<ParamField body="url" type="string" required>
+  Public URL of the media file (image or video) to upload.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/social/upload \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com/video.mp4"}'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="upload" type="object">
+  CDN URL and upload metadata.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "upload": {
+    "url": "https://cdn.bundle.social/uploads/abc123.mp4",
+    "contentType": "video/mp4",
+    "size": 5242880
+  }
+}
+```
+
+Use this to pre-upload media before creating a post. The returned CDN URL can be passed as a `media_urls` value in [Create Social Post](/api-reference/distribution/create-social-post).

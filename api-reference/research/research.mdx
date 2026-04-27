@@ -1,0 +1,43 @@
+---
+title: "Research"
+description: "Multi-step deep research: search, fetch sources, and synthesize a comprehensive answer with citations."
+api: "POST /v1/research"
+---
+
+<ParamField body="query" type="string" required>
+  Research question.
+</ParamField>
+
+<ParamField body="max_results" type="number">
+  Number of sources to analyze. Range: 1–5. Default `3`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/research \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What are the best practices for AI agent security?", "max_results": 3}'
+```
+</CodeGroup>
+
+<ResponseField name="summary" type="string">
+  Synthesized answer with inline citations.
+</ResponseField>
+
+<ResponseField name="sources" type="array">
+  Sources used. Each contains `title` and `url`.
+</ResponseField>
+
+```json Example Response
+{
+  "summary": "AI agent security best practices include sandboxing tool execution [1], implementing least-privilege access [2], and audit logging all credential access [3]...",
+  "sources": [
+    {"title": "AI Agent Security Guide", "url": "https://example.com/guide"},
+    {"title": "Building Secure Agents", "url": "https://example.com/secure"},
+    {"title": "Agent Credential Management", "url": "https://example.com/creds"}
+  ]
+}
+```
+
+More thorough than [Web Search](/api-reference/research/web-search) but slower due to multiple network calls (search + fetch + synthesis).

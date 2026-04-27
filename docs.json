@@ -1,0 +1,222 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Naive",
+  "description": "AI Agent Primitives — email, social media, video, image generation, payments, browser automation, and 100+ integrations for your AI agent.",
+  "colors": {
+    "primary": "#6366f1",
+    "light": "#818cf8",
+    "dark": "#4f46e5"
+  },
+  "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      {
+        "label": "Dashboard",
+        "href": "https://usenaive.ai/developers"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get API Key",
+      "href": "https://usenaive.ai/developers"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/usenaive",
+      "x": "https://x.com/usenaive"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "getting-started/introduction",
+              "getting-started/quickstart",
+              "getting-started/authentication",
+              "getting-started/installation"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/email",
+              "guides/social-media",
+              "guides/video",
+              "guides/images",
+              "guides/payments",
+              "guides/integrations",
+              "guides/browser",
+              "guides/credentials",
+              "guides/research"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/overview"
+            ]
+          },
+          {
+            "group": "Communication",
+            "pages": [
+              "api-reference/communication/send-email",
+              "api-reference/communication/list-inbox",
+              "api-reference/communication/get-email-body",
+              "api-reference/communication/get-phone-number",
+              "api-reference/communication/claim-phone-number",
+              "api-reference/communication/get-sms-inbox"
+            ]
+          },
+          {
+            "group": "Distribution",
+            "pages": [
+              "api-reference/distribution/create-social-post",
+              "api-reference/distribution/get-social-media-status",
+              "api-reference/distribution/activate-social-media",
+              "api-reference/distribution/get-social-portal-link",
+              "api-reference/distribution/list-social-posts",
+              "api-reference/distribution/get-social-post",
+              "api-reference/distribution/get-social-post-analytics",
+              "api-reference/distribution/get-social-post-comments",
+              "api-reference/distribution/upload-social-media"
+            ]
+          },
+          {
+            "group": "Creation",
+            "pages": [
+              "api-reference/creation/generate-images",
+              "api-reference/creation/search-stock-media",
+              "api-reference/creation/create-heygen-video",
+              "api-reference/creation/list-heygen-styles",
+              "api-reference/creation/get-heygen-session",
+              "api-reference/creation/send-heygen-message",
+              "api-reference/creation/get-heygen-video",
+              "api-reference/creation/create-magic-clips",
+              "api-reference/creation/get-submagic-status",
+              "api-reference/creation/edit-submagic-clip"
+            ]
+          },
+          {
+            "group": "Research",
+            "pages": [
+              "api-reference/research/web-search",
+              "api-reference/research/read-url",
+              "api-reference/research/research"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "api-reference/integrations/check-integrations",
+              "api-reference/integrations/get-integration-tools",
+              "api-reference/integrations/execute-integration",
+              "api-reference/integrations/get-composio-auth-url"
+            ]
+          },
+          {
+            "group": "Domains",
+            "pages": [
+              "api-reference/domains/register-domain",
+              "api-reference/domains/list-company-domains",
+              "api-reference/domains/check-domain-dns",
+              "api-reference/domains/retry-domain-dns",
+              "api-reference/domains/connect-domain-to-app",
+              "api-reference/domains/disconnect-domain-from-app",
+              "api-reference/domains/delete-domain"
+            ]
+          },
+          {
+            "group": "Payments",
+            "pages": [
+              "api-reference/payments/list-payment-cards",
+              "api-reference/payments/get-card-details",
+              "api-reference/payments/log-card-transaction"
+            ]
+          },
+          {
+            "group": "Connections",
+            "pages": [
+              "api-reference/connections/list-connections",
+              "api-reference/connections/get-connection-credentials",
+              "api-reference/connections/create-connection",
+              "api-reference/connections/update-connection-status",
+              "api-reference/connections/delete-connection"
+            ]
+          },
+          {
+            "group": "Browser",
+            "pages": [
+              "api-reference/browser/ensure-browser-session",
+              "api-reference/browser/stop-browser-session",
+              "api-reference/browser/get-browser-session"
+            ]
+          },
+          {
+            "group": "Credentials",
+            "pages": [
+              "api-reference/credentials/store-credential",
+              "api-reference/credentials/get-credential",
+              "api-reference/credentials/refresh-identity"
+            ]
+          },
+          {
+            "group": "Billing",
+            "pages": [
+              "api-reference/billing/get-usage"
+            ]
+          },
+          {
+            "group": "System",
+            "pages": [
+              "api-reference/system/status",
+              "api-reference/system/tools-search",
+              "api-reference/system/tools-detail"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "MCP Server",
+        "groups": [
+          {
+            "group": "MCP Server",
+            "pages": [
+              "mcp/overview",
+              "mcp/core-tools",
+              "mcp/meta-tools",
+              "mcp/context-tool",
+              "mcp/tool-catalog"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "groups": [
+          {
+            "group": "CLI Reference",
+            "pages": [
+              "cli/overview",
+              "cli/init",
+              "cli/status",
+              "cli/tools",
+              "cli/keys",
+              "cli/mcp-start"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

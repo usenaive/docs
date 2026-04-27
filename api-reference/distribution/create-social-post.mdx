@@ -1,0 +1,87 @@
+---
+title: "Create Social Post"
+description: "Create and publish a social media post across one or more platforms."
+api: "POST /v1/social/posts"
+---
+
+<ParamField body="content" type="string" required>
+  Post text. For YouTube, this becomes the video title (max 100 chars).
+</ParamField>
+
+<ParamField body="platforms" type="string[]" required>
+  Target platforms. Supported: `INSTAGRAM`, `FACEBOOK`, `TWITTER`, `LINKEDIN`, `TIKTOK`, `YOUTUBE`, `THREADS`, `PINTEREST`, `REDDIT`, `BLUESKY`, `MASTODON`, `DISCORD`, `SLACK`.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Optional title for tracking and platforms that support it.
+</ParamField>
+
+<ParamField body="media_urls" type="string[]">
+  Public URLs of video/image files. Required for YouTube, Instagram, TikTok, and Pinterest.
+</ParamField>
+
+<ParamField body="platform_data" type="object">
+  Per-platform overrides (e.g., Reddit subreddit, Pinterest board name).
+</ParamField>
+
+<ParamField body="account_ids" type="string[]">
+  Specific account IDs to post from. Get these from [Get Social Media Status](/api-reference/distribution/get-social-media-status).
+</ParamField>
+
+<ParamField body="youtube_type" type="string">
+  `SHORT` or `VIDEO`. Defaults to `SHORT`.
+</ParamField>
+
+<ParamField body="scheduled_at" type="string">
+  ISO 8601 date for scheduling. Omit to publish immediately.
+</ParamField>
+
+### Platform Rules
+
+| Platform | Media Required | Notes |
+|----------|---------------|-------|
+| Twitter/X | No | 280 char limit |
+| LinkedIn | No | Text-only OK |
+| Bluesky | No | 300 char limit |
+| Threads | No | Text-only OK |
+| YouTube | Yes (video) | Title from `content`, max 100 chars |
+| Instagram | Yes | Auto-posted as Reel (video) or Post (image) |
+| TikTok | Yes (video) | Video URL required |
+| Pinterest | Yes | Requires `boardName` in `platform_data` |
+| Reddit | No | Requires `sr` (subreddit) and `title` in `platform_data` |
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/social/posts \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Excited to announce our new product launch!",
+    "platforms": ["TWITTER", "LINKEDIN"],
+    "title": "Product Launch Announcement"
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="post" type="object">
+  Post object with `id`, `status`, and `bundlePostId`.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "post": {
+    "id": "sp_abc123",
+    "status": "posted",
+    "bundlePostId": "bp_xyz789"
+  }
+}
+```
+
+**Error codes:**
+- `not_activated` — Call [Activate Social Media](/api-reference/distribution/activate-social-media) first.
+- `no_accounts` — No accounts connected. Use [Get Social Portal Link](/api-reference/distribution/get-social-portal-link) for account setup.

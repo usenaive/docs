@@ -1,0 +1,140 @@
+---
+title: "Tool Catalog"
+description: "Complete list of all 54 tools organized by category, with core/extended status and one-line descriptions."
+icon: "book"
+sidebarTitle: "Tool Catalog"
+---
+
+The Naive platform provides **54 tools** across **11 categories**. 8 are registered as [core tools](/mcp/core-tools) in the MCP context window; the remaining 46 are accessible via the [meta-tools](/mcp/meta-tools) discovery flow.
+
+<Note>
+  **Core** tools (marked ★) are callable directly. **Extended** tools require `naive_search → naive_tool_help → naive_execute`. See the [API reference](/api-reference) for full parameter documentation.
+</Note>
+
+## Communication (6 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `send_email` | ★ Core | Send an outbound email from the agent's provisioned address |
+| `list_inbox` | ★ Core | List recent inbound emails (metadata only) |
+| `get_email_body` | Extended | Read the full body of a specific inbound email |
+| `get_phone_number` | Extended | Get the agent's assigned phone number |
+| `claim_phone_number` | Extended | Provision a phone number for the agent via Twilio |
+| `get_sms_inbox` | Extended | List recent inbound SMS messages |
+
+## Distribution (9 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `create_social_post` | ★ Core | Create and publish a social media post across platforms |
+| `get_social_media_status` | ★ Core | Check social media activation and connected accounts |
+| `activate_social_media` | Extended | Activate social media integration (one-time setup) |
+| `get_social_portal_link` | Extended | Generate a portal URL for connecting social accounts |
+| `list_social_posts` | Extended | List recent social media posts with status filter |
+| `get_social_post` | Extended | Get full details of a specific social post |
+| `get_social_post_analytics` | Extended | Get engagement metrics for a published post |
+| `get_social_post_comments` | Extended | Get comments and replies on a published post |
+| `upload_social_media` | Extended | Upload media to CDN for use in social posts |
+
+## Creation (10 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `generate_images` | ★ Core | Generate images from a text prompt using Gemini AI |
+| `search_stock_media` | ★ Core | Search Pexels for free stock videos and photos |
+| `list_heygen_styles` | Extended | Browse available HeyGen avatar styles |
+| `create_heygen_video` | Extended | Create an AI avatar video using HeyGen |
+| `get_heygen_session` | Extended | Check HeyGen video session status and progress |
+| `send_heygen_message` | Extended | Send a follow-up message to a HeyGen session |
+| `get_heygen_video` | Extended | Get the final video URL for a completed video |
+| `create_magic_clips` | Extended | Create short-form clips from a YouTube video via Submagic |
+| `get_submagic_status` | Extended | Check Submagic clip generation status |
+| `edit_submagic_clip` | Extended | Edit a previously generated Submagic clip |
+
+## Research (3 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `web_search` | ★ Core | Search the web for current information via Tavily or Brave |
+| `read_url` | Extended | Fetch a URL and extract main text content |
+| `research` | Extended | Multi-step deep research with search, fetch, and synthesis |
+
+## Integrations (4 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `check_integrations` | ★ Core | List all available integrations (CMS, Composio, browser) |
+| `get_integration_tools` | Extended | Get available actions for a specific integration |
+| `execute_integration` | Extended | Execute a tool on a connected integration |
+| `get_composio_auth_url` | Extended | Get OAuth URL for connecting third-party services |
+
+## Domains (7 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `register_domain` | Extended | Register a custom domain for email and hosting |
+| `list_company_domains` | Extended | List all registered domains for the company |
+| `check_domain_dns` | Extended | Check DNS propagation and verification status |
+| `retry_domain_dns` | Extended | Retry DNS provisioning for a failed domain |
+| `connect_domain_to_app` | Extended | Connect a verified domain to an app |
+| `disconnect_domain_from_app` | Extended | Disconnect a domain from its connected app |
+| `delete_domain` | Extended | Permanently remove a registered domain |
+
+## Payments (3 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `list_payment_cards` | Extended | List virtual payment cards assigned to the agent |
+| `get_card_details` | Extended | Get full card details (number, CVV, expiry) for checkout |
+| `log_card_transaction` | Extended | Log a purchase made with a payment card |
+
+## Connections (5 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `list_connections` | Extended | List all browser integration connections |
+| `get_connection_credentials` | Extended | Get decrypted login credentials for browser use |
+| `create_connection` | Extended | Create a new browser integration connection |
+| `update_connection_status` | Extended | Update connection status (connected/disconnected) |
+| `delete_connection` | Extended | Delete a connection and its stored credentials |
+
+## Browser (3 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `ensure_browser_session` | Extended | Start or ensure a browser CDP session is running |
+| `stop_browser_session` | Extended | Stop a running browser session |
+| `get_browser_session` | Extended | Get the current browser session status |
+
+## Credentials (3 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `store_credential` | Extended | Securely store credentials for a service |
+| `get_credential` | Extended | Retrieve stored credentials by reference |
+| `refresh_identity` | Extended | Re-generate identity files after credential changes |
+
+## Billing (1 tool)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `get_usage` | Extended | Get current credit balance, usage stats, and transaction history |
+
+---
+
+## Summary
+
+| Category | Tools | Core | Extended |
+|----------|-------|------|----------|
+| Communication | 6 | 2 | 4 |
+| Distribution | 9 | 2 | 7 |
+| Creation | 10 | 2 | 8 |
+| Research | 3 | 1 | 2 |
+| Integrations | 4 | 1 | 3 |
+| Domains | 7 | 0 | 7 |
+| Payments | 3 | 0 | 3 |
+| Connections | 5 | 0 | 5 |
+| Browser | 3 | 0 | 3 |
+| Credentials | 3 | 0 | 3 |
+| Billing | 1 | 0 | 1 |
+| **Total** | **54** | **8** | **46** |

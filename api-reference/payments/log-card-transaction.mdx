@@ -1,0 +1,62 @@
+---
+title: "Log Card Transaction"
+description: "Log a purchase made with a payment card. Must be called after every card use."
+api: "POST /v1/payments/transactions"
+---
+
+<ParamField body="card_id" type="string" required>
+  Card ID used for the purchase.
+</ParamField>
+
+<ParamField body="amount_cents" type="number" required>
+  Purchase amount in cents.
+</ParamField>
+
+<ParamField body="merchant_name" type="string" required>
+  Where the purchase was made.
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  What was purchased.
+</ParamField>
+
+<ParamField body="credential_data" type="object">
+  Login credentials received from the purchase. Contains optional fields: `service`, `url`, `username`, `password`, `api_key`, `notes`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/payments/transactions \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "card_id": "card_abc123",
+    "amount_cents": 2900,
+    "merchant_name": "Canva",
+    "description": "Canva Pro monthly subscription",
+    "credential_data": {
+      "service": "canva",
+      "url": "https://canva.com",
+      "username": "agent@acme.com",
+      "password": "generated_password"
+    }
+  }'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="transactionId" type="string">
+  Transaction record ID.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "transactionId": "txn_abc123"
+}
+```
+
+<Warning>This endpoint **must** be called after every card purchase for audit compliance and spending tracking.</Warning>

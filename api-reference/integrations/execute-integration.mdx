@@ -1,0 +1,53 @@
+---
+title: "Execute Integration"
+description: "Execute a tool on a connected CMS or Composio integration."
+api: "POST /v1/integrations/execute"
+---
+
+<ParamField body="integration_type" type="string" required>
+  `cms` or `composio`.
+</ParamField>
+
+<ParamField body="tool_name" type="string" required>
+  Tool name from [Get Integration Tools](/api-reference/integrations/get-integration-tools).
+</ParamField>
+
+<ParamField body="params" type="object">
+  Tool parameters. Default `{}`.
+</ParamField>
+
+<ParamField body="integration_id" type="string">
+  CMS integration ID.
+</ParamField>
+
+<ParamField body="toolkit" type="string">
+  Composio toolkit name.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/integrations/execute \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "integration_type": "composio",
+    "toolkit": "slack",
+    "tool_name": "SLACK_SEND_MESSAGE",
+    "params": {"channel": "#general", "text": "Hello from Naive!"}
+  }'
+```
+</CodeGroup>
+
+Response varies by integration and tool.
+
+```json Example Response
+{
+  "ok": true,
+  "result": {
+    "messageId": "msg_123",
+    "channel": "#general"
+  }
+}
+```
+
+<Note>CMS write operations always create **drafts** — nothing is published directly. This gives the user a chance to review before going live.</Note>

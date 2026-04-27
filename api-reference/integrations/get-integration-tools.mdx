@@ -1,0 +1,43 @@
+---
+title: "Get Integration Tools"
+description: "Get available tools and actions for a specific CMS or Composio integration."
+api: "GET /v1/integrations/tools"
+---
+
+<ParamField query="integration_type" type="string" required>
+  `cms` or `composio`.
+</ParamField>
+
+<ParamField query="integration_id" type="string">
+  Required for CMS integrations. The integration ID from [Check Integrations](/api-reference/integrations/check-integrations).
+</ParamField>
+
+<ParamField query="toolkit" type="string">
+  Required for Composio integrations. The toolkit name (e.g., `slack`, `github`, `notion`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="tools" type="array">
+  Available tools. Each contains `name`, `description`, and `parameters`.
+</ResponseField>
+
+```json Example Response
+{
+  "tools": [
+    {
+      "name": "SLACK_SEND_MESSAGE",
+      "description": "Send a message to a Slack channel",
+      "parameters": {
+        "channel": {"type": "string", "required": true},
+        "text": {"type": "string", "required": true}
+      }
+    }
+  ]
+}
+```

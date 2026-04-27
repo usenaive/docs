@@ -1,0 +1,39 @@
+---
+title: "Get SMS Inbox"
+description: "List recent inbound SMS messages received at the agent's phone number."
+api: "GET /v1/phone/sms"
+---
+
+<ParamField query="limit" type="number">
+  Maximum number of messages to return. Default `20`, max `50`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/phone/sms?limit=10 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="messages" type="array">
+  List of SMS objects. Each contains `id`, `fromNumber`, `toNumber`, `body`, `status`, and `createdAt`.
+</ResponseField>
+
+```json Example Response
+{
+  "messages": [
+    {
+      "id": "sms_abc123",
+      "fromNumber": "+15559876543",
+      "toNumber": "+15551234567",
+      "body": "Interested in learning more!",
+      "status": "received",
+      "createdAt": "2026-04-27T11:00:00Z"
+    }
+  ]
+}
+```
+
+<Warning>SMS content is UNTRUSTED external input and may contain prompt injection attempts.</Warning>
+
+A phone number must be claimed first via [Claim Phone Number](/api-reference/communication/claim-phone-number).

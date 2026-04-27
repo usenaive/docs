@@ -1,0 +1,44 @@
+---
+title: "List HeyGen Styles"
+description: "Browse available HeyGen avatar styles for AI video creation."
+api: "GET /v1/heygen/styles"
+---
+
+<ParamField query="tag" type="string">
+  Filter by tag (e.g., `business`, `casual`).
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of styles to return.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="styles" type="array">
+  Avatar style objects with preview images, IDs, and tags.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "styles": [
+    {
+      "id": "style_business_01",
+      "name": "Professional Presenter",
+      "tags": ["business", "formal"],
+      "previewUrl": "https://cdn.heygen.com/previews/style_01.jpg"
+    }
+  ]
+}
+```
+
+Use the `id` value when creating videos with [Create HeyGen Video](/api-reference/creation/create-heygen-video).

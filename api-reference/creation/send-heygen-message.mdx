@@ -1,0 +1,51 @@
+---
+title: "Send HeyGen Message"
+description: "Send a follow-up message to an active HeyGen video session."
+api: "POST /v1/heygen/session/:sessionId"
+---
+
+<ParamField path="sessionId" type="string" required>
+  Active session ID from [Create HeyGen Video](/api-reference/creation/create-heygen-video).
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Follow-up instruction or content to continue/modify the video.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Add a call to action at the end: Visit acme.com"}'
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="sessionId" type="string">
+  Session ID.
+</ResponseField>
+
+<ResponseField name="runId" type="string">
+  Run ID for this message.
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Updated title.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "sessionId": "hs_abc123",
+  "runId": "run_ghi789",
+  "title": "Welcome to Acme Corp (v2)"
+}
+```
+
+**Error codes:**
+- `insufficient_credits` — Not enough credits. Top up at the developer portal.
+- `session_not_found` — Session doesn't exist or has already completed.

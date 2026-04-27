@@ -1,0 +1,48 @@
+---
+title: "Get HeyGen Video"
+description: "Get the final video URL and metadata for a completed HeyGen video."
+api: "GET /v1/heygen/video/:videoId"
+---
+
+<ParamField path="videoId" type="string" required>
+  Video ID from [Get HeyGen Session](/api-reference/creation/get-heygen-session) (available when status is `completed`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/heygen/video/hv_def456 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  `completed`, `processing`, or `failed`.
+</ResponseField>
+
+<ResponseField name="videoUrl" type="string">
+  Download/stream URL for the video.
+</ResponseField>
+
+<ResponseField name="duration" type="number">
+  Duration in seconds.
+</ResponseField>
+
+<ResponseField name="thumbnailUrl" type="string">
+  Thumbnail image URL.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "status": "completed",
+  "videoUrl": "https://cdn.heygen.com/videos/hv_def456.mp4",
+  "duration": 45,
+  "thumbnailUrl": "https://cdn.heygen.com/thumbs/hv_def456.jpg"
+}
+```
+
+Credits are billed on first retrieval of a completed video.

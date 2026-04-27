@@ -1,0 +1,28 @@
+---
+title: "Delete Domain"
+description: "Permanently remove a registered domain and all associated configuration."
+api: "DELETE /v1/domains/:domainId"
+---
+
+<ParamField path="domainId" type="string" required>
+  Domain ID.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://api.usenaive.ai/v1/domains/dom_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  Success flag.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+<Warning>This is irreversible. DNS records, email routing, and hosting configuration are permanently removed.</Warning>

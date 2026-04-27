@@ -1,0 +1,96 @@
+---
+title: "API Overview"
+description: "Base URL, authentication, rate limits, and error handling for the Naive API."
+---
+
+## Base URL
+
+```
+https://api.usenaive.ai
+```
+
+All endpoints are prefixed with `/v1/`.
+
+## Authentication
+
+Most endpoints require a Bearer token. Include your API key in the `Authorization` header:
+
+```bash
+curl https://api.usenaive.ai/v1/status \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+API keys are scoped to a specific agent and company. The key automatically resolves identity — you never need to pass `agent_id`.
+
+## Rate Limits
+
+Requests are rate-limited per API key. If you exceed the limit, you'll receive a `429 Too Many Requests` response with a `Retry-After` header.
+
+| Tier | Requests/min |
+|------|-------------|
+| Free | 60 |
+| Pro | 300 |
+
+## Error Format
+
+All errors follow a consistent JSON structure:
+
+```json
+{
+  "error": {
+    "code": "rate_limited",
+    "message": "Too many requests. Retry after 30 seconds."
+  }
+}
+```
+
+Common error codes:
+
+| Code | HTTP Status | Description |
+|------|-------------|-------------|
+| `unauthorized` | 401 | Missing or invalid API key |
+| `forbidden` | 403 | Key doesn't have access to this resource |
+| `not_found` | 404 | Resource doesn't exist |
+| `rate_limited` | 429 | Too many requests |
+| `internal_error` | 500 | Server error |
+
+## Endpoint Categories
+
+<CardGroup cols={2}>
+  <Card title="Communication" icon="envelope" href="/api-reference/communication/send-email">
+    Email and SMS — send emails, read inbox, claim phone numbers.
+  </Card>
+  <Card title="Distribution" icon="share-nodes" href="/api-reference/distribution/create-social-post">
+    Social media — post to 13+ platforms, analytics, comments.
+  </Card>
+  <Card title="Creation" icon="wand-magic-sparkles" href="/api-reference/creation/generate-images">
+    AI images, HeyGen avatar videos, Submagic clips, stock media.
+  </Card>
+  <Card title="Research" icon="magnifying-glass" href="/api-reference/research/web-search">
+    Web search, URL reading, and deep research with citations.
+  </Card>
+  <Card title="Integrations" icon="plug" href="/api-reference/integrations/check-integrations">
+    CMS platforms, Composio toolkits, and browser connections.
+  </Card>
+  <Card title="Domains" icon="globe" href="/api-reference/domains/register-domain">
+    Register domains, verify DNS, connect to apps.
+  </Card>
+  <Card title="Payments" icon="credit-card" href="/api-reference/payments/list-payment-cards">
+    Virtual payment cards for agent purchasing.
+  </Card>
+  <Card title="Connections" icon="link" href="/api-reference/connections/list-connections">
+    Browser integration credentials for automated web interactions.
+  </Card>
+  <Card title="Browser" icon="window" href="/api-reference/browser/ensure-browser-session">
+    Chrome DevTools Protocol sessions for browser automation.
+  </Card>
+  <Card title="Credentials" icon="key" href="/api-reference/credentials/store-credential">
+    Encrypted credential storage with audit logging.
+  </Card>
+  <Card title="Billing" icon="receipt" href="/api-reference/billing/get-usage">
+    Credit usage and billing information.
+  </Card>
+  <Card title="System" icon="gear" href="/api-reference/system/status">
+    Agent status, tool discovery, and health checks.
+  </Card>
+</CardGroup>

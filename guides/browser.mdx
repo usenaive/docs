@@ -1,0 +1,134 @@
+---
+title: Browser Automation
+description: "Launch Chrome DevTools Protocol sessions for automated web interactions with Playwright or Puppeteer."
+icon: "globe"
+---
+
+Naive provides managed browser sessions that expose a Chrome DevTools Protocol (CDP) endpoint. Your agent connects to it with Playwright or Puppeteer for automated web interactions — form filling, checkout flows, data extraction, and more.
+
+## Workflow
+
+<Steps>
+  <Step title="Start a browser session">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/browser/ensure \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Response:
+    ```json
+    {
+      "available": true,
+      "cdpUrl": "wss://browser.usenaive.ai/session/abc123"
+    }
+    ```
+
+    If a session is already running, it returns the existing CDP URL.
+  </Step>
+
+  <Step title="Connect with Playwright or Puppeteer">
+    Use the CDP URL to connect your automation framework:
+
+    <CodeGroup>
+    ```javascript Playwright
+    const { chromium } = require("playwright");
+
+    const browser = await chromium.connectOverCDP("wss://browser.usenaive.ai/session/abc123");
+    const context = browser.contexts()[0];
+    const page = context.pages()[0] || await context.newPage();
+
+    await page.goto("https://example.com");
+    await page.fill("#email", "agent@acme.com");
+    await page.click("button[type=submit]");
+    ```
+
+    ```javascript Puppeteer
+    const puppeteer = require("puppeteer-core");
+
+    const browser = await puppeteer.connect({
+      browserWSEndpoint: "wss://browser.usenaive.ai/session/abc123",
+    });
+    const page = await browser.newPage();
+
+    await page.goto("https://example.com");
+    await page.type("#email", "agent@acme.com");
+    await page.click("button[type=submit]");
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Stop the session when done">
+    ```bash
+    curl -X POST https://api.usenaive.ai/v1/browser/stop \
+      -H "Authorization: Bearer nv_sk_your_key"
+    ```
+
+    Always stop sessions when your automation is complete to free resources.
+  </Step>
+</Steps>
+
+## Authenticated Browsing
+
+Combine browser sessions with stored connection credentials for authenticated web interactions. This is the primary use case — logging into platforms where the agent has credentials.
+
+```
+1. ensure_browser_session()
+   → Get CDP URL
+
+2. list_connections()
+   → Find the connection for the target platform
+
+3. get_connection_credentials({ connection_id: "conn_abc" })
+   → Get decrypted username, password, login URL
+
+4. [Use Playwright to navigate to login URL, enter credentials, perform actions]
+
+5. stop_browser_session()
+   → Clean up
+```
+
+<Warning>
+Connection credentials are decrypted server-side and returned in plaintext. Only use them in browser automation contexts. Never display them to users or log them.
+</Warning>
+
+## Checking Session Status
+
+Check whether a browser session is currently active:
+
+```bash
+curl https://api.usenaive.ai/v1/browser \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+Response:
+```json
+{
+  "active": true,
+  "cdpUrl": "wss://browser.usenaive.ai/session/abc123"
+}
+```
+
+## Tools Reference
+
+| Tool | Method | Path | Description |
+|------|--------|------|-------------|
+| `ensure_browser_session` | POST | `/v1/browser/ensure` | Start or ensure a CDP session is running |
+| `stop_browser_session` | POST | `/v1/browser/stop` | Stop the running session |
+| `get_browser_session` | GET | `/v1/browser` | Check session status |
+
+## Combining with Payment Cards
+
+A common pattern is using browser sessions with virtual cards for automated purchasing:
+
+```
+1. ensure_browser_session()           → Start browser
+2. list_payment_cards()               → Find card with balance
+3. get_card_details({ card_id })      → Get card number, CVV, billing address
+4. [Navigate to checkout, fill payment form]
+5. log_card_transaction({ ... })      → Log the purchase
+6. stop_browser_session()             → Clean up
+```
+
+<Tip>
+Always stop browser sessions when you're done. Running sessions consume resources and will eventually time out, but explicit cleanup is faster and more reliable.
+</Tip>

@@ -1,0 +1,40 @@
+---
+title: "Web Search"
+description: "Search the web for current, real-time information via Tavily or Brave."
+api: "POST /v1/search"
+---
+
+<ParamField body="query" type="string" required>
+  Search query.
+</ParamField>
+
+<ParamField body="count" type="number">
+  Number of results to return. Range: 1–10. Default `5`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/search \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "AI agent market size 2026", "count": 5}'
+```
+</CodeGroup>
+
+<ResponseField name="results" type="array">
+  Search results. Each contains `title`, `url`, and `snippet`.
+</ResponseField>
+
+```json Example Response
+{
+  "results": [
+    {
+      "title": "AI Agent Market Report 2026",
+      "url": "https://example.com/report",
+      "snippet": "The AI agent market is projected to reach $50B by 2026..."
+    }
+  ]
+}
+```
+
+Use this for anything time-sensitive: news, pricing, documentation, recent events. Follow up with [Read URL](/api-reference/research/read-url) to get full article content.

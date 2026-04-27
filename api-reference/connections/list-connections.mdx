@@ -1,0 +1,36 @@
+---
+title: "List Connections"
+description: "List all browser integration connections."
+api: "GET /v1/connections"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/connections \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+</CodeGroup>
+
+<ResponseField name="integrations" type="array">
+  Connection objects. Each contains `id`, `platform_name`, `description`, `login_url`, `has_2fa`, `status`, `cookie_status`, `last_tested_at`, and `created_at`.
+</ResponseField>
+
+```json Example Response
+{
+  "integrations": [
+    {
+      "id": "conn_abc123",
+      "platform_name": "GitHub",
+      "description": "Company GitHub account",
+      "login_url": "https://github.com/login",
+      "has_2fa": false,
+      "status": "connected",
+      "cookie_status": "fresh",
+      "last_tested_at": "2026-04-27T10:00:00Z",
+      "created_at": "2026-04-20T08:00:00Z"
+    }
+  ]
+}
+```
