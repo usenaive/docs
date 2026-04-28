@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <defs>
+    <clipPath id="naive-clip">
+      <path d="M5 17.5 C3 17.5 2 15 3 13 C2 10 5 8 8 9.5 C9 6.5 12 5 15 7 C18 5 21 7 21 10.5 C23 10.5 24 13 22 15 C22 17 18 19 14 17.5 C10 19 6 18 5 17.5 Z"/>
+    </clipPath>
+  </defs>
+  <style>
+    line { stroke: #18181b; }
+    @media (prefers-color-scheme: dark) {
+      line { stroke: #e4e4e7; }
+    }
+  </style>
+  <g clip-path="url(#naive-clip)">
+    <line x1="0" y1="4.0" x2="24" y2="4.0" stroke-width="0.4"/>
+    <line x1="0" y1="4.6" x2="24" y2="4.6" stroke-width="0.4"/>
+    <line x1="0" y1="5.2" x2="24" y2="5.2" stroke-width="0.4"/>
+    <line x1="0" y1="5.8" x2="24" y2="5.8" stroke-width="0.4"/>
+    <line x1="0" y1="6.4" x2="24" y2="6.4" stroke-width="0.4"/>
+    <line x1="0" y1="7.0" x2="24" y2="7.0" stroke-width="0.4"/>
+    <line x1="0" y1="7.6" x2="24" y2="7.6" stroke-width="0.4"/>
+    <line x1="0" y1="8.2" x2="24" y2="8.2" stroke-width="0.4"/>
+    <line x1="0" y1="8.8" x2="24" y2="8.8" stroke-width="0.4"/>
+    <line x1="0" y1="9.4" x2="24" y2="9.4" stroke-width="0.4"/>
+    <line x1="0" y1="10.0" x2="24" y2="10.0" stroke-width="0.4"/>
+    <line x1="0" y1="10.6" x2="24" y2="10.6" stroke-width="0.4"/>
+    <line x1="0" y1="11.2" x2="24" y2="11.2" stroke-width="0.4"/>
+    <line x1="0" y1="11.8" x2="24" y2="11.8" stroke-width="0.4"/>
+    <line x1="0" y1="12.4" x2="24" y2="12.4" stroke-width="0.4"/>
+    <line x1="0" y1="13.0" x2="24" y2="13.0" stroke-width="0.4"/>
+    <line x1="0" y1="13.6" x2="24" y2="13.6" stroke-width="0.4"/>
+    <line x1="0" y1="14.2" x2="24" y2="14.2" stroke-width="0.4"/>
+    <line x1="0" y1="14.8" x2="24" y2="14.8" stroke-width="0.4"/>
+    <line x1="0" y1="15.4" x2="24" y2="15.4" stroke-width="0.4"/>
+    <line x1="0" y1="16.0" x2="24" y2="16.0" stroke-width="0.4"/>
+    <line x1="0" y1="16.6" x2="24" y2="16.6" stroke-width="0.4"/>
+    <line x1="0" y1="17.2" x2="24" y2="17.2" stroke-width="0.4"/>
+    <line x1="0" y1="17.8" x2="24" y2="17.8" stroke-width="0.4"/>
+    <line x1="0" y1="18.4" x2="24" y2="18.4" stroke-width="0.4"/>
+    <line x1="0" y1="19.0" x2="24" y2="19.0" stroke-width="0.4"/>
+    <line x1="0" y1="19.6" x2="24" y2="19.6" stroke-width="0.4"/>
+    <line x1="0" y1="20.2" x2="24" y2="20.2" stroke-width="0.4"/>
+  </g>
+</svg>

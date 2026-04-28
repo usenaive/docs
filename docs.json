@@ -9,6 +9,10 @@
     "dark": "#4f46e5"
   },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/favicon.svg",
+    "dark": "/favicon.svg"
+  },
   "navbar": {
     "links": [
       {

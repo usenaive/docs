@@ -1,14 +1,22 @@
 ---
 title: Introduction
-description: "Naive gives AI agents real-world capabilities: email, social media, video, payments, browser automation, and 100+ integrations — accessible via REST API, MCP server, or CLI."
+description: "Naive is primitives infrastructure for agent-run businesses. Give any AI agent email, social media, video, payments, browser automation, and 100+ integrations through a single API key."
 icon: "rocket"
 ---
 
-# What is Naive?
+# Primitives Infrastructure for AI Agents
 
-Naive is a primitives platform for AI agents. It provides the building blocks agents need to interact with the real world — sending emails, posting to social media, generating videos, making purchases, browsing the web, and connecting to third-party services.
+Naive provides the real-world primitives that AI agents need to actually run businesses and complete work — sending emails, posting to social media, creating videos, making purchases, browsing the web, and connecting to third-party services.
 
-Instead of building and maintaining integrations yourself, you give your agent a single API key and it gets access to **54 tools across 11 categories**.
+We handle the primitives layer. You bring the agent runtime.
+
+<Note>
+**Naive is being open-sourced.** Our platform provides a managed experience where users select and run hosted agent runtimes (similar to Cursor) through a chat interface. The runtime connects to Naive's primitives MCP to let agents create and run companies autonomously. The primitives API documented here is the foundation that powers all of it.
+</Note>
+
+## What Are Primitives?
+
+Primitives are the real-world capabilities that agents can't do on their own — they need infrastructure to send an actual email, post to an actual Twitter account, charge an actual credit card. Naive provides 54 of these primitives across 11 categories, accessible through a single API key.
 
 <CardGroup cols={2}>
   <Card title="Communication" icon="envelope">
@@ -18,7 +26,7 @@ Instead of building and maintaining integrations yourself, you give your agent a
     Post to Twitter, LinkedIn, Instagram, TikTok, YouTube, Reddit, and 7 more platforms
   </Card>
   <Card title="Video Creation" icon="video">
-    AI avatar videos (HeyGen), YouTube clip extraction (Submagic), and JSON-spec rendering
+    AI avatar videos via HeyGen, YouTube clip extraction via Submagic
   </Card>
   <Card title="Image Generation" icon="image">
     AI image generation via Gemini and free stock media search via Pexels
@@ -37,45 +45,41 @@ Instead of building and maintaining integrations yourself, you give your agent a
   </Card>
 </CardGroup>
 
-## Architecture
+## How It Works
 
 ```
-Your AI Agent (Claude, Cursor, GPT, custom)
+Your Agent Runtime (Claude, Cursor, Codex, custom)
     │
     │  MCP protocol (stdio) or REST API (HTTPS)
     ▼
-naive-mcp / API client
+Naive Primitives API (api.usenaive.ai)
     │
-    │  HTTPS + Bearer token
+    │  Authenticated, rate-limited, scoped to your company + agent
     ▼
-api.usenaive.ai (public API gateway)
-    │
-    │  Authenticated proxy
-    ▼
-Naive internal services
+Real-world services
     │
     ▼
-PostgreSQL, Resend, bundle.social, HeyGen, Submagic,
-Pexels, Tavily, Composio, Stripe Issuing, Twilio, etc.
+Resend, bundle.social, HeyGen, Submagic, Pexels,
+Tavily, Composio, Stripe Issuing, Twilio, etc.
 ```
 
-Your agent authenticates with a single API key. The key resolves to a specific agent and company — all resources (email addresses, social accounts, payment cards, credentials) are scoped automatically.
+Your agent authenticates with a single API key. The key resolves to a specific agent and company — all resources (email addresses, social accounts, payment cards, credentials) are scoped automatically. You don't manage infrastructure; you just call primitives.
 
-## Three Ways to Use Naive
+## Three Ways to Connect
 
 <Tabs>
   <Tab title="MCP Server">
-    The **Model Context Protocol** server exposes Naive's primitives as tools that any MCP-compatible agent can call directly. This is the recommended approach for Claude Desktop, Cursor, and other MCP runtimes.
+    The **Model Context Protocol** server exposes Naive's primitives as tools that any MCP-compatible runtime can call directly. This is the recommended approach for Claude Desktop, Cursor, and other MCP runtimes.
 
     ```bash
     npm install -g @usenaive/sdk
     naive init
     ```
 
-    The MCP server registers **13 tools** in the agent's context window: 10 core primitives with full schemas, plus 3 meta-tools (`naive_search`, `naive_tool_help`, `naive_execute`) for discovering and calling the remaining tools without bloating context.
+    The MCP server registers **12 tools** in the agent's context: 8 core primitives with full schemas, plus 4 meta-tools (`naive_context`, `naive_search`, `naive_tool_help`, `naive_execute`) for identity, discovery, and calling the remaining tools without bloating context.
   </Tab>
   <Tab title="REST API">
-    Call any primitive directly over HTTPS with Bearer token authentication. Works with any language or framework.
+    Call any primitive directly over HTTPS with Bearer token authentication. Works with any language, framework, or custom agent runtime.
 
     ```bash
     curl -X POST https://api.usenaive.ai/v1/email/send \
@@ -95,38 +99,51 @@ Your agent authenticates with a single API key. The key resolves to a specific a
   </Tab>
 </Tabs>
 
-## Tool Categories
+## The Platform (Open Source)
+
+Naive's platform — the managed experience at [app.usenaive.ai](https://app.usenaive.ai) — lets users select and run hosted agent runtimes through a GPT-like chat interface. The runtime connects to Naive's primitives MCP, giving agents the ability to create and run companies, hire AI employees, and execute business tasks autonomously.
+
+The platform is being open-sourced. It combines:
+
+- **Paperclip** — the control plane (companies, agents, tasks, deliverables, billing)
+- **Hermes** — the agent runtime (Claude Agent SDK, session management, tool orchestration)
+- **Naive MCP** — the primitives layer (this documentation)
+
+You can use the primitives API on its own (connect your own agent to our MCP) or use the full platform for the managed experience. Either way, Naive is only responsible for the primitives — the infrastructure that lets agents interact with the real world.
+
+## Primitives Reference
 
 | Category | Tools | Core | Description |
 |----------|-------|------|-------------|
 | Communication | 6 | `send_email`, `list_inbox` | Email and SMS |
-| Distribution | 8 | `create_social_post`, `get_social_media_status` | Social media posting and analytics |
-| Creation | 10 | `generate_images`, `search_stock_media` | Images, video, stock media |
+| Distribution | 9 | `create_social_post`, `get_social_media_status` | Social media posting and analytics |
+| Creation | 10 | `generate_images`, `search_stock_media` | Images, video (HeyGen, Submagic), stock media |
 | Research | 3 | `web_search` | Web search, URL reading, deep research |
-| Integrations | 3 | `check_integrations` | CMS and SaaS integrations |
+| Integrations | 4 | `check_integrations` | CMS and SaaS integrations via Composio |
 | Domains | 7 | — | Custom domain registration and DNS |
 | Payment Cards | 3 | — | Virtual cards and transaction logging |
 | Connections | 5 | — | Browser integration credentials |
 | Browser | 3 | — | CDP sessions for web automation |
 | Credentials | 3 | — | Encrypted secret storage |
+| Billing | 1 | — | Usage and credit tracking |
 
 <Info>
-**Core tools** are registered directly in the MCP context with full schemas. Extended tools are discovered via `naive_search` and called via `naive_execute` — keeping the context window lean while still providing access to all 54 tools.
+**Core tools** are registered directly in the MCP context with full schemas. Extended tools are discovered via `naive_search` and called via `naive_execute` — keeping the context window lean while providing access to all 54 tools.
 </Info>
 
-## Next Steps
+## Get Started
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="bolt" href="/getting-started/quickstart">
     Get up and running in under 5 minutes
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference">
-    Complete endpoint documentation
+  <Card title="API Reference" icon="code" href="/api-reference/overview">
+    Complete endpoint documentation for all 54 primitives
   </Card>
-  <Card title="MCP Server" icon="server" href="/getting-started/installation">
+  <Card title="MCP Server" icon="server" href="/mcp/overview">
     Configure for Claude Desktop, Cursor, or custom runtimes
   </Card>
-  <Card title="CLI Reference" icon="terminal" href="/getting-started/installation#cli-commands">
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
     Setup, tool discovery, and key management
   </Card>
 </CardGroup>

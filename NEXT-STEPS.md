@@ -4,6 +4,31 @@ This document explains how to test the docs locally, deploy to production with M
 
 ## Local Development
 
+### Prerequisites: Node 22 LTS
+
+Mintlify requires Node 22 LTS (not Node 25+). If your system Node is 25+, use a version manager:
+
+```bash
+# Install fnm (fast node manager) if you don't have one
+brew install fnm
+
+# Add to your shell (add this to ~/.zshrc permanently)
+eval "$(fnm env)"
+
+# Install and use Node 22 LTS
+fnm install 22
+fnm use 22
+
+# Verify
+node --version  # should show v22.x.x
+```
+
+Alternatively, create a `.node-version` file in `naive-docs/` so fnm auto-switches:
+
+```bash
+echo "22" > .node-version
+```
+
 ### 1. Install the Mintlify CLI
 
 ```bash
@@ -14,6 +39,7 @@ npm install -g mint
 
 ```bash
 cd naive-docs
+fnm use 22  # if your default Node is 25+
 mint dev
 ```
 
