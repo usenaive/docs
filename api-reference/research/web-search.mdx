@@ -19,6 +19,41 @@ curl -X POST https://api.usenaive.ai/v1/search \
   -H "Content-Type: application/json" \
   -d '{"query": "AI agent market size 2026", "count": 5}'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/search",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"query": "AI agent market size 2026", "count": 5},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/search", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ query: "AI agent market size 2026", count: 5 }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/search", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ query: "AI agent market size 2026", count: 5 }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="results" type="array">

@@ -61,6 +61,53 @@ curl -X POST https://api.usenaive.ai/v1/social/posts \
     "title": "Product Launch Announcement"
   }'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/social/posts",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "content": "Excited to announce our new product launch!",
+        "platforms": ["TWITTER", "LINKEDIN"],
+        "title": "Product Launch Announcement",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/social/posts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content: "Excited to announce our new product launch!",
+    platforms: ["TWITTER", "LINKEDIN"],
+    title: "Product Launch Announcement",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/social/posts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    content: "Excited to announce our new product launch!",
+    platforms: ["TWITTER", "LINKEDIN"],
+    title: "Product Launch Announcement",
+  }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

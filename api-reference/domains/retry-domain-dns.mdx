@@ -13,6 +13,32 @@ api: "POST /v1/domains/:domainId/retry-dns"
 curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns", {
+  method: "POST",
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns", {
+  method: "POST",
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

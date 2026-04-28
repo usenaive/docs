@@ -11,6 +11,30 @@ No parameters required. Returns the identity and capabilities of the agent assoc
 curl https://api.usenaive.ai/v1/status \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/status",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/status", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/status", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 ```json Example Response

@@ -17,6 +17,30 @@ api: "GET /v1/payments/cards/:cardId"
 curl https://api.usenaive.ai/v1/payments/cards/card_abc123 \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/payments/cards/card_abc123",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/payments/cards/card_abc123", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/payments/cards/card_abc123", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="cardId" type="string">Card ID.</ResponseField>

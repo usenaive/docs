@@ -21,6 +21,33 @@ api: "GET /v1/integrations/tools"
 curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack" \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/integrations/tools",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    params={"integration_type": "composio", "toolkit": "slack"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="tools" type="array">

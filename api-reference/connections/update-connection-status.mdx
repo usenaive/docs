@@ -23,6 +23,41 @@ curl -X PUT https://api.usenaive.ai/v1/connections/conn_abc123 \
   -H "Content-Type: application/json" \
   -d '{"status": "connected", "cookie_status": "fresh"}'
 ```
+
+```python Python
+import requests
+
+response = requests.put(
+    "https://api.usenaive.ai/v1/connections/conn_abc123",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"status": "connected", "cookie_status": "fresh"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/connections/conn_abc123", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ status: "connected", cookie_status: "fresh" }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/connections/conn_abc123", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ status: "connected", cookie_status: "fresh" }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

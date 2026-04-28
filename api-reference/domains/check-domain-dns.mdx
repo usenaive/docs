@@ -13,6 +13,30 @@ api: "GET /v1/domains/:domainId/dns"
 curl https://api.usenaive.ai/v1/domains/dom_abc123/dns \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/domains/dom_abc123/dns",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/dns", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/dns", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="verified" type="boolean">

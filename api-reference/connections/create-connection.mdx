@@ -45,6 +45,59 @@ curl -X POST https://api.usenaive.ai/v1/connections \
     "has_2fa": false
   }'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/connections",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "platform_name": "GitHub",
+        "login_url": "https://github.com/login",
+        "username": "agent@acme.com",
+        "password": "secure_password",
+        "has_2fa": False,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/connections", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    platform_name: "GitHub",
+    login_url: "https://github.com/login",
+    username: "agent@acme.com",
+    password: "secure_password",
+    has_2fa: false,
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/connections", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    platform_name: "GitHub",
+    login_url: "https://github.com/login",
+    username: "agent@acme.com",
+    password: "secure_password",
+    has_2fa: false,
+  }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="id" type="string">

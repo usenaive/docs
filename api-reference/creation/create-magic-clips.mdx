@@ -22,6 +22,50 @@ curl -X POST https://api.usenaive.ai/v1/submagic/clips \
     "template_name": "bold-captions"
   }'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/submagic/clips",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+        "template_name": "bold-captions",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/submagic/clips", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    template_name: "bold-captions",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/submagic/clips", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    youtube_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    template_name: "bold-captions",
+  }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

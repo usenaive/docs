@@ -42,6 +42,74 @@ curl -X POST https://api.usenaive.ai/v1/payments/transactions \
     }
   }'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/payments/transactions",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "card_id": "card_abc123",
+        "amount_cents": 2900,
+        "merchant_name": "Canva",
+        "description": "Canva Pro monthly subscription",
+        "credential_data": {
+            "service": "canva",
+            "url": "https://canva.com",
+            "username": "agent@acme.com",
+            "password": "generated_password",
+        },
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/payments/transactions", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    card_id: "card_abc123",
+    amount_cents: 2900,
+    merchant_name: "Canva",
+    description: "Canva Pro monthly subscription",
+    credential_data: {
+      service: "canva",
+      url: "https://canva.com",
+      username: "agent@acme.com",
+      password: "generated_password",
+    },
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/payments/transactions", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    card_id: "card_abc123",
+    amount_cents: 2900,
+    merchant_name: "Canva",
+    description: "Canva Pro monthly subscription",
+    credential_data: {
+      service: "canva",
+      url: "https://canva.com",
+      username: "agent@acme.com",
+      password: "generated_password",
+    },
+  }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

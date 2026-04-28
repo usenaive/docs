@@ -17,6 +17,31 @@ api: "GET /v1/heygen/styles"
 curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/heygen/styles",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    params={"tag": "business"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/heygen/styles?tag=business", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/heygen/styles?tag=business", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="ok" type="boolean">

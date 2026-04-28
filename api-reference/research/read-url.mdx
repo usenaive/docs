@@ -19,6 +19,41 @@ curl -X POST https://api.usenaive.ai/v1/url/read \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com/docs/pricing", "focus": "pricing tiers"}'
 ```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/url/read",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"url": "https://example.com/docs/pricing", "focus": "pricing tiers"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/url/read", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ url: "https://example.com/docs/pricing", focus: "pricing tiers" }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/url/read", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ url: "https://example.com/docs/pricing", focus: "pricing tiers" }),
+});
+const data = await response.json();
+```
 </CodeGroup>
 
 <ResponseField name="url" type="string">
