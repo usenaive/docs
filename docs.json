@@ -10,8 +10,9 @@
   },
   "favicon": "/favicon.svg",
   "logo": {
-    "light": "/favicon.svg",
-    "dark": "/favicon.svg"
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://usenaive.ai"
   },
   "navbar": {
     "links": [
