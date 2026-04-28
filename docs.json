@@ -50,6 +50,7 @@
             "group": "Guides",
             "pages": [
               "guides/email",
+              "guides/phone-sms",
               "guides/social-media",
               "guides/video",
               "guides/images",
