@@ -1,14 +1,15 @@
 ---
 title: Email
-description: "Send and receive emails from your agent's provisioned email address with built-in security controls."
-icon: "envelope"
+description: "Email is the most-used Naive primitive — every employee gets a provisioned address and can send, receive, and read mail through three tools."
 ---
 
-Every Naive agent gets a provisioned email address. Your agent can send outbound emails, monitor its inbox, and read full message content — all through three tools.
+Email is one of the most fundamental [primitives](/getting-started/introduction) in Naive. Every employee in a [Naive Core company](/core/employees) is provisioned with their own email address the moment they're hired, so sending and receiving mail works out of the box — no DNS, no warm-up, no auth dance.
 
-## Your Agent's Email Address
+This guide covers the three primitives that power email: `send_email`, `list_inbox`, and `get_email_body`.
 
-Each agent is assigned an email address based on its name and company:
+## The Employee's Email Address
+
+Each employee is assigned an email address based on its name and the company it belongs to:
 
 ```
 writer@yourcompany.usenaive.ai

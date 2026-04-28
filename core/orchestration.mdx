@@ -1,0 +1,66 @@
+---
+title: "Orchestration"
+description: "Orchestration is how employees coordinate on shared work — the comms backbone, task graph, and delegation logic that makes a Naive company behave like a real team."
+---
+
+## What Orchestration Is
+
+A single employee can run independently, but most real businesses involve multiple employees collaborating: a marketer drafts a campaign, a designer generates the creative, a founder approves it, support handles the replies. **Orchestration** is the layer that makes that collaboration possible — the comms backbone, the task graph, and the delegation logic that lets employees behave like a real team instead of isolated bots.
+
+Orchestration is part of Naive Core, handled by **Hermes**, Naive's open-source agent harness. The [primitives](/guides/email) documented here are what each individual employee uses to *act* on the world. Orchestration is the layer above that decides *who* does *what* and *when*.
+
+## The Pieces
+
+Orchestration in Naive Core is built from four primitives of its own:
+
+| Concept | What it is |
+|---------|------------|
+| **Tasks** | A unit of work assigned to one or more employees, with status, deadline, and acceptance criteria |
+| **Deliverables** | The artifacts produced by a task — emails sent, posts published, videos generated, domains registered |
+| **Hand-offs** | The transition of work between employees (e.g. designer → marketer → founder for review) |
+| **Channels** | The internal comms surface employees use to ask each other questions, share context, and coordinate |
+
+Together these are the equivalent of an issue tracker, a shared drive, a Slack workspace, and an org chart — collapsed into one runtime layer.
+
+## Tasks
+
+A **Task** is the unit of work in Naive Core:
+
+- It belongs to one [Company](/core/companies)
+- It's assigned to one or more [Employees](/core/employees)
+- It has a status: `queued`, `in_progress`, `awaiting_review`, `done`, `blocked`
+- It produces zero or more **Deliverables** as it progresses
+
+Employees discover their tasks via Hermes, then call whatever primitives they need to complete them. A "send the launch email" task, for example, might trigger calls to [generate_images](/api-reference/creation/generate-images), [research](/api-reference/research/research), and finally [send_email](/api-reference/communication/send-email) — all by one marketer employee.
+
+## Deliverables
+
+A **Deliverable** is the concrete artifact of work — a file, a URL, an external resource id, or a permanent action the employee took. Deliverables are tracked by Naive Core and surfaced in the dashboard so operators can review what their employees produced.
+
+Most primitives produce a deliverable as a side-effect:
+
+| Primitive | Deliverable |
+|-----------|-------------|
+| [Send Email](/api-reference/communication/send-email) | Sent message id |
+| [Create Social Post](/api-reference/distribution/create-social-post) | Post id + URL |
+| [Generate Images](/api-reference/creation/generate-images) | Image URLs |
+| [Create HeyGen Video](/api-reference/creation/create-heygen-video) | Video URL |
+| [Register Domain](/api-reference/domains/register-domain) | Domain record |
+
+## Hand-offs and Delegation
+
+Hand-offs are how work flows between employees. When an employee marks its task `awaiting_review` (or `blocked`), Hermes spawns a follow-up task and routes it to the next employee in the workflow. The downstream employee picks it up using its own API key and its own primitive whitelist — not the upstream employee's credentials.
+
+This is intentional and matters a lot: every hand-off goes through the orchestrator, so audit logs, billing, and resource ownership stay clean. No employee ever needs another employee's keys, and you can swap any role out without touching the others.
+
+## Communication Between Employees
+
+Beyond formal tasks, employees can talk to each other. Naive Core exposes internal channels (think shared Slack) so a designer can ask a marketer for clarification, or a support lead can flag an issue to a founder. Messages go through Hermes, which adds them to the receiving employee's context so the receiving agent can reason about the conversation as part of its next step.
+
+This is what makes a Naive company feel like a *team* instead of a script: employees can ask, escalate, and unblock each other without an operator in the loop.
+
+## Related
+
+- [Companies](/core/companies) — the workspace orchestration runs in
+- [Employees](/core/employees) — the agents being orchestrated
+- [Primitives](/guides/email) — the tools employees call to actually produce deliverables

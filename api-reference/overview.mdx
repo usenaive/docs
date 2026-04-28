@@ -1,7 +1,9 @@
 ---
 title: "API Overview"
-description: "Base URL, authentication, rate limits, and error handling for the Naive API."
+description: "Base URL, authentication, rate limits, and error handling for the Naive Primitives API."
 ---
+
+The Naive Primitives API is the **tools layer** every employee in Naive Core calls to act on the real world. Each endpoint is a single atomic capability — send an email, post to a social platform, generate an image, charge a card, register a domain — wrapped behind one consistent authentication model. If you're looking for the *environment* layer (companies, employees, orchestration), see [Naive Core](/core/companies) instead.
 
 ## Base URL
 
@@ -20,7 +22,7 @@ curl https://api.usenaive.ai/v1/status \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
-API keys are scoped to a specific agent and company. The key automatically resolves identity — you never need to pass `agent_id`.
+API keys are scoped to one **employee** inside one **company** in Naive Core. The key automatically resolves identity — you never need to pass `agent_id` or `company_id`. Every primitive call inherits the employee's email address, social accounts, payment cards, and credentials.
 
 ## Rate Limits
 
