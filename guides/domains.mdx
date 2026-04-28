@@ -1,0 +1,297 @@
+---
+title: "Domain Management"
+description: "Register custom domains for branded email addresses and app hosting, verify DNS, and manage domain lifecycle."
+icon: "globe"
+---
+
+Domains are the foundation of your agent's identity on the internet. A registered and verified domain enables branded email addresses (like `agent@yourcompany.com`), custom app hosting, and professional outreach.
+
+## Why Domains Matter
+
+Without a custom domain, your agent uses a default subdomain like `yourcompany.usenaive.ai`. Registering your own domain unlocks:
+
+- **Branded email** — Send from `hello@acme.com` instead of `default@acme.usenaive.ai`
+- **Better deliverability** — Verified domains with proper SPF/DKIM/DMARC have higher inbox rates
+- **App hosting** — Connect domains to deployed apps for production URLs
+- **Professional identity** — Customers and partners see your actual brand
+
+## Domain Lifecycle
+
+```
+Register → Configure DNS → Verify → Active → Connect to apps
+                ↑                        ↓
+                └── Retry DNS ←── Failed
+```
+
+<Steps>
+  <Step title="Register the domain">
+    Tell Naive about the domain you own. This doesn't purchase a domain — you must already own it at a registrar (GoDaddy, Cloudflare, Namecheap, Route53, etc.).
+
+    <CodeGroup>
+    ```bash curl
+    curl -X POST https://api.usenaive.ai/v1/domains/register \
+      -H "Authorization: Bearer nv_sk_your_key_here" \
+      -H "Content-Type: application/json" \
+      -d '{"domain": "acme.com"}'
+    ```
+
+    ```python Python
+    import requests
+
+    response = requests.post(
+        "https://api.usenaive.ai/v1/domains/register",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+        json={"domain": "acme.com"},
+    )
+    domain = response.json()
+    print(domain["dnsRecords"])  # Records to configure
+    ```
+
+    ```typescript TypeScript
+    const response = await fetch("https://api.usenaive.ai/v1/domains/register", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ domain: "acme.com" }),
+    });
+    const domain = await response.json();
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.usenaive.ai/v1/domains/register", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ domain: "acme.com" }),
+    });
+    const domain = await response.json();
+    ```
+    </CodeGroup>
+
+    The response includes DNS records you need to add at your registrar:
+
+    ```json
+    {
+      "domain": {
+        "id": "dom_abc123",
+        "domain": "acme.com",
+        "status": "pending",
+        "dnsRecords": [
+          { "type": "MX", "name": "acme.com", "value": "feedback-smtp.us-east-1.amazonses.com", "priority": 10 },
+          { "type": "TXT", "name": "acme.com", "value": "v=spf1 include:amazonses.com ~all" },
+          { "type": "CNAME", "name": "resend._domainkey.acme.com", "value": "resend.domainkey.us-east-1.amazonses.com" }
+        ]
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Configure DNS records">
+    Go to your domain registrar's DNS management panel and add each record from the response:
+
+    | Type | Name | Value |
+    |------|------|-------|
+    | MX | `acme.com` | `feedback-smtp.us-east-1.amazonses.com` (priority 10) |
+    | TXT | `acme.com` | `v=spf1 include:amazonses.com ~all` |
+    | CNAME | `resend._domainkey.acme.com` | `resend.domainkey.us-east-1.amazonses.com` |
+
+    <Info>
+    DNS propagation typically takes 5-30 minutes, but can take up to 48 hours in some cases.
+    </Info>
+  </Step>
+
+  <Step title="Verify DNS">
+    After adding records, check if they've propagated:
+
+    <CodeGroup>
+    ```bash curl
+    curl https://api.usenaive.ai/v1/domains/dom_abc123/dns \
+      -H "Authorization: Bearer nv_sk_your_key_here"
+    ```
+
+    ```python Python
+    response = requests.get(
+        "https://api.usenaive.ai/v1/domains/dom_abc123/dns",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    )
+    dns = response.json()
+    print(f"Verified: {dns['verified']}")
+    for record in dns["records"]:
+        print(f"  {record['type']} {record['name']}: {record['status']}")
+    ```
+
+    ```typescript TypeScript
+    const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/dns", {
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    const dns = await response.json();
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/dns", {
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    const dns = await response.json();
+    ```
+    </CodeGroup>
+
+    Response shows per-record verification status:
+
+    ```json
+    {
+      "verified": false,
+      "records": [
+        { "type": "MX", "name": "acme.com", "value": "...", "status": "verified" },
+        { "type": "TXT", "name": "acme.com", "value": "...", "status": "pending" },
+        { "type": "CNAME", "name": "resend._domainkey.acme.com", "value": "...", "status": "pending" }
+      ]
+    }
+    ```
+
+    Once all records show `"verified"`, the domain is ready for email sending.
+  </Step>
+
+  <Step title="Retry if needed">
+    If verification fails or stalls, you can trigger a re-check after fixing DNS records:
+
+    <CodeGroup>
+    ```bash curl
+    curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns \
+      -H "Authorization: Bearer nv_sk_your_key_here"
+    ```
+
+    ```python Python
+    response = requests.post(
+        "https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    )
+    ```
+
+    ```typescript TypeScript
+    await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns", {
+      method: "POST",
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    ```
+
+    ```javascript JavaScript
+    await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/retry-dns", {
+      method: "POST",
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Listing Your Domains
+
+View all registered domains and their verification status:
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/domains \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+response = requests.get(
+    "https://api.usenaive.ai/v1/domains",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+for domain in response.json()["domains"]:
+    status = "verified" if domain["verified"] else "pending"
+    print(f"{domain['domain']} — {status}")
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/domains", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const { domains } = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/domains", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const { domains } = await response.json();
+```
+</CodeGroup>
+
+## Connecting Domains to Apps
+
+Once verified, connect a domain to a deployed app for production hosting:
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/connect-app \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"app_id": "app_xyz789"}'
+```
+
+```python Python
+response = requests.post(
+    "https://api.usenaive.ai/v1/domains/dom_abc123/connect-app",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"app_id": "app_xyz789"},
+)
+```
+
+```typescript TypeScript
+await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/connect-app", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ app_id: "app_xyz789" }),
+});
+```
+
+```javascript JavaScript
+await fetch("https://api.usenaive.ai/v1/domains/dom_abc123/connect-app", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ app_id: "app_xyz789" }),
+});
+```
+</CodeGroup>
+
+To disconnect later:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/domains/dom_abc123/disconnect-app \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+## Deleting a Domain
+
+<Warning>
+Deleting a domain is **irreversible**. All DNS records, email routing, and hosting configuration are permanently removed. The domain must be re-registered and DNS reconfigured from scratch.
+</Warning>
+
+```bash
+curl -X DELETE https://api.usenaive.ai/v1/domains/dom_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+## API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [Register Domain](/api-reference/domains/register-domain) | POST | Register a new domain |
+| [List Domains](/api-reference/domains/list-company-domains) | GET | List all company domains |
+| [Check DNS](/api-reference/domains/check-domain-dns) | GET | Verify DNS propagation |
+| [Retry DNS](/api-reference/domains/retry-domain-dns) | POST | Re-trigger DNS verification |
+| [Connect to App](/api-reference/domains/connect-domain-to-app) | POST | Link domain to an app |
+| [Disconnect from App](/api-reference/domains/disconnect-domain-from-app) | POST | Unlink domain from app |
+| [Delete Domain](/api-reference/domains/delete-domain) | DELETE | Permanently remove domain |

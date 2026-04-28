@@ -57,6 +57,7 @@
               "guides/payments",
               "guides/integrations",
               "guides/browser",
+              "guides/domains",
               "guides/credentials",
               "guides/research"
             ]
