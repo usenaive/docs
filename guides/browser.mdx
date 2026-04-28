@@ -1,10 +1,9 @@
 ---
 title: Browser Automation
-description: "Launch Chrome DevTools Protocol sessions for automated web interactions with Playwright or Puppeteer."
-icon: "globe"
+description: "The browser primitive — managed Chrome DevTools Protocol sessions for automated web interactions with Playwright or Puppeteer."
 ---
 
-Naive provides managed browser sessions that expose a Chrome DevTools Protocol (CDP) endpoint. Your agent connects to it with Playwright or Puppeteer for automated web interactions — form filling, checkout flows, data extraction, and more.
+Browser is the primitive for the long tail of work that doesn't have a clean API. Naive provisions managed browser sessions that expose a Chrome DevTools Protocol (CDP) endpoint per employee. The agent (or its Playwright/Puppeteer driver) connects to that endpoint to fill forms, run checkout flows, scrape data, and operate any web UI it needs to. Stored credentials and cookies are scoped to the employee, so each session boots up "logged in" wherever it should be.
 
 ## Workflow
 

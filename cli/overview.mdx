@@ -1,14 +1,13 @@
 ---
 title: "CLI Overview"
-description: "The Naive CLI handles setup, configuration, tool discovery, and key management — everything except executing primitives."
-icon: "terminal"
+description: "The Naive CLI handles setup, primitive discovery, and key management — everything an operator does outside the agent loop."
 sidebarTitle: "Overview"
 ---
 
-The Naive CLI (`naive`) is a command-line tool for setting up and managing your Naive integration. It handles initial configuration, API key management, tool discovery, and connection diagnostics.
+The Naive CLI (`naive`) is the operator-side tool for working with Naive. It handles initial configuration, API key management, primitive discovery, and connection diagnostics — the things a human does to wire an employee into Naive Core, not the things the agent does at inference time.
 
 <Note>
-  The CLI is for **setup and management**. It does not execute primitives directly — that's the job of the [MCP server](/mcp/overview), which your agent runtime calls at inference time.
+  The CLI is for **setup and management**. It does not execute primitives directly — that's the job of the [MCP server](/mcp/overview), which the agent harness calls during inference. Think of the CLI as the admin console; the MCP server is the runtime.
 </Note>
 
 ## Installation

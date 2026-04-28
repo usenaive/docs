@@ -1,7 +1,6 @@
 ---
 title: Authentication
 description: "API key format, Bearer token authentication, rate limits, and error handling."
-icon: "key"
 ---
 
 ## API Keys
@@ -18,14 +17,14 @@ All keys start with `nv_sk_` followed by a random string. Keys are shown only on
 
 ### Key Scoping
 
-Each API key is bound to a specific **agent** and **company**. When you authenticate:
+Each API key is bound to one **employee** inside one **company** in Naive Core. When you authenticate:
 
 1. The API hashes your key with SHA-256
 2. Looks up the hash in the `agent_api_keys` table
-3. Resolves the `agentId` and `companyId`
-4. All resources are automatically scoped — email addresses, social accounts, payment cards, and credentials belong to that agent's company
+3. Resolves the `agentId` (employee) and `companyId`
+4. All resources are automatically scoped — email addresses, social accounts, payment cards, and credentials belong to that employee inside its company
 
-You never need to pass `agent_id` in your requests. It's resolved from your key.
+You never need to pass `agent_id` or `company_id` in your requests. Identity is resolved from your key, the same way Naive Core wires every employee into its environment.
 
 ## Making Authenticated Requests
 

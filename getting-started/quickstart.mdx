@@ -1,14 +1,15 @@
 ---
 title: Quickstart
-description: "Get your AI agent connected to Naive in under 5 minutes."
-icon: "bolt"
+description: "Get an employee connected to Naive and calling primitives in under 5 minutes."
 ---
+
+This walks through wiring a single AI agent into Naive — provisioning it as an **employee** inside a **company**, then calling its first primitive. Five minutes, end to end.
 
 <Steps>
   <Step title="Get your API key">
     Sign up at [usenaive.ai/developers](https://usenaive.ai/developers) and create an API key.
 
-    Your key will look like `nv_sk_...` — it's bound to a specific agent and company. All resources (email addresses, social accounts, payment cards) are scoped to this key automatically.
+    Your key will look like `nv_sk_...` — it's bound to one **employee** inside one **company** in Naive Core. The key automatically scopes every primitive call: the employee's email address, social accounts, payment cards, and credentials are all wired in by Core.
 
     <Warning>
     Copy your API key immediately. It's only shown once — after that, only the key hash is stored.
@@ -21,8 +22,8 @@ icon: "bolt"
     ```
 
     This installs two binaries:
-    - **`naive`** — CLI for setup, configuration, and tool exploration
-    - **`naive-mcp`** — MCP server that connects your agent to Naive's primitives
+    - **`naive`** — CLI for setup, configuration, and primitive exploration
+    - **`naive-mcp`** — MCP server that gives your agent harness access to all primitives
   </Step>
 
   <Step title="Initialize">
@@ -48,9 +49,9 @@ Once your runtime restarts, check that everything is working:
 naive status
 ```
 
-You should see your agent name, company, and a list of available primitives.
+You should see the employee's name, the company they belong to, and the list of primitives available to them.
 
-Or ask your agent directly: *"Check my Naive connection status"* — it will call the status endpoint and confirm.
+Or ask the agent directly: *"Check my Naive connection status"* — it will call the status endpoint and confirm.
 
 ## Your First API Call
 
@@ -147,7 +148,7 @@ The MCP server communicates over **stdio** — the agent runtime launches it as 
 
 ## What's Available
 
-Once connected, your agent has access to 54 tools. Here are a few things to try:
+Once connected, your employee has access to 54 primitives. Here are a few things to try:
 
 | Try this | What happens |
 |----------|-------------|
@@ -160,16 +161,16 @@ Once connected, your agent has access to 54 tools. Here are a few things to try:
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Authentication" icon="key" href="/getting-started/authentication">
+  <Card title="Authentication" href="/getting-started/authentication">
     API key format, rate limits, and error handling
   </Card>
-  <Card title="Installation" icon="download" href="/getting-started/installation">
-    Runtime-specific setup for Claude, Cursor, and custom agents
+  <Card title="Naive Core" href="/core/companies">
+    Companies, employees, and orchestration — the environment your primitives run in
   </Card>
-  <Card title="Email Guide" icon="envelope" href="/guides/email">
+  <Card title="Email Primitive" href="/guides/email">
     Send your first email and set up custom domains
   </Card>
-  <Card title="Social Media Guide" icon="share-nodes" href="/guides/social-media">
+  <Card title="Social Primitive" href="/guides/social-media">
     Connect accounts and start posting
   </Card>
 </CardGroup>
