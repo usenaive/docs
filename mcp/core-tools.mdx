@@ -1,12 +1,12 @@
 ---
 title: "Core Tools"
-description: "The 8 primitives registered directly in your agent's context window with full schemas."
+description: "The 9 primitives registered directly in your agent's context window with full schemas."
 sidebarTitle: "Core Tools"
 ---
 
 Core tools are registered directly in the MCP context window with complete Zod schemas. Your agent can call them without any discovery step — they appear in the tool list just like built-in capabilities.
 
-These 8 tools were chosen for the context window because they represent the **highest-frequency actions** agents need to perform: communicating, publishing, creating content, and gathering information.
+These 9 tools were chosen for the context window because they represent the **highest-frequency actions** agents need to perform: communicating, publishing, creating content, establishing brand identity, and gathering information.
 
 <Note>
   For all other tools, use the [meta-tools](/mcp/meta-tools) (`naive_search` → `naive_tool_help` → `naive_execute`) to discover and call them on demand.
@@ -270,17 +270,55 @@ Search Pexels for free stock videos and photos.
 
 ## check_integrations
 
-List all available integrations across CMS platforms, Composio toolkits, and browser connections.
+List all available integrations across CMS platforms, SaaS toolkits, and browser connections.
 
 No parameters required.
 
 <ResponseField name="integrations" type="object">
-  Integration status organized by type: `{ cms: [...], composio: [...], connections: [...] }`.
+  Integration status organized by type: `{ cms: [...], saas: [...], connections: [...] }`.
 </ResponseField>
 
 **Supported CMS platforms:** Webflow, Ghost, Shopify, Framer.
 
-**Composio toolkits:** 100+ SaaS integrations including Slack, GitHub, Notion, HubSpot, and more.
+**SaaS toolkits:** 100+ integrations including Slack, GitHub, Notion, HubSpot, and more.
 
 Call this tool first to discover what's available, then use `get_integration_tools` (extended tool) to see what actions a specific integration supports.
+
+---
+
+## recommend_brand_kit
+
+AI-generate a brand identity (tagline, colors, style, font, tone) from company context.
+
+<ParamField body="company_description" type="string">
+  Override company description for generation context.
+</ParamField>
+
+<ParamField body="industry" type="string">
+  Industry or vertical (e.g., `fintech`, `healthcare`, `e-commerce`).
+</ParamField>
+
+<ParamField body="target_audience" type="string">
+  Target audience (e.g., `developers`, `enterprise buyers`).
+</ParamField>
+
+<ParamField body="style_preferences" type="string">
+  Visual style hints (e.g., `minimal and dark`, `bold enterprise`).
+</ParamField>
+
+<ResponseField name="brandKit" type="object">
+  Generated brand identity: `{ tagline, colors: { primary, secondary, accent }, styleDirection, fontPreference, tone }`.
+</ResponseField>
+
+```json Example
+{
+  "industry": "fintech",
+  "target_audience": "developers",
+  "style_preferences": "minimal, dark theme"
+}
+```
+
+<Note>
+  All inputs are optional — the endpoint infers from the company profile if no overrides are provided. The result is a recommendation, not automatically saved. Use `update_brand_kit` (extended tool) to persist the approved brand kit.
+</Note>
 

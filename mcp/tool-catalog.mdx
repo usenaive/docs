@@ -1,10 +1,10 @@
 ---
 title: "Tool Catalog"
-description: "Complete list of all 54 tools organized by category, with core/extended status and one-line descriptions."
+description: "Complete list of all 65 tools organized by category, with core/extended status and one-line descriptions."
 sidebarTitle: "Tool Catalog"
 ---
 
-The Naive platform provides **54 tools** across **11 categories**. 8 are registered as [core tools](/mcp/core-tools) in the MCP context window; the remaining 46 are accessible via the [meta-tools](/mcp/meta-tools) discovery flow.
+The Naive platform provides **70 tools** across **14 categories**. 9 are registered as [core tools](/mcp/core-tools) in the MCP context window; the remaining 61 are accessible via the [meta-tools](/mcp/meta-tools) discovery flow.
 
 <Note>
   **Core** tools (marked ★) are callable directly. **Extended** tools require `naive_search → naive_tool_help → naive_execute`. See the [API reference](/api-reference) for full parameter documentation.
@@ -62,10 +62,10 @@ The Naive platform provides **54 tools** across **11 categories**. 8 are registe
 
 | Tool | Status | Description |
 |------|--------|-------------|
-| `check_integrations` | ★ Core | List all available integrations (CMS, Composio, browser) |
+| `check_integrations` | ★ Core | List all available integrations (CMS, SaaS, browser) |
 | `get_integration_tools` | Extended | Get available actions for a specific integration |
 | `execute_integration` | Extended | Execute a tool on a connected integration |
-| `get_composio_auth_url` | Extended | Get OAuth URL for connecting third-party services |
+| `get_integration_auth_url` | Extended | Get OAuth URL for connecting third-party services |
 
 ## Domains (7 tools)
 
@@ -119,6 +119,37 @@ The Naive platform provides **54 tools** across **11 categories**. 8 are registe
 |------|--------|-------------|
 | `get_usage` | Extended | Get current credit balance, usage stats, and transaction history |
 
+## Company Registration (8 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `list_formation_states` | Extended | List US states supported for company formation with fees and SLAs |
+| `search_naics_codes` | Extended | Search the NAICS business classification catalog |
+| `draft_formation` | Extended | Stage a formation draft with structural details (no submission yet) |
+| `submit_formation` | Extended | Submit a KYC-verified formation for state filing |
+| `get_formation_status` | Extended | Check current formation progress and status |
+| `list_formation_documents` | Extended | List documents produced by a formation |
+| `get_formation_document` | Extended | Download a specific formation document |
+| `list_business_mail` | Extended | List scanned business mail at the registered agent address |
+
+## Identity Verification (4 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `start_verification` | Extended | Generate a hosted verification URL for a party to complete KYC |
+| `get_verification_status` | Extended | Check verification status for a party |
+| `list_watchlist_hits` | Extended | View watchlist match summaries for parties in review |
+| `revoke_verification_consent` | Extended | GDPR/CCPA — revoke vault data retention for a party |
+
+## Brand (4 tools)
+
+| Tool | Status | Description |
+|------|--------|-------------|
+| `recommend_brand_kit` | ★ Core | AI-generate a brand identity from company context |
+| `read_brand_kit` | Extended | Get the current persisted brand kit |
+| `update_brand_kit` | Extended | Update brand kit fields (partial updates supported) |
+| `generate_brand_logo` | Extended | AI-generate logo SVG options |
+
 ---
 
 ## Summary
@@ -136,4 +167,7 @@ The Naive platform provides **54 tools** across **11 categories**. 8 are registe
 | Browser | 3 | 0 | 3 |
 | Credentials | 3 | 0 | 3 |
 | Billing | 1 | 0 | 1 |
-| **Total** | **54** | **8** | **46** |
+| Company Registration | 8 | 0 | 8 |
+| Identity Verification | 4 | 0 | 4 |
+| Brand | 4 | 1 | 3 |
+| **Total** | **70** | **9** | **61** |

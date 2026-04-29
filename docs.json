@@ -95,7 +95,10 @@
               "guides/browser",
               "guides/domains",
               "guides/credentials",
-              "guides/research"
+              "guides/research",
+              "guides/business-registration",
+              "guides/identity-verification",
+              "guides/brand-kit"
             ]
           }
         ]
@@ -162,6 +165,15 @@
             ]
           },
           {
+            "group": "Brand",
+            "pages": [
+              "api-reference/brand/recommend-brand-kit",
+              "api-reference/brand/read-brand-kit",
+              "api-reference/brand/update-brand-kit",
+              "api-reference/brand/generate-brand-logo"
+            ]
+          },
+          {
             "group": "Research",
             "pages": [
               "api-reference/research/web-search",
@@ -175,7 +187,7 @@
               "api-reference/integrations/check-integrations",
               "api-reference/integrations/get-integration-tools",
               "api-reference/integrations/execute-integration",
-              "api-reference/integrations/get-composio-auth-url"
+              "api-reference/integrations/get-integration-auth-url"
             ]
           },
           {
@@ -222,6 +234,28 @@
               "api-reference/credentials/store-credential",
               "api-reference/credentials/get-credential",
               "api-reference/credentials/refresh-identity"
+            ]
+          },
+          {
+            "group": "Company Registration",
+            "pages": [
+              "api-reference/formation/list-formation-states",
+              "api-reference/formation/search-naics-codes",
+              "api-reference/formation/draft-formation",
+              "api-reference/formation/submit-formation",
+              "api-reference/formation/get-formation-status",
+              "api-reference/formation/list-formation-documents",
+              "api-reference/formation/get-formation-document",
+              "api-reference/formation/list-business-mail"
+            ]
+          },
+          {
+            "group": "Identity Verification",
+            "pages": [
+              "api-reference/verification/start-verification",
+              "api-reference/verification/get-verification-status",
+              "api-reference/verification/list-watchlist-hits",
+              "api-reference/verification/revoke-verification-consent"
             ]
           },
           {
