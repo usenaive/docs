@@ -1,0 +1,107 @@
+---
+title: "Get Template"
+description: "Retrieve full details for a single employee template."
+api: "GET /v1/templates/{slug}"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+Returns the complete template definition including default tasks, loops, and bundled files. No `X-Company-Id` header is required.
+
+<ParamField path="slug" type="string" required>
+  URL-safe slug identifying the template (e.g. `social-media-manager`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X GET https://api.usenaive.ai/v1/templates/social-media-manager \
+  -H "Authorization: Bearer nv_pk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/templates/social-media-manager",
+    headers={"Authorization": "Bearer nv_pk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/templates/social-media-manager", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="slug" type="string">
+  Unique URL-safe identifier for the template.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Human-readable template name.
+</ResponseField>
+
+<ResponseField name="department" type="string">
+  Department the template belongs to.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Detailed description of the template's purpose and capabilities.
+</ResponseField>
+
+<ResponseField name="skills" type="array">
+  List of skills / capabilities the template provides.
+</ResponseField>
+
+<ResponseField name="runtime_base" type="string">
+  Base runtime environment for employees created from this template.
+</ResponseField>
+
+<ResponseField name="default_tasks" type="array">
+  Pre-configured tasks that are automatically created when an employee is hired from this template.
+</ResponseField>
+
+<ResponseField name="default_loops" type="array">
+  Pre-configured recurring loops that are automatically set up for employees from this template.
+</ResponseField>
+
+<ResponseField name="files" type="array">
+  List of file names bundled with this template (e.g. prompt files, config).
+</ResponseField>
+
+```json Example Response
+{
+  "slug": "social-media-manager",
+  "name": "Social Media Manager",
+  "department": "marketing",
+  "description": "Manages social media scheduling, posting, and analytics across platforms.",
+  "skills": ["social_media", "analytics", "content_creation"],
+  "runtime_base": "browser",
+  "default_tasks": [
+    {
+      "title": "Set up social accounts",
+      "description": "Connect company social media accounts and verify access."
+    }
+  ],
+  "default_loops": [
+    {
+      "title": "Weekly analytics digest",
+      "cadence": "weekly",
+      "description": "Compile and post a weekly social media performance summary."
+    }
+  ],
+  "files": [
+    "system-prompt.md",
+    "brand-voice-guide.md",
+    "posting-schedule.json"
+  ]
+}
+```

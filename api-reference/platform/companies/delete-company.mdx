@@ -1,0 +1,85 @@
+---
+title: "Delete Company"
+description: "Permanently delete a company and all associated resources."
+api: "DELETE /v1/companies/{id}"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+<Warning>
+  **Destructive action.** Deleting a company will revoke all API keys, decommission all employees, and release all associated resources. This cannot be undone.
+</Warning>
+
+<ParamField path="id" type="string" required>
+  The company ID to delete.
+</ParamField>
+
+<ParamField body="confirm" type="boolean" required>
+  Must be `true` to confirm deletion. Requests with `confirm: false` or a missing `confirm` field will be rejected.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://api.usenaive.ai/v1/companies/comp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: comp_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "confirm": true
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.delete(
+    "https://api.usenaive.ai/v1/companies/comp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "comp_abc123",
+    },
+    json={
+        "confirm": True,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/companies/comp_abc123", {
+  method: "DELETE",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "comp_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    confirm: true,
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the deletion was processed.
+</ResponseField>
+
+<ResponseField name="deleted" type="boolean">
+  `true` if the company and all resources were successfully removed.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "deleted": true
+}
+```
+
+**What gets deleted:**
+- All API keys associated with the company are revoked immediately.
+- All employees (agents) are decommissioned.
+- All company data, domains, and provisioned resources are released.
+- This action is **irreversible**.

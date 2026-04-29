@@ -203,27 +203,40 @@ To send emails from your own domain instead of `*.usenaive.ai`:
   </Step>
 </Steps>
 
-## Advanced Email Operations
+## All Email Endpoints
 
-Beyond basic sending and inbox, Naive provides additional email operations:
+### Core Email (via Naive internal API)
 
-<CardGroup cols={2}>
-  <Card title="Batch Sends" icon="envelopes-bulk" href="/api-reference/communication/email-send-batch">
-    Send up to 100 individual emails in a single call
-  </Card>
-  <Card title="Delivery Tracking" icon="chart-line" href="/api-reference/communication/email-get-sent-status">
-    Check delivery status, opens, clicks, and bounces
-  </Card>
-  <Card title="Scheduling" icon="clock" href="/api-reference/communication/email-cancel-scheduled">
-    Cancel or update scheduled emails before they send
-  </Card>
-  <Card title="Attachments" icon="paperclip" href="/api-reference/communication/email-list-sent-attachments">
-    List and retrieve attachments from sent emails
-  </Card>
-</CardGroup>
+| Endpoint | Description |
+|----------|-------------|
+| [Send Email](/api-reference/communication/send-email) | Send a single email with audit logging and sensitive data blocking |
+| [List Inbox](/api-reference/communication/list-inbox) | List inbound email metadata (subject, sender, date) |
+| [Get Email Body](/api-reference/communication/get-email-body) | Read the full body of an inbound email |
+
+### Batch & Tracking
+
+| Endpoint | Description |
+|----------|-------------|
+| [Send Batch](/api-reference/communication/email-send-batch) | Send up to 100 individual emails in one call |
+| [List Sent](/api-reference/communication/email-list-sent) | List all sent emails with delivery status |
+| [Get Sent Status](/api-reference/communication/email-get-sent-status) | Check delivery status, opens, clicks, bounces for a specific email |
+
+### Scheduling
+
+| Endpoint | Description |
+|----------|-------------|
+| [Cancel Scheduled](/api-reference/communication/email-cancel-scheduled) | Cancel a scheduled email before it sends |
+| [Update Scheduled](/api-reference/communication/email-update-scheduled) | Modify a scheduled email's send time |
+
+### Attachments
+
+| Endpoint | Description |
+|----------|-------------|
+| [List Attachments](/api-reference/communication/email-list-sent-attachments) | List attachments from a sent email |
+| [Get Attachment](/api-reference/communication/email-get-sent-attachment) | Download a specific attachment |
 
 <Info>
-Use `send_email` for individual sends — it handles agent identity, sensitive data blocking, and audit logging. Use `email_send_batch` for bulk sends (up to 100 emails per call).
+`send_email` is the primary sending primitive — it handles agent identity, sensitive data blocking, and audit logging. Use `email_send_batch` for high-volume sends (up to 100 per call). Use the tracking and scheduling endpoints to monitor delivery and manage scheduled sends.
 </Info>
 
 ## Typical Workflow
@@ -231,14 +244,21 @@ Use `send_email` for individual sends — it handles agent identity, sensitive d
 ```
 Agent receives task: "Follow up with leads from yesterday's webinar"
     │
-    ├─ list_inbox()                          → Check for any replies first
+    ├─ list_inbox()                              → Check for replies
     │
-    ├─ get_email_body({ email_id })          → Read relevant replies
+    ├─ get_email_body({ email_id })              → Read relevant replies
     │
-    └─ send_email({                          → Send personalized follow-ups
-         to: "lead@company.com",
-         subject: "Great seeing you at the webinar",
-         body: "Hi Alex, ...",
-         reason: "Post-webinar lead follow-up campaign"
-       })
+    ├─ send_email({                              → Send personalized follow-up
+    │    to: "lead@company.com",
+    │    subject: "Great seeing you",
+    │    body: "Hi Alex, ...",
+    │    reason: "Post-webinar follow-up"
+    │  })
+    │
+    ├─ email_get_sent_status({ email_id })       → Check delivery status
+    │
+    └─ email_send_batch([                        → Bulk send to remaining leads
+         { to: "b@example.com", subject: "...", html: "..." },
+         { to: "c@example.com", subject: "...", html: "..." }
+       ])
 ```

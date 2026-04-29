@@ -1,0 +1,74 @@
+---
+title: "Delete Employee"
+description: "Permanently remove an employee from a company."
+api: "DELETE /v1/employees/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the employee belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The employee's unique identifier.
+</ParamField>
+
+<Warning>
+  This action is **irreversible**. Deleting an employee will:
+  - Revoke the employee's API key immediately
+  - Reset the flex slot, freeing it for a new hire
+  - Clean up all associated resources (loops, pending tasks, connections)
+</Warning>
+
+<CodeGroup>
+```bash curl
+curl -X DELETE https://api.usenaive.ai/v1/employees/emp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.delete(
+    "https://api.usenaive.ai/v1/employees/emp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/employees/emp_abc123",
+  {
+    method: "DELETE",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+    },
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the deletion succeeded.
+</ResponseField>
+
+<ResponseField name="decommissioned" type="boolean">
+  `true` confirming the employee has been fully decommissioned.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "decommissioned": true
+}
+```
+
+Completed deliverables and historical task data are retained for audit purposes, but the employee can no longer be referenced in new tasks or loops.

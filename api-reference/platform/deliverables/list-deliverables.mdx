@@ -1,0 +1,127 @@
+---
+title: "List Deliverables"
+description: "List all deliverables for a company, with optional filters."
+api: "GET /v1/deliverables"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to list deliverables for.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by review status. One of `pending_review`, `approved`, or `rejected`.
+</ParamField>
+
+<ParamField query="task_id" type="string">
+  Filter deliverables linked to a specific task.
+</ParamField>
+
+<ParamField query="type" type="string">
+  Filter by deliverable type (e.g. `blog_post`, `email_draft`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/deliverables?status=pending_review \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/deliverables",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    params={"status": "pending_review"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/deliverables?status=pending_review",
+  {
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+    },
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="deliverables" type="array">
+  Array of deliverable objects.
+</ResponseField>
+
+<ResponseField name="deliverables[].id" type="string">
+  Unique identifier for the deliverable.
+</ResponseField>
+
+<ResponseField name="deliverables[].title" type="string">
+  Display title of the deliverable.
+</ResponseField>
+
+<ResponseField name="deliverables[].type" type="string">
+  Deliverable type (e.g. `email_draft`, `blog_post`, `social_post`).
+</ResponseField>
+
+<ResponseField name="deliverables[].folder" type="string">
+  Folder category the deliverable belongs to.
+</ResponseField>
+
+<ResponseField name="deliverables[].status" type="string">
+  Review status: `pending_review`, `approved`, or `rejected`.
+</ResponseField>
+
+<ResponseField name="deliverables[].content" type="string">
+  Truncated content preview (first 200 characters).
+</ResponseField>
+
+<ResponseField name="deliverables[].task_id" type="string">
+  ID of the task that produced this deliverable, or `null`.
+</ResponseField>
+
+<ResponseField name="deliverables[].campaign_id" type="string">
+  ID of the associated campaign, or `null`.
+</ResponseField>
+
+<ResponseField name="deliverables[].created_at" type="string">
+  ISO 8601 timestamp of when the deliverable was created.
+</ResponseField>
+
+```json Example Response
+{
+  "deliverables": [
+    {
+      "id": "del_abc123",
+      "title": "Weekly Newsletter Draft",
+      "type": "email_draft",
+      "folder": "emails",
+      "status": "pending_review",
+      "content": "Hi there! Here's what happened this week at Acme Corp...",
+      "task_id": "task_xyz789",
+      "campaign_id": "camp_def456",
+      "created_at": "2026-04-29T10:00:00Z"
+    },
+    {
+      "id": "del_def456",
+      "title": "Product Launch Blog Post",
+      "type": "blog_post",
+      "folder": "blog",
+      "status": "pending_review",
+      "content": "We're thrilled to announce the launch of our newest feature...",
+      "task_id": null,
+      "campaign_id": "camp_def456",
+      "created_at": "2026-04-28T14:30:00Z"
+    }
+  ]
+}
+```

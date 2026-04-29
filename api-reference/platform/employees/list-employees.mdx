@@ -1,0 +1,105 @@
+---
+title: "List Employees"
+description: "List all employees in a company."
+api: "GET /v1/employees"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to list employees for.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/employees \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/employees",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/employees", {
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="employees" type="array">
+  Array of employee objects.
+</ResponseField>
+
+<ResponseField name="employees[].paperclipId" type="string">
+  Unique Naive identifier for the employee.
+</ResponseField>
+
+<ResponseField name="employees[].agentId" type="string">
+  Internal agent identifier.
+</ResponseField>
+
+<ResponseField name="employees[].name" type="string">
+  Employee display name.
+</ResponseField>
+
+<ResponseField name="employees[].title" type="string">
+  Job title (e.g., "Content Writer").
+</ResponseField>
+
+<ResponseField name="employees[].role" type="string">
+  Role slug describing the employee's function.
+</ResponseField>
+
+<ResponseField name="employees[].capabilities" type="array">
+  List of primitive categories the employee can use.
+</ResponseField>
+
+<ResponseField name="employees[].reportsTo" type="string">
+  `paperclipId` of the employee's manager, or `null` if top-level.
+</ResponseField>
+
+<ResponseField name="employees[].status" type="string">
+  Current status: `active`, `paused`, or `decommissioned`.
+</ResponseField>
+
+```json Example Response
+{
+  "employees": [
+    {
+      "paperclipId": "emp_abc123",
+      "agentId": "agent_xyz",
+      "name": "Alice",
+      "title": "Content Writer",
+      "role": "writer",
+      "capabilities": ["email", "research", "creation"],
+      "reportsTo": null,
+      "status": "active"
+    },
+    {
+      "paperclipId": "emp_def456",
+      "agentId": "agent_uvw",
+      "name": "Bob",
+      "title": "Social Media Manager",
+      "role": "social",
+      "capabilities": ["distribution", "research"],
+      "reportsTo": "emp_abc123",
+      "status": "active"
+    }
+  ]
+}
+```

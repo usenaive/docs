@@ -1,0 +1,103 @@
+---
+title: "Checkout Task"
+description: "Claim a task for a specific employee, moving it to in-progress."
+api: "POST /v1/tasks/{id}/checkout"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+<ParamField path="id" type="string" required>
+  Unique task identifier.
+</ParamField>
+
+<ParamField body="employee_id" type="string" required>
+  The employee claiming the task.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/tasks/task_001/checkout \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "employee_id": "emp_writer01"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/tasks/task_001/checkout",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "employee_id": "emp_writer01",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/tasks/task_001/checkout", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    employee_id: "emp_writer01",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the checkout succeeded.
+</ResponseField>
+
+<ResponseField name="task" type="object">
+  The updated task object with status set to `in_progress`.
+</ResponseField>
+
+<ResponseField name="task.id" type="string">
+  Unique task identifier.
+</ResponseField>
+
+<ResponseField name="task.status" type="string">
+  Updated to `in_progress`.
+</ResponseField>
+
+<ResponseField name="task.assignee" type="string">
+  Employee ID that now owns the task.
+</ResponseField>
+
+<ResponseField name="task.updated_at" type="string">
+  ISO 8601 timestamp of the checkout.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "task": {
+    "id": "task_001",
+    "title": "Draft Q3 blog post",
+    "description": "Write a 1,200-word blog post covering Q3 product updates.",
+    "status": "in_progress",
+    "priority": "high",
+    "assignee": "emp_writer01",
+    "creator": "user_jane",
+    "goal_id": "goal_content_q3",
+    "campaign_id": null,
+    "created_at": "2026-04-20T09:00:00Z",
+    "updated_at": "2026-04-29T11:05:00Z"
+  }
+}
+```

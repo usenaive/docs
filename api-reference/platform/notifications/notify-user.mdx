@@ -1,0 +1,93 @@
+---
+title: "Notify User"
+description: "Send a notification to the user."
+api: "POST /v1/notifications"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to send the notification for.
+</ParamField>
+
+<ParamField body="category" type="string" required>
+  Notification category: `info`, `warning`, `error`, `success`, or `action_needed`.
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  Notification title.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Notification message body.
+</ParamField>
+
+<ParamField body="task_id" type="string">
+  Optional task ID to associate with the notification.
+</ParamField>
+
+<ParamField body="campaign_id" type="string">
+  Optional campaign ID to associate with the notification.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/notifications \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "category": "action_needed",
+    "title": "Campaign review required",
+    "message": "The Q2 Product Launch campaign has 3 deliverables pending your approval.",
+    "campaign_id": "camp_abc123"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/notifications",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "category": "action_needed",
+        "title": "Campaign review required",
+        "message": "The Q2 Product Launch campaign has 3 deliverables pending your approval.",
+        "campaign_id": "camp_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/notifications", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    category: "action_needed",
+    title: "Campaign review required",
+    message: "The Q2 Product Launch campaign has 3 deliverables pending your approval.",
+    campaign_id: "camp_abc123",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the notification was sent successfully.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

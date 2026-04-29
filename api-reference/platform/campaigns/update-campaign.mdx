@@ -1,0 +1,93 @@
+---
+title: "Update Campaign"
+description: "Update an existing campaign."
+api: "PATCH /v1/campaigns/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the campaign belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The campaign ID to update.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Updated campaign title.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated campaign description.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Updated campaign status.
+</ParamField>
+
+<ParamField body="target_date" type="string">
+  Updated ISO 8601 target completion date.
+</ParamField>
+
+<ParamField body="success_criteria" type="string">
+  Updated criteria for measuring campaign success.
+</ParamField>
+
+Only include the fields you want to change. Omitted fields are left unchanged.
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/campaigns/camp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "active",
+    "target_date": "2026-07-15T00:00:00Z"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/campaigns/camp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "status": "active",
+        "target_date": "2026-07-15T00:00:00Z",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/campaigns/camp_abc123", {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    status: "active",
+    target_date: "2026-07-15T00:00:00Z",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update was applied successfully.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

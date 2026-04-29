@@ -1,0 +1,96 @@
+---
+title: "Update Employee"
+description: "Update an employee's focus, context, strategy, notes, or memo."
+api: "PATCH /v1/employees/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the employee belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The employee's unique identifier.
+</ParamField>
+
+<ParamField body="focus" type="string">
+  Updated focus area or priority directive.
+</ParamField>
+
+<ParamField body="context" type="string">
+  Updated background context for the employee.
+</ParamField>
+
+<ParamField body="strategy" type="string">
+  Updated high-level strategy.
+</ParamField>
+
+<ParamField body="notes" type="string">
+  Updated operator notes.
+</ParamField>
+
+<ParamField body="memo" type="string">
+  Extended internal memo. Maximum 4000 characters.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/employees/emp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "focus": "Shift to video scripts for Q3 campaign",
+    "context": "We are launching a YouTube channel targeting developers.",
+    "strategy": "Short-form, tutorial-style scripts under 10 minutes."
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/employees/emp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "focus": "Shift to video scripts for Q3 campaign",
+        "context": "We are launching a YouTube channel targeting developers.",
+        "strategy": "Short-form, tutorial-style scripts under 10 minutes.",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/employees/emp_abc123", {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    focus: "Shift to video scripts for Q3 campaign",
+    context: "We are launching a YouTube channel targeting developers.",
+    strategy: "Short-form, tutorial-style scripts under 10 minutes.",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update succeeded.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+Only the fields you include in the request body are updated — omitted fields remain unchanged.

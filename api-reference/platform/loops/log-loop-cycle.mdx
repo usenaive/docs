@@ -1,0 +1,99 @@
+---
+title: "Log Loop Cycle"
+description: "Log the results of a completed loop cycle."
+api: "POST /v1/loops/{id}/cycle"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the loop belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The loop ID to log a cycle for.
+</ParamField>
+
+<ParamField body="summary" type="string" required>
+  A brief summary of what happened during this cycle.
+</ParamField>
+
+<ParamField body="action" type="string" required>
+  The primary action taken during this cycle.
+</ParamField>
+
+<ParamField body="performance_data" type="object">
+  Arbitrary performance metrics from this cycle (e.g. `{ "replies": 7, "sentiment": 0.85 }`).
+</ParamField>
+
+<ParamField body="cost_usd" type="number">
+  Estimated cost of this cycle in USD.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/loops/loop_abc123/cycle \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "summary": "Responded to 7 social mentions with positive engagement.",
+    "action": "draft_replies",
+    "performance_data": {
+      "replies": 7,
+      "sentiment": 0.85
+    },
+    "cost_usd": 0.12
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/loops/loop_abc123/cycle",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "summary": "Responded to 7 social mentions with positive engagement.",
+        "action": "draft_replies",
+        "performance_data": {"replies": 7, "sentiment": 0.85},
+        "cost_usd": 0.12,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/loops/loop_abc123/cycle",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      summary: "Responded to 7 social mentions with positive engagement.",
+      action: "draft_replies",
+      performance_data: { replies: 7, sentiment: 0.85 },
+      cost_usd: 0.12,
+    }),
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the cycle was successfully logged.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

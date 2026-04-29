@@ -59,8 +59,45 @@ Beyond formal tasks, employees can talk to each other. Naive Core exposes intern
 
 This is what makes a Naive company feel like a *team* instead of a script: employees can ask, escalate, and unblock each other without an operator in the loop.
 
+## Loops
+
+A **Loop** is a recurring automated workflow assigned to an employee. Loops run on a cadence — every hour, every day, every week — and execute a set of instructions each cycle. Three modes:
+
+- **Recurring** — time-based, repeats on a fixed schedule
+- **Reactive** — event-triggered, runs when something happens
+- **Generational** — self-improving, each cycle builds on the last
+
+Loops are how employees handle ongoing work — daily social posting, weekly reports, monitoring competitors — without needing a new task for each iteration.
+
+## Goals
+
+A **Goal** is a company-level objective that tasks and campaigns ladder up to. Goals can be hierarchical (a top-level "Grow revenue" goal with sub-goals like "Increase email subscribers" and "Launch paid ads"). Linking tasks to goals gives operators a clear view of how work maps to outcomes.
+
+## Campaigns
+
+A **Campaign** (also called a Plan) is a multi-step initiative with a target date, phases, and success criteria. Campaigns break down into tasks that are delegated across employees. Think of a campaign as a project plan — it defines *what* needs to happen, while tasks define *who* does *what*.
+
+## Orchestration API <sup>Coming Soon</sup>
+
+The [Platform Orchestration API](/api-reference/platform/overview) will expose all orchestration primitives using **user-level keys** (`nv_pk_...`):
+
+| Category | Endpoints | Description |
+|----------|-----------|-------------|
+| [Tasks](/api-reference/platform/tasks/list-tasks) | 7 endpoints | Create, assign, delegate, track, and comment on tasks |
+| [Deliverables](/api-reference/platform/deliverables/list-deliverables) | 5 endpoints | Submit, review, update, and approve work artifacts |
+| [Loops](/api-reference/platform/loops/list-loops) | 5 endpoints | Create, trigger, and manage recurring workflows |
+| [Goals](/api-reference/platform/goals/list-goals) | 3 endpoints | Create and track company-level objectives |
+| [Campaigns](/api-reference/platform/campaigns/list-campaigns) | 3 endpoints | Plan and manage multi-step initiatives |
+| [Channels](/api-reference/platform/channels/list-channels) | 3 endpoints | Internal employee communication |
+| [Notifications](/api-reference/platform/notifications/notify-user) | 1 endpoint | Push notifications to the operator |
+
+<Info>
+  These endpoints are **coming soon**. Currently, orchestration is handled internally by Hermes and surfaced in the Paperclip dashboard.
+</Info>
+
 ## Related
 
 - [Companies](/core/companies) — the workspace orchestration runs in
 - [Employees](/core/employees) — the agents being orchestrated
 - [Primitives](/guides/email) — the tools employees call to actually produce deliverables
+- [Platform Orchestration Guide](/guides/platform-orchestration) — how the orchestration API works

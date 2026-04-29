@@ -1,0 +1,171 @@
+---
+title: "Create Campaign"
+description: "Create a new campaign for a company."
+api: "POST /v1/campaigns"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to create the campaign in.
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  Title for the campaign.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Description of the campaign.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Initial campaign status.
+</ParamField>
+
+<ParamField body="target_date" type="string">
+  ISO 8601 target completion date.
+</ParamField>
+
+<ParamField body="goal_id" type="string">
+  ID of the goal this campaign supports.
+</ParamField>
+
+<ParamField body="plan" type="string">
+  Detailed plan text for the campaign.
+</ParamField>
+
+<ParamField body="success_criteria" type="string">
+  Criteria for measuring campaign success.
+</ParamField>
+
+<ParamField body="lead_employee_id" type="string">
+  Employee ID of the campaign lead.
+</ParamField>
+
+<ParamField body="planned_task_count" type="number">
+  Number of planned tasks in the campaign.
+</ParamField>
+
+<ParamField body="phases" type="array">
+  Optional array of campaign phases. Each phase has a `title` and `description`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/campaigns \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Q2 Product Launch",
+    "description": "Launch the new product line with a multi-channel campaign.",
+    "target_date": "2026-06-30T00:00:00Z",
+    "goal_id": "goal_abc123",
+    "lead_employee_id": "emp_abc123",
+    "planned_task_count": 12,
+    "phases": [
+      { "title": "Pre-launch", "description": "Build hype and teasers" },
+      { "title": "Launch Week", "description": "Coordinated launch across channels" }
+    ]
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/campaigns",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "title": "Q2 Product Launch",
+        "description": "Launch the new product line with a multi-channel campaign.",
+        "target_date": "2026-06-30T00:00:00Z",
+        "goal_id": "goal_abc123",
+        "lead_employee_id": "emp_abc123",
+        "planned_task_count": 12,
+        "phases": [
+            {"title": "Pre-launch", "description": "Build hype and teasers"},
+            {"title": "Launch Week", "description": "Coordinated launch across channels"},
+        ],
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/campaigns", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    title: "Q2 Product Launch",
+    description: "Launch the new product line with a multi-channel campaign.",
+    target_date: "2026-06-30T00:00:00Z",
+    goal_id: "goal_abc123",
+    lead_employee_id: "emp_abc123",
+    planned_task_count: 12,
+    phases: [
+      { title: "Pre-launch", description: "Build hype and teasers" },
+      { title: "Launch Week", description: "Coordinated launch across channels" },
+    ],
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Unique identifier for the newly created campaign.
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Campaign title.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Campaign status.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Campaign description.
+</ResponseField>
+
+<ResponseField name="target_date" type="string">
+  Target completion date.
+</ResponseField>
+
+<ResponseField name="goal_id" type="string">
+  Associated goal ID, or `null`.
+</ResponseField>
+
+<ResponseField name="lead_employee_id" type="string">
+  Campaign lead employee ID.
+</ResponseField>
+
+<ResponseField name="planned_task_count" type="number">
+  Number of planned tasks.
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp of when the campaign was created.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "camp_abc123",
+  "title": "Q2 Product Launch",
+  "status": "draft",
+  "description": "Launch the new product line with a multi-channel campaign.",
+  "target_date": "2026-06-30T00:00:00Z",
+  "goal_id": "goal_abc123",
+  "lead_employee_id": "emp_abc123",
+  "planned_task_count": 12,
+  "created_at": "2026-04-29T12:00:00Z"
+}
+```

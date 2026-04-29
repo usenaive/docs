@@ -1,0 +1,82 @@
+---
+title: "Update Goal"
+description: "Update an existing goal."
+api: "PATCH /v1/goals/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the goal belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The goal ID to update.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Updated goal title.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Updated goal description.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Updated status: `active`, `completed`, or `archived`.
+</ParamField>
+
+Only include the fields you want to change. Omitted fields are left unchanged.
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/goals/goal_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "completed"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/goals/goal_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "status": "completed",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/goals/goal_abc123", {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    status: "completed",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update was applied successfully.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

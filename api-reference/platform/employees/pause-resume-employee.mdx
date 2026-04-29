@@ -1,0 +1,113 @@
+---
+title: "Pause / Resume Employee"
+description: "Pause or resume an employee's activity."
+api: "POST /v1/employees/{id}/pause"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+Use these endpoints to temporarily suspend and re-activate an employee. A paused employee stops processing tasks, sending heartbeats, and executing loops until resumed.
+
+## Pause
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the employee belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The employee's unique identifier.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/employees/emp_abc123/pause \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/employees/emp_abc123/pause",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/employees/emp_abc123/pause",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+    },
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+## Resume
+
+`POST /v1/employees/{id}/resume`
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/employees/emp_abc123/resume \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/employees/emp_abc123/resume",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/employees/emp_abc123/resume",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+    },
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+<ResponseField name="ok" type="boolean">
+  `true` if the pause or resume operation succeeded.
+</ResponseField>
+
+<Note>
+  Paused employees stop processing tasks and heartbeats immediately. Any in-flight task will complete, but no new tasks will be picked up until the employee is resumed.
+</Note>

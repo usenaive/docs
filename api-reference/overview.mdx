@@ -3,7 +3,15 @@ title: "API Overview"
 description: "Base URL, authentication, rate limits, and error handling for the Naive Primitives API."
 ---
 
-The Naive Primitives API is the **tools layer** every employee in Naive Core calls to act on the real world. Each endpoint is a single atomic capability — send an email, post to a social platform, generate an image, charge a card, register a domain — wrapped behind one consistent authentication model. If you're looking for the *environment* layer (companies, employees, orchestration), see [Naive Core](/core/companies) instead.
+Naive exposes two API surfaces under one base URL, separated by key type:
+
+- **Primitives API** (this tab) — the tools layer every employee calls to act on the real world. Each endpoint is a single atomic capability — send an email, post to a social platform, generate an image, charge a card, register a domain. Authenticated with **employee keys** (`nv_sk_...`), scoped to one employee inside one company.
+
+- **[Platform Orchestration API](/api-reference/platform/overview)** — the management layer for operators. Create companies, hire employees, delegate tasks, manage deliverables, run loops. Authenticated with **user-level keys** (`nv_pk_...`), scoped to the operator across all their companies.
+
+<Info>
+  The Platform Orchestration API is **coming soon**. See the [Platform API tab](/api-reference/platform/overview) for the full endpoint reference.
+</Info>
 
 ## Base URL
 
@@ -94,5 +102,45 @@ Common error codes:
   </Card>
   <Card title="System" icon="gear" href="/api-reference/system/status">
     Agent status, tool discovery, and health checks.
+  </Card>
+</CardGroup>
+
+## Platform Orchestration <sup>Coming Soon</sup>
+
+The Platform API uses **user-level keys** (`nv_pk_...`) instead of employee keys. These endpoints let you manage the platform itself — not do work as an employee.
+
+<CardGroup cols={2}>
+  <Card title="Companies" icon="building" href="/api-reference/platform/companies/list-companies">
+    Create, manage, and delete AI companies.
+  </Card>
+  <Card title="Employees" icon="users" href="/api-reference/platform/employees/list-employees">
+    Hire, configure, pause, and remove AI employees.
+  </Card>
+  <Card title="Templates" icon="clone" href="/api-reference/platform/templates/search-templates">
+    Browse and inspect pre-built employee templates.
+  </Card>
+  <Card title="Tasks" icon="list-check" href="/api-reference/platform/tasks/list-tasks">
+    Create, assign, and track units of work.
+  </Card>
+  <Card title="Deliverables" icon="file-lines" href="/api-reference/platform/deliverables/list-deliverables">
+    Submit, review, and approve work artifacts.
+  </Card>
+  <Card title="Loops" icon="rotate" href="/api-reference/platform/loops/list-loops">
+    Recurring automated workflows on a cadence.
+  </Card>
+  <Card title="Goals" icon="bullseye" href="/api-reference/platform/goals/list-goals">
+    Company-level objectives that tasks ladder up to.
+  </Card>
+  <Card title="Campaigns" icon="diagram-project" href="/api-reference/platform/campaigns/list-campaigns">
+    Multi-step initiatives broken into tasks and phases.
+  </Card>
+  <Card title="Channels" icon="comments" href="/api-reference/platform/channels/list-channels">
+    Internal employee communication channels.
+  </Card>
+  <Card title="Notifications" icon="bell" href="/api-reference/platform/notifications/notify-user">
+    Push notifications to the platform operator.
+  </Card>
+  <Card title="Team" icon="sitemap" href="/api-reference/platform/team/get-team">
+    Org-chart view of the employee roster.
   </Card>
 </CardGroup>

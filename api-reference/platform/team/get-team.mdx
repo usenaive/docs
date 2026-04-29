@@ -1,0 +1,117 @@
+---
+title: "Get Team"
+description: "Get the operational team roster for a company."
+api: "GET /v1/team"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to get the team roster for.
+</ParamField>
+
+Returns the operational view of the team roster with reporting structure for org-chart rendering. For management operations, use the [Employees endpoints](/api-reference/platform/employees/list-employees).
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/team \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/team",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/team", {
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="team" type="array">
+  Array of team member objects.
+</ResponseField>
+
+<ResponseField name="team[].paperclipId" type="string">
+  Unique Naive identifier for the team member.
+</ResponseField>
+
+<ResponseField name="team[].agentId" type="string">
+  Internal agent identifier.
+</ResponseField>
+
+<ResponseField name="team[].name" type="string">
+  Team member display name.
+</ResponseField>
+
+<ResponseField name="team[].title" type="string">
+  Job title (e.g., "Content Writer").
+</ResponseField>
+
+<ResponseField name="team[].role" type="string">
+  Role slug describing the team member's function.
+</ResponseField>
+
+<ResponseField name="team[].capabilities" type="array">
+  List of primitive categories the team member can use.
+</ResponseField>
+
+<ResponseField name="team[].reportsTo" type="string">
+  `agentId` of the team member's manager, or `null` if top-level.
+</ResponseField>
+
+<ResponseField name="team[].status" type="string">
+  Current status: `active`, `paused`, or `decommissioned`.
+</ResponseField>
+
+```json Example Response
+{
+  "team": [
+    {
+      "paperclipId": "emp_abc123",
+      "agentId": "agent_xyz",
+      "name": "Alice",
+      "title": "Marketing Director",
+      "role": "director",
+      "capabilities": ["email", "research", "creation", "distribution"],
+      "reportsTo": null,
+      "status": "active"
+    },
+    {
+      "paperclipId": "emp_def456",
+      "agentId": "agent_uvw",
+      "name": "Bob",
+      "title": "Content Writer",
+      "role": "writer",
+      "capabilities": ["research", "creation"],
+      "reportsTo": "agent_xyz",
+      "status": "active"
+    },
+    {
+      "paperclipId": "emp_ghi789",
+      "agentId": "agent_rst",
+      "name": "Carol",
+      "title": "Social Media Manager",
+      "role": "social",
+      "capabilities": ["distribution", "research"],
+      "reportsTo": "agent_xyz",
+      "status": "active"
+    }
+  ]
+}
+```

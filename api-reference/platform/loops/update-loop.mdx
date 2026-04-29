@@ -1,0 +1,94 @@
+---
+title: "Update Loop"
+description: "Update the configuration or status of an existing loop."
+api: "PATCH /v1/loops/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the loop belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The loop ID to update.
+</ParamField>
+
+<ParamField body="program" type="string">
+  Updated instructions for each cycle.
+</ParamField>
+
+<ParamField body="evaluation" type="string">
+  Updated success criteria.
+</ParamField>
+
+<ParamField body="status" type="string">
+  Set the loop status. One of `running`, `paused`, or `completed`.
+</ParamField>
+
+<ParamField body="cadence_seconds" type="number">
+  Updated interval between cycles in seconds.
+</ParamField>
+
+<ParamField body="performance" type="object">
+  Arbitrary performance metrics object to attach to the loop.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/loops/loop_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "paused",
+    "cadence_seconds": 43200
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/loops/loop_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "status": "paused",
+        "cadence_seconds": 43200,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/loops/loop_abc123",
+  {
+    method: "PATCH",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      status: "paused",
+      cadence_seconds: 43200,
+    }),
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update was successful.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

@@ -1,0 +1,109 @@
+---
+title: "Update Company"
+description: "Update profile fields for an existing company."
+api: "PATCH /v1/companies/{id}"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+<ParamField path="id" type="string" required>
+  The company ID to update.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Company display name.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Brief description of what the company does.
+</ParamField>
+
+<ParamField body="audience" type="string">
+  Target audience or ideal customer profile.
+</ParamField>
+
+<ParamField body="positioning" type="string">
+  Market positioning statement.
+</ParamField>
+
+<ParamField body="current_focus" type="string">
+  Current strategic focus or priorities.
+</ParamField>
+
+<ParamField body="strategy" type="string">
+  High-level company strategy.
+</ParamField>
+
+<ParamField body="brand_voice" type="string">
+  Tone and voice guidelines for communications.
+</ParamField>
+
+<ParamField body="brand_colors" type="string">
+  Brand color palette (e.g. hex values).
+</ParamField>
+
+<ParamField body="brand_guidelines" type="string">
+  Additional brand guidelines and style rules.
+</ParamField>
+
+Only include the fields you want to change. Omitted fields are left unchanged.
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/companies/comp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: comp_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "AI-powered productivity tools for modern teams.",
+    "brand_voice": "Confident, concise, and approachable."
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/companies/comp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "comp_abc123",
+    },
+    json={
+        "description": "AI-powered productivity tools for modern teams.",
+        "brand_voice": "Confident, concise, and approachable.",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/companies/comp_abc123", {
+  method: "PATCH",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "comp_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    description: "AI-powered productivity tools for modern teams.",
+    brand_voice: "Confident, concise, and approachable.",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update was applied successfully.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+Updating `name` will also regenerate the company's `slug`.

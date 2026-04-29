@@ -1,0 +1,129 @@
+---
+title: "Create Goal"
+description: "Create a new goal for a company."
+api: "POST /v1/goals"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to create the goal in.
+</ParamField>
+
+<ParamField body="title" type="string" required>
+  Title for the goal.
+</ParamField>
+
+<ParamField body="description" type="string">
+  Detailed description of the goal.
+</ParamField>
+
+<ParamField body="level" type="string">
+  Goal level in the hierarchy (e.g., "company", "team", "individual").
+</ParamField>
+
+<ParamField body="status" type="string">
+  Initial status. Defaults to `active`.
+</ParamField>
+
+<ParamField body="parent_id" type="string">
+  ID of a parent goal to nest this goal under.
+</ParamField>
+
+<ParamField body="owner_employee_id" type="string">
+  Employee ID of the goal owner.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/goals \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Increase brand awareness by 30%",
+    "description": "Drive measurable brand awareness growth across all digital channels.",
+    "level": "company"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/goals",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "title": "Increase brand awareness by 30%",
+        "description": "Drive measurable brand awareness growth across all digital channels.",
+        "level": "company",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/goals", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    title: "Increase brand awareness by 30%",
+    description: "Drive measurable brand awareness growth across all digital channels.",
+    level: "company",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Unique identifier for the newly created goal.
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Goal title.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Goal description.
+</ResponseField>
+
+<ResponseField name="level" type="string">
+  Goal level.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Goal status.
+</ResponseField>
+
+<ResponseField name="parent_id" type="string">
+  Parent goal ID, or `null` if top-level.
+</ResponseField>
+
+<ResponseField name="owner_agent_id" type="string">
+  Agent ID of the goal owner.
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp of when the goal was created.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "goal_abc123",
+  "title": "Increase brand awareness by 30%",
+  "description": "Drive measurable brand awareness growth across all digital channels.",
+  "level": "company",
+  "status": "active",
+  "parent_id": null,
+  "owner_agent_id": null,
+  "created_at": "2026-04-29T12:00:00Z"
+}
+```

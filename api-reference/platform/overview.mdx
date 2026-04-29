@@ -1,0 +1,225 @@
+---
+title: "Platform API Overview"
+description: "Manage companies, employees, tasks, deliverables, loops, and more — the operator-level API for Naive's orchestration layer. 44 endpoints across 11 categories."
+---
+
+<Info>
+  The Platform Orchestration API is **coming soon**. Endpoints are documented here for reference — they are not yet available for use.
+</Info>
+
+The Platform API is Naive's **orchestration layer** — the management surface that sits above the [Primitives API](/api-reference/overview). While primitives let employees *do work* (send emails, post to social, generate images), the Platform API lets operators *manage the platform itself* — spin up companies, hire employees, delegate tasks, review deliverables, and run recurring loops.
+
+## Two Key Types
+
+Naive uses two separate API key types to enforce a clean separation between doing work and managing the platform:
+
+| Key Type | Prefix | Scoped To | Purpose |
+|----------|--------|-----------|---------|
+| Employee key | `nv_sk_...` | One employee + one company | Calling primitives — email, social, search, images, payments, etc. |
+| User key | `nv_pk_...` | The operator (user) across all their companies | Managing the platform — companies, employees, tasks, deliverables, loops, etc. |
+
+An employee shouldn't be able to delete its own company. An operator shouldn't need an employee key to list their companies. The two key types enforce this boundary.
+
+## Authentication
+
+Pass your user key as a Bearer token, plus a `X-Company-Id` header to select which company you're operating on:
+
+```bash
+curl https://api.usenaive.ai/v1/tasks \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+Some endpoints (like listing your companies) don't require `X-Company-Id` — the key alone is sufficient.
+
+## Base URL
+
+```
+https://api.usenaive.ai
+```
+
+All Platform API endpoints are prefixed with `/v1/`, same as the Primitives API.
+
+## Relationship to Primitives API
+
+```
+Operator (User Key: nv_pk_...)
+  └── Platform API
+        ├── Create Company
+        ├── Hire Employees
+        ├── Delegate Tasks
+        ├── Review Deliverables
+        └── Manage Loops
+              │
+              ▼
+Employee (Employee Key: nv_sk_...)
+  └── Primitives API
+        ├── Send Email
+        ├── Post to Social
+        ├── Generate Images
+        ├── Web Search
+        └── ...54 tools
+```
+
+The Platform API is how you set up and orchestrate the system. The Primitives API is how the system does its work.
+
+---
+
+## Companies (5 endpoints)
+
+Company CRUD — create and manage the workspaces where employees live. Every employee, domain, API key, and resource in Naive belongs to exactly one company.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/companies`](/api-reference/platform/companies/list-companies) | GET | List all companies the authenticated user owns or has access to. No `X-Company-Id` header needed. |
+| [`/v1/companies`](/api-reference/platform/companies/create-company) | POST | Create a new AI company. Provisions an owner employee, API key, and email. **Billable** — may return `402` with a Stripe payment link if the plan limit is reached. |
+| [`/v1/companies/{id}`](/api-reference/platform/companies/get-company) | GET | Get company details including full profile: name, description, audience, positioning, strategy, brand voice, brand colors, brand guidelines. |
+| [`/v1/companies/{id}`](/api-reference/platform/companies/update-company) | PATCH | Update company name and/or profile fields. All fields optional. |
+| [`/v1/companies/{id}`](/api-reference/platform/companies/delete-company) | DELETE | Remove a company and all its resources. Requires `confirm: true` in the body. Revokes all API keys, decommissions all employees, releases all resources. |
+
+---
+
+## Employees (8 endpoints)
+
+Employee lifecycle — hire, configure, manage, and remove AI agents within a company. Each employee has a role, a runtime, an API key, and a curated set of primitives.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/employees`](/api-reference/platform/employees/list-employees) | GET | List all employees in the selected company. Returns name, title, role, status, capabilities, and reporting structure. |
+| [`/v1/employees`](/api-reference/platform/employees/create-employee) | POST | Hire a custom employee with a specified role and primitive whitelist. Returns the employee object including the API key (shown once). **Billable** if over plan seat limit. |
+| [`/v1/employees/from-template`](/api-reference/platform/employees/create-employee-from-template) | POST | Hire an employee from a pre-built template (e.g. "marketer", "support-lead", "content-writer"). Applies the template's skills, prompts, default tasks, and loops. |
+| [`/v1/employees/{id}`](/api-reference/platform/employees/get-employee) | GET | Get full employee profile: focus, context, strategy, notes, memo, template assignment, email, and capabilities. |
+| [`/v1/employees/{id}`](/api-reference/platform/employees/update-employee) | PATCH | Update employee profile fields (focus, context, strategy, notes) and memo (persistent scratchpad, max 4000 chars). |
+| [`/v1/employees/{id}/configure`](/api-reference/platform/employees/configure-employee) | PUT | Configure employee settings: name, display name, title, visibility (hidden from org chart), context, focus, template assignment, app assignment, department. |
+| [`/v1/employees/{id}/pause`](/api-reference/platform/employees/pause-resume-employee) | POST | Pause or resume an employee's runtime. Paused employees stop processing tasks and heartbeats. Also: `POST /v1/employees/{id}/resume`. |
+| [`/v1/employees/{id}`](/api-reference/platform/employees/delete-employee) | DELETE | Decommission an employee. Revokes the employee's API key, resets the flex slot, and cleans up resources. |
+
+---
+
+## Templates (2 endpoints)
+
+Browse and inspect pre-built employee templates — pre-configured agent setups with skills, prompts, default tasks, and loops. Templates are authored in `naive-container-prompts` and seeded into the platform database.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/templates`](/api-reference/platform/templates/search-templates) | GET | Search available employee templates by query string, department, or required capabilities. No `X-Company-Id` needed. |
+| [`/v1/templates/{slug}`](/api-reference/platform/templates/get-template) | GET | Get full template details including composed file set (CLAUDE.md, HEARTBEAT.md, PERSONA.md), default tasks, default loops, and required skills. No `X-Company-Id` needed. |
+
+---
+
+## Tasks (7 endpoints)
+
+Task management — the unit of work in Naive. Tasks are assigned to employees, tracked through statuses (`queued` → `in_progress` → `in_review` → `done` → `blocked`), and produce deliverables.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/tasks`](/api-reference/platform/tasks/list-tasks) | GET | List tasks with filters: `assignee_employee_id` (optional), `status` (optional enum). Returns all company tasks if no assignee specified. |
+| [`/v1/tasks`](/api-reference/platform/tasks/create-task) | POST | Create a task and assign it to an employee. Supports priority (`low`/`medium`/`high`/`urgent`), linking to goals and campaigns. |
+| [`/v1/tasks/{id}`](/api-reference/platform/tasks/get-task) | GET | Get full task details including all comments. |
+| [`/v1/tasks/{id}`](/api-reference/platform/tasks/update-task) | PATCH | Update task status, priority, or description. Optionally add a comment explaining the change. |
+| [`/v1/tasks/{id}/checkout`](/api-reference/platform/tasks/checkout-task) | POST | Claim a task for a specific employee. Moves it to `in_progress` and assigns it. |
+| [`/v1/tasks/{id}/comments`](/api-reference/platform/tasks/post-task-comment) | POST | Add a comment to a task. Used for status updates, questions, or context sharing between employees. |
+| [`/v1/tasks/delegate`](/api-reference/platform/tasks/delegate-tasks) | POST | Batch-create tasks and assign them across multiple employees in a single request. Used for breaking down a plan into actionable work items. |
+
+---
+
+## Deliverables (5 endpoints)
+
+Deliverable management — the artifacts produced by employees as they complete tasks. Deliverables are submitted for review and approved by the operator or a lead employee.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/deliverables`](/api-reference/platform/deliverables/list-deliverables) | GET | List deliverables with filters: `status` (`pending_review`/`approved`/`rejected`), `task_id`, `type`. |
+| [`/v1/deliverables`](/api-reference/platform/deliverables/submit-deliverable) | POST | Submit a work artifact for review. Types: `email_draft`, `social_post`, `blog_post`, `landing_page`, `strategy_doc`, `report`, `image_set`, `video`, `presentation`, `code`, `design`, `document`, `other`. |
+| [`/v1/deliverables/{id}`](/api-reference/platform/deliverables/get-deliverable) | GET | Get full deliverable details including content, preview, and metadata. |
+| [`/v1/deliverables/{id}`](/api-reference/platform/deliverables/update-deliverable) | PATCH | Update deliverable content, title, preview, or file path before or after review. |
+| [`/v1/deliverables/{id}/approve`](/api-reference/platform/deliverables/approve-deliverable) | POST | Approve a deliverable. Optionally triggers deployment if the deliverable is a deployable artifact (set `deploy: true`). |
+
+---
+
+## Loops (5 endpoints)
+
+Loop management — recurring automated workflows assigned to an employee and running on a cadence. Three modes: **recurring** (time-based, fixed schedule), **reactive** (event-triggered), and **generational** (self-improving, each cycle builds on the last).
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/loops`](/api-reference/platform/loops/list-loops) | GET | List loops with filters: `employee_id` (optional), `status` (`running`/`paused`/`completed`). |
+| [`/v1/loops`](/api-reference/platform/loops/create-loop) | POST | Create a loop assigned to an employee. Specify `mode`, `program` (instructions), `cadence_seconds`, and optional `evaluation` (success criteria). |
+| [`/v1/loops/{id}`](/api-reference/platform/loops/update-loop) | PATCH | Update loop configuration: program, evaluation criteria, status, cadence, or performance data. |
+| [`/v1/loops/{id}/trigger`](/api-reference/platform/loops/trigger-loop) | POST | Manually trigger a loop cycle outside its normal cadence. Wakes the assigned employee's runtime. |
+| [`/v1/loops/{id}/cycle`](/api-reference/platform/loops/log-loop-cycle) | POST | Log the completion of a loop cycle with summary, action taken, optional performance data, and cost. |
+
+---
+
+## Goals (3 endpoints)
+
+Goal management — company-level objectives that tasks and campaigns ladder up to. Goals can be hierarchical (a top-level "Grow revenue" goal with sub-goals like "Increase subscribers" and "Launch ads").
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/goals`](/api-reference/platform/goals/list-goals) | GET | List all company goals with status, hierarchy, and ownership. |
+| [`/v1/goals`](/api-reference/platform/goals/create-goal) | POST | Create a goal. Can be nested under a parent goal and assigned an owner employee. |
+| [`/v1/goals/{id}`](/api-reference/platform/goals/update-goal) | PATCH | Update goal title, description, or status (`active`/`completed`/`archived`). |
+
+---
+
+## Campaigns (3 endpoints)
+
+Campaign/plan management — multi-step initiatives with target dates, phases, and success criteria. Campaigns break down into tasks that are delegated across employees.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/campaigns`](/api-reference/platform/campaigns/list-campaigns) | GET | List all campaigns with status, progress, and linked goals. |
+| [`/v1/campaigns`](/api-reference/platform/campaigns/create-campaign) | POST | Create a campaign with title, description, target date, success criteria, phases, and a lead employee. Tasks are delegated separately via the tasks API. |
+| [`/v1/campaigns/{id}`](/api-reference/platform/campaigns/update-campaign) | PATCH | Update campaign details, status, target date, or success criteria. |
+
+---
+
+## Channels (3 endpoints)
+
+Internal communication — channels for employees to coordinate, share context, and ask questions. Like a shared Slack workspace, but for AI employees.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/channels`](/api-reference/platform/channels/list-channels) | GET | List available internal channels for the company. |
+| [`/v1/channels/{name}/messages`](/api-reference/platform/channels/post-to-channel) | POST | Post a message to a channel. Used for cross-employee coordination. |
+| [`/v1/channels/{name}/messages`](/api-reference/platform/channels/read-channel) | GET | Read messages from a channel. Supports `since_timestamp` and `limit` filters. |
+
+---
+
+## Notifications (1 endpoint)
+
+Push notifications to the platform operator/user.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/notifications`](/api-reference/platform/notifications/notify-user) | POST | Send a notification to the operator. Categories: `info`, `warning`, `error`, `success`, `action_needed`. Can link to a specific task or campaign. |
+
+---
+
+## Team (1 endpoint)
+
+Quick team roster access — the operational view with reporting structure for org-chart rendering.
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [`/v1/team`](/api-reference/platform/team/get-team) | GET | Get the full team roster with each employee's name, title, role, capabilities, `reportsTo`, and status (`active`/`paused`/`decommissioned`). For management operations (hire, configure, delete), use the [Employees endpoints](#employees-8-endpoints). |
+
+---
+
+## Summary
+
+| Category | Endpoints | Key Type |
+|----------|-----------|----------|
+| Companies | 5 | User (`nv_pk_...`) |
+| Employees | 8 | User (`nv_pk_...`) |
+| Templates | 2 | User (`nv_pk_...`) |
+| Tasks | 7 | User (`nv_pk_...`) |
+| Deliverables | 5 | User (`nv_pk_...`) |
+| Loops | 5 | User (`nv_pk_...`) |
+| Goals | 3 | User (`nv_pk_...`) |
+| Campaigns | 3 | User (`nv_pk_...`) |
+| Channels | 3 | User (`nv_pk_...`) |
+| Notifications | 1 | User (`nv_pk_...`) |
+| Team | 1 | User (`nv_pk_...`) |
+| **Total** | **44** | |

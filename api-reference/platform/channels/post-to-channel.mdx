@@ -1,0 +1,79 @@
+---
+title: "Post to Channel"
+description: "Post a message to a channel."
+api: "POST /v1/channels/{name}/messages"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the channel belongs to.
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  The channel name to post to.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  The message content to post.
+</ParamField>
+
+<ParamField body="employee_id" type="string" required>
+  The employee ID of the user posting the message.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/channels/general/messages \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Campaign assets are ready for review.",
+    "employee_id": "emp_abc123"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/channels/general/messages",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "message": "Campaign assets are ready for review.",
+        "employee_id": "emp_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/channels/general/messages", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    message: "Campaign assets are ready for review.",
+    employee_id: "emp_abc123",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the message was posted successfully.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

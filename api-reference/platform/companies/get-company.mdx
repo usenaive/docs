@@ -1,0 +1,107 @@
+---
+title: "Get Company"
+description: "Retrieve the full profile for a specific company."
+api: "GET /v1/companies/{id}"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+<ParamField path="id" type="string" required>
+  The company ID to retrieve.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X GET https://api.usenaive.ai/v1/companies/comp_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: comp_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/companies/comp_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "comp_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/companies/comp_abc123", {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "comp_abc123",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Unique company identifier.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Company display name.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Brief description of what the company does.
+</ResponseField>
+
+<ResponseField name="audience" type="string">
+  Target audience or ideal customer profile.
+</ResponseField>
+
+<ResponseField name="positioning" type="string">
+  Market positioning statement.
+</ResponseField>
+
+<ResponseField name="current_focus" type="string">
+  Current strategic focus or priorities.
+</ResponseField>
+
+<ResponseField name="strategy" type="string">
+  High-level company strategy.
+</ResponseField>
+
+<ResponseField name="brand_voice" type="string">
+  Tone and voice guidelines for communications.
+</ResponseField>
+
+<ResponseField name="brand_colors" type="string">
+  Brand color palette (e.g. hex values).
+</ResponseField>
+
+<ResponseField name="brand_guidelines" type="string">
+  Additional brand guidelines and style rules.
+</ResponseField>
+
+<ResponseField name="employee_count" type="number">
+  Number of active employees (agents) in the company.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "comp_abc123",
+  "name": "Acme Corp",
+  "description": "AI-powered productivity tools for modern teams.",
+  "audience": "Series A-C SaaS startups with 50-500 employees",
+  "positioning": "The fastest way to automate repetitive business workflows",
+  "current_focus": "Launching v2 of the automation builder",
+  "strategy": "Product-led growth with enterprise upsell motion",
+  "brand_voice": "Confident, concise, and approachable. Avoid jargon.",
+  "brand_colors": "#4F46E5, #10B981, #F9FAFB",
+  "brand_guidelines": "Always use sentence case. Never use exclamation marks in headlines.",
+  "employee_count": 3
+}
+```
+
+Fields that have not been set will return as `null`.

@@ -1,0 +1,80 @@
+---
+title: "List Channels"
+description: "List all channels for a company."
+api: "GET /v1/channels"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to list channels for.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/channels \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/channels",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/channels", {
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="channels" type="array">
+  Array of channel objects.
+</ResponseField>
+
+<ResponseField name="channels[].name" type="string">
+  Channel name (used as identifier in URLs).
+</ResponseField>
+
+<ResponseField name="channels[].description" type="string">
+  Channel description.
+</ResponseField>
+
+<ResponseField name="channels[].member_count" type="number">
+  Number of members in the channel.
+</ResponseField>
+
+```json Example Response
+{
+  "channels": [
+    {
+      "name": "general",
+      "description": "Company-wide announcements and discussion.",
+      "member_count": 5
+    },
+    {
+      "name": "marketing",
+      "description": "Marketing team coordination.",
+      "member_count": 3
+    },
+    {
+      "name": "engineering",
+      "description": "Engineering updates and technical discussion.",
+      "member_count": 4
+    }
+  ]
+}
+```

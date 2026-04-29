@@ -55,6 +55,32 @@ It's worth separating these two concepts — they're related but independent:
 
 You can have two marketer employees on different runtimes, or two employees on the same runtime with very different roles. Naive Core treats them identically: each is an agent with an API key and a primitive whitelist.
 
+## Managing Employees via API <sup>Coming Soon</sup>
+
+The [Platform Orchestration API](/api-reference/platform/overview) will expose full employee lifecycle management using **user-level keys** (`nv_pk_...`):
+
+| Operation | Endpoint | Description |
+|-----------|----------|-------------|
+| [List Employees](/api-reference/platform/employees/list-employees) | `GET /v1/employees` | List all employees in a company |
+| [Create Employee](/api-reference/platform/employees/create-employee) | `POST /v1/employees` | Hire a custom employee |
+| [Create from Template](/api-reference/platform/employees/create-employee-from-template) | `POST /v1/employees/from-template` | Hire from a pre-built template |
+| [Get Employee](/api-reference/platform/employees/get-employee) | `GET /v1/employees/{id}` | Get full employee profile |
+| [Update Employee](/api-reference/platform/employees/update-employee) | `PATCH /v1/employees/{id}` | Update profile, focus, strategy |
+| [Configure Employee](/api-reference/platform/employees/configure-employee) | `PUT /v1/employees/{id}/configure` | Configure settings and assignments |
+| [Pause / Resume](/api-reference/platform/employees/pause-resume-employee) | `POST /v1/employees/{id}/pause` | Pause or resume an employee |
+| [Delete Employee](/api-reference/platform/employees/delete-employee) | `DELETE /v1/employees/{id}` | Decommission an employee |
+
+You can also browse pre-built employee templates:
+
+| Operation | Endpoint | Description |
+|-----------|----------|-------------|
+| [Search Templates](/api-reference/platform/templates/search-templates) | `GET /v1/templates` | Search available employee templates |
+| [Get Template](/api-reference/platform/templates/get-template) | `GET /v1/templates/{slug}` | Get full template details |
+
+<Info>
+  These endpoints are **coming soon**. Currently, employee management is handled from the dashboard or via Paperclip.
+</Info>
+
 ## Related
 
 - [Companies](/core/companies) — the workspace employees live in

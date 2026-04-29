@@ -1,0 +1,76 @@
+---
+title: "Approve Deliverable"
+description: "Approve a deliverable, optionally triggering deployment."
+api: "POST /v1/deliverables/{id}/approve"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the deliverable belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The deliverable ID to approve.
+</ParamField>
+
+<ParamField body="deploy" type="boolean">
+  Whether to trigger deployment for deployable artifacts. Defaults to `false`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/deliverables/del_abc123/approve \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "deploy": true
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/deliverables/del_abc123/approve",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={"deploy": True},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/deliverables/del_abc123/approve",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ deploy: true }),
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the approval was successful.
+</ResponseField>
+
+<ResponseField name="approved" type="boolean">
+  `true` confirming the deliverable is now approved.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true,
+  "approved": true
+}
+```

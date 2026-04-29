@@ -1,0 +1,74 @@
+---
+title: "Trigger Loop"
+description: "Manually trigger a loop cycle outside its normal cadence."
+api: "POST /v1/loops/{id}/trigger"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the loop belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The loop ID to trigger.
+</ParamField>
+
+<Note>
+  Manually triggers a loop cycle outside its normal cadence. This wakes the assigned employee's runtime and executes the loop program immediately.
+</Note>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/loops/loop_abc123/trigger \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/loops/loop_abc123/trigger",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/loops/loop_abc123/trigger",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+    },
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="triggered" type="boolean">
+  `true` if the cycle was successfully triggered.
+</ResponseField>
+
+<ResponseField name="loopId" type="string">
+  The ID of the loop that was triggered.
+</ResponseField>
+
+<ResponseField name="run" type="string">
+  Unique identifier for this triggered run.
+</ResponseField>
+
+```json Example Response
+{
+  "triggered": true,
+  "loopId": "loop_abc123",
+  "run": "run_jkl012"
+}
+```

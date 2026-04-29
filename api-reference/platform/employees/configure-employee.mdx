@@ -1,0 +1,118 @@
+---
+title: "Configure Employee"
+description: "Set or update an employee's profile, visibility, template, and department."
+api: "PUT /v1/employees/{id}/configure"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the employee belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The employee's unique identifier.
+</ParamField>
+
+<ParamField body="name" type="string">
+  Internal name used in API responses and logs.
+</ParamField>
+
+<ParamField body="display_name" type="string">
+  Public-facing display name shown in the UI and org chart.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Job title (e.g., "Head of Content").
+</ParamField>
+
+<ParamField body="hidden" type="boolean">
+  If `true`, the employee is hidden from the org chart and team views.
+</ParamField>
+
+<ParamField body="context" type="string">
+  Background context for the employee's decision-making.
+</ParamField>
+
+<ParamField body="focus" type="string">
+  Current focus area or priority directive.
+</ParamField>
+
+<ParamField body="template" type="string">
+  Template slug to re-associate with this employee.
+</ParamField>
+
+<ParamField body="app_id" type="string">
+  Application ID to link to this employee.
+</ParamField>
+
+<ParamField body="department" type="string">
+  Department name for org-chart grouping (e.g., "Marketing", "Engineering").
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PUT https://api.usenaive.ai/v1/employees/emp_abc123/configure \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "display_name": "Alice the Writer",
+    "title": "Head of Content",
+    "department": "Marketing",
+    "hidden": false
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.put(
+    "https://api.usenaive.ai/v1/employees/emp_abc123/configure",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "display_name": "Alice the Writer",
+        "title": "Head of Content",
+        "department": "Marketing",
+        "hidden": False,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/employees/emp_abc123/configure",
+  {
+    method: "PUT",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      display_name: "Alice the Writer",
+      title: "Head of Content",
+      department: "Marketing",
+      hidden: false,
+    }),
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the configuration was saved.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```
+
+This endpoint replaces the full configuration for the fields you send — omitted fields remain unchanged. Use [Update Employee](/api-reference/platform/employees/update-employee) for lightweight updates to focus, context, strategy, and notes.

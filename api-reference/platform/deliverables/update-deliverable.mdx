@@ -1,0 +1,90 @@
+---
+title: "Update Deliverable"
+description: "Update the content or metadata of an existing deliverable."
+api: "PATCH /v1/deliverables/{id}"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company the deliverable belongs to.
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  The deliverable ID to update.
+</ParamField>
+
+<ParamField body="title" type="string">
+  Updated display title.
+</ParamField>
+
+<ParamField body="content" type="string">
+  Updated deliverable content.
+</ParamField>
+
+<ParamField body="preview" type="string">
+  Updated preview URL or HTML snippet.
+</ParamField>
+
+<ParamField body="file_path" type="string">
+  Updated file or asset path.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PATCH https://api.usenaive.ai/v1/deliverables/del_abc123 \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Weekly Newsletter Draft v2",
+    "content": "Updated content with latest metrics and customer stories."
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.patch(
+    "https://api.usenaive.ai/v1/deliverables/del_abc123",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "title": "Weekly Newsletter Draft v2",
+        "content": "Updated content with latest metrics and customer stories.",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/deliverables/del_abc123",
+  {
+    method: "PATCH",
+    headers: {
+      "Authorization": "Bearer nv_pk_your_key_here",
+      "X-Company-Id": "company_abc123",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: "Weekly Newsletter Draft v2",
+      content: "Updated content with latest metrics and customer stories.",
+    }),
+  }
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="ok" type="boolean">
+  `true` if the update was successful.
+</ResponseField>
+
+```json Example Response
+{
+  "ok": true
+}
+```

@@ -1,0 +1,110 @@
+---
+title: "Search Templates"
+description: "Browse and search the available employee templates."
+api: "GET /v1/templates"
+---
+
+<Info>
+  This endpoint is **coming soon** and is not yet available for use.
+</Info>
+
+Search the template catalog by keyword, department, or required capabilities. No `X-Company-Id` header is required.
+
+<ParamField query="q" type="string">
+  Free-text search string matched against template name and description.
+</ParamField>
+
+<ParamField query="department" type="string">
+  Filter templates by department (e.g. `marketing`, `sales`, `engineering`).
+</ParamField>
+
+<ParamField query="requires" type="string">
+  Comma-separated list of required capabilities to filter by (e.g. `email,browser`).
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum number of results to return. Defaults to `20`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X GET "https://api.usenaive.ai/v1/templates?q=marketing&limit=5" \
+  -H "Authorization: Bearer nv_pk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/templates",
+    headers={"Authorization": "Bearer nv_pk_your_key_here"},
+    params={
+        "q": "marketing",
+        "limit": 5,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const params = new URLSearchParams({ q: "marketing", limit: "5" });
+const response = await fetch(`https://api.usenaive.ai/v1/templates?${params}`, {
+  method: "GET",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+  },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="templates" type="array">
+  Array of matching template objects.
+</ResponseField>
+
+<ResponseField name="templates[].slug" type="string">
+  Unique URL-safe identifier for the template.
+</ResponseField>
+
+<ResponseField name="templates[].name" type="string">
+  Human-readable template name.
+</ResponseField>
+
+<ResponseField name="templates[].department" type="string">
+  Department the template belongs to.
+</ResponseField>
+
+<ResponseField name="templates[].description" type="string">
+  Short description of what the template does.
+</ResponseField>
+
+<ResponseField name="templates[].skills" type="array">
+  List of skills / capabilities the template provides.
+</ResponseField>
+
+<ResponseField name="templates[].runtime_base" type="string">
+  Base runtime environment for employees created from this template.
+</ResponseField>
+
+```json Example Response
+{
+  "templates": [
+    {
+      "slug": "social-media-manager",
+      "name": "Social Media Manager",
+      "department": "marketing",
+      "description": "Manages social media scheduling, posting, and analytics across platforms.",
+      "skills": ["social_media", "analytics", "content_creation"],
+      "runtime_base": "browser"
+    },
+    {
+      "slug": "email-marketer",
+      "name": "Email Marketer",
+      "department": "marketing",
+      "description": "Creates and sends email campaigns, manages lists, and tracks open rates.",
+      "skills": ["email", "analytics", "copywriting"],
+      "runtime_base": "standard"
+    }
+  ]
+}
+```

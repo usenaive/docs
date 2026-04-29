@@ -1,0 +1,104 @@
+---
+title: "Create Employee from Template"
+description: "Hire a new AI employee using a pre-built template."
+api: "POST /v1/employees/from-template"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to create the employee in.
+</ParamField>
+
+<ParamField body="template_slug" type="string" required>
+  Slug of the template to use (e.g., `content-writer`, `social-media-manager`). Browse available templates via [Search Templates](/api-reference/platform/templates/search-templates).
+</ParamField>
+
+<ParamField body="name" type="string">
+  Override the template's default name. If omitted, the template's built-in name is used.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/employees/from-template \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "template_slug": "content-writer",
+    "name": "Alice"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/employees/from-template",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "template_slug": "content-writer",
+        "name": "Alice",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/employees/from-template", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    template_slug: "content-writer",
+    name: "Alice",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Unique identifier for the new employee.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Display name (from override or template default).
+</ResponseField>
+
+<ResponseField name="title" type="string">
+  Job title inherited from the template.
+</ResponseField>
+
+<ResponseField name="role" type="string">
+  Role slug inherited from the template.
+</ResponseField>
+
+<ResponseField name="template_slug" type="string">
+  The template that was used to create this employee.
+</ResponseField>
+
+<ResponseField name="api_key" type="string">
+  The employee's API key (`nv_sk_...`). **Shown only once** — store it securely.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "emp_ghi789",
+  "name": "Alice",
+  "title": "Content Writer",
+  "role": "writer",
+  "template_slug": "content-writer",
+  "api_key": "nv_sk_live_ghi789jkl012..."
+}
+```
+
+<Warning>
+  The `api_key` is only returned in this response. It cannot be retrieved again — if lost, you must delete the employee and create a new one.
+</Warning>

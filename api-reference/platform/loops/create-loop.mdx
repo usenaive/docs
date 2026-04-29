@@ -1,0 +1,154 @@
+---
+title: "Create Loop"
+description: "Create a new loop that runs on a recurring cadence."
+api: "POST /v1/loops"
+---
+
+<Info>This endpoint is **coming soon** and is not yet available for use.</Info>
+
+<ParamField header="X-Company-Id" type="string" required>
+  The company to create the loop under.
+</ParamField>
+
+<ParamField body="name" type="string" required>
+  Display name for the loop.
+</ParamField>
+
+<ParamField body="employee_id" type="string" required>
+  The employee to assign this loop to.
+</ParamField>
+
+<ParamField body="mode" type="string" required>
+  Loop mode. One of `recurring`, `reactive`, or `generational`.
+</ParamField>
+
+<ParamField body="program" type="string" required>
+  Instructions the employee follows each cycle.
+</ParamField>
+
+<ParamField body="cadence_seconds" type="number" required>
+  Interval between cycles in seconds (e.g. `86400` for daily).
+</ParamField>
+
+<ParamField body="evaluation" type="string">
+  Success criteria used to assess each cycle's output.
+</ParamField>
+
+<ParamField body="target_loop_id" type="string">
+  For `generational` mode, the loop to improve upon.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/loops \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Daily Social Engagement",
+    "employee_id": "emp_def456",
+    "mode": "recurring",
+    "program": "Check social mentions, draft replies, and log engagement metrics.",
+    "cadence_seconds": 86400,
+    "evaluation": "At least 5 replies drafted per cycle with positive sentiment."
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/loops",
+    headers={
+        "Authorization": "Bearer nv_pk_your_key_here",
+        "X-Company-Id": "company_abc123",
+    },
+    json={
+        "name": "Daily Social Engagement",
+        "employee_id": "emp_def456",
+        "mode": "recurring",
+        "program": "Check social mentions, draft replies, and log engagement metrics.",
+        "cadence_seconds": 86400,
+        "evaluation": "At least 5 replies drafted per cycle with positive sentiment.",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/loops", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_pk_your_key_here",
+    "X-Company-Id": "company_abc123",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Daily Social Engagement",
+    employee_id: "emp_def456",
+    mode: "recurring",
+    program:
+      "Check social mentions, draft replies, and log engagement metrics.",
+    cadence_seconds: 86400,
+    evaluation:
+      "At least 5 replies drafted per cycle with positive sentiment.",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Unique identifier for the newly created loop.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Display name of the loop.
+</ResponseField>
+
+<ResponseField name="mode" type="string">
+  Loop mode.
+</ResponseField>
+
+<ResponseField name="program" type="string">
+  Instructions for each cycle.
+</ResponseField>
+
+<ResponseField name="cadence_seconds" type="number">
+  Interval between cycles in seconds.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Initial status (always `running`).
+</ResponseField>
+
+<ResponseField name="employee_id" type="string">
+  The assigned employee.
+</ResponseField>
+
+<ResponseField name="evaluation" type="string">
+  Success criteria, or `null`.
+</ResponseField>
+
+<ResponseField name="last_cycle_at" type="string">
+  Always `null` for a newly created loop.
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  ISO 8601 timestamp of when the loop was created.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "loop_ghi789",
+  "name": "Daily Social Engagement",
+  "mode": "recurring",
+  "program": "Check social mentions, draft replies, and log engagement metrics.",
+  "cadence_seconds": 86400,
+  "status": "running",
+  "employee_id": "emp_def456",
+  "evaluation": "At least 5 replies drafted per cycle with positive sentiment.",
+  "last_cycle_at": null,
+  "created_at": "2026-04-29T12:00:00Z"
+}
+```
