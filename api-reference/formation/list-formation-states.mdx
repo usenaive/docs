@@ -1,0 +1,73 @@
+---
+title: "List Formation States"
+description: "List all U.S. states available for business formation, including fees and estimated timelines."
+api: "GET /v1/formation/states"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/formation/states \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/states",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/formation/states", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/formation/states", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="states" type="array">
+  Array of state objects. Each contains `code`, `name`, `formation_fee_cents`, `sla_business_days_min`, `sla_business_days_max`, and `notes`.
+</ResponseField>
+
+```json Example Response
+{
+  "states": [
+    {
+      "code": "DE",
+      "name": "Delaware",
+      "formation_fee_cents": 28900,
+      "sla_business_days_min": 3,
+      "sla_business_days_max": 5,
+      "notes": "Most popular for LLCs. No state income tax on out-of-state revenue."
+    },
+    {
+      "code": "WY",
+      "name": "Wyoming",
+      "formation_fee_cents": 17500,
+      "sla_business_days_min": 5,
+      "sla_business_days_max": 10,
+      "notes": "No state income tax. Strong asset protection."
+    },
+    {
+      "code": "FL",
+      "name": "Florida",
+      "formation_fee_cents": 22500,
+      "sla_business_days_min": 5,
+      "sla_business_days_max": 7,
+      "notes": null
+    }
+  ]
+}
+```

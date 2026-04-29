@@ -1,0 +1,74 @@
+---
+title: "List Business Mail"
+description: "List scanned business mail received at the company's registered agent address."
+api: "GET /v1/formation/drafts/{id}/mail"
+---
+
+<ParamField path="id" type="string" required>
+  The `draft_id` returned from [Draft Formation](/api-reference/formation/draft-formation).
+</ParamField>
+
+<ParamField query="since" type="string">
+  ISO 8601 timestamp. Only return mail received after this time. Useful for incremental polling.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/mail?since=2026-05-01T00:00:00Z" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/mail",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    params={"since": "2026-05-01T00:00:00Z"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const params = new URLSearchParams({ since: "2026-05-01T00:00:00Z" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/mail?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const params = new URLSearchParams({ since: "2026-05-01T00:00:00Z" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/mail?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="mail" type="array">
+  Array of mail items. Each contains `document_id`, `name`, `received_at`, and `mirrored_locally`.
+</ResponseField>
+
+```json Example Response
+{
+  "mail": [
+    {
+      "document_id": "doc_mail_001",
+      "name": "Delaware Division of Corporations - Annual Report Notice",
+      "received_at": "2026-05-15T10:30:00Z",
+      "mirrored_locally": true
+    },
+    {
+      "document_id": "doc_mail_002",
+      "name": "IRS - EIN Confirmation CP 575",
+      "received_at": "2026-05-12T08:00:00Z",
+      "mirrored_locally": false
+    }
+  ]
+}
+```
+
+Use [Get Formation Document](/api-reference/formation/get-formation-document) with the `document_id` to download individual mail items.

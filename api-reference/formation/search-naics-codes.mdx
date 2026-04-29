@@ -1,0 +1,85 @@
+---
+title: "Search NAICS Codes"
+description: "Search for NAICS industry classification codes by keyword."
+api: "GET /v1/formation/naics-codes"
+---
+
+<ParamField query="search" type="string">
+  Free-text search term to filter NAICS codes (e.g., `"software"`, `"restaurant"`). Omit to list all.
+</ParamField>
+
+<ParamField query="limit" type="number">
+  Maximum results to return. Default `50`, max `200`.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/formation/naics-codes?search=software&limit=10" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/naics-codes",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    params={"search": "software", "limit": 10},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const params = new URLSearchParams({ search: "software", limit: "10" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/naics-codes?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const params = new URLSearchParams({ search: "software", limit: "10" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/naics-codes?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="naics" type="array">
+  Matching NAICS entries. Each contains `naicsCodeId`, `naicsCode`, and `industry`.
+</ResponseField>
+
+<ResponseField name="total_count" type="number">
+  Total number of matching NAICS codes before any limit was applied.
+</ResponseField>
+
+<ResponseField name="truncated" type="boolean">
+  `true` if results were truncated by the `limit` parameter.
+</ResponseField>
+
+```json Example Response
+{
+  "naics": [
+    {
+      "naicsCodeId": "nc_5112",
+      "naicsCode": "511210",
+      "industry": "Software Publishers"
+    },
+    {
+      "naicsCodeId": "nc_5415",
+      "naicsCode": "541511",
+      "industry": "Custom Computer Programming Services"
+    },
+    {
+      "naicsCodeId": "nc_5416",
+      "naicsCode": "541512",
+      "industry": "Computer Systems Design Services"
+    }
+  ],
+  "total_count": 3,
+  "truncated": false
+}
+```

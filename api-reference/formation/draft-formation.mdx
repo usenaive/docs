@@ -1,0 +1,226 @@
+---
+title: "Draft Formation"
+description: "Create a new business formation draft. Does not file anything — validates inputs and returns identity verification requirements."
+api: "POST /v1/formation/drafts"
+---
+
+<ParamField body="state" type="string" required>
+  Two-letter U.S. state code (e.g., `"DE"`, `"WY"`). Use [List Formation States](/api-reference/formation/list-formation-states) to see available states.
+</ParamField>
+
+<ParamField body="entity_type" type="string" required>
+  Entity type to form. Currently only `"LLC"` is supported.
+</ParamField>
+
+<ParamField body="naics_code_id" type="string" required>
+  NAICS code identifier from [Search NAICS Codes](/api-reference/formation/search-naics-codes).
+</ParamField>
+
+<ParamField body="description" type="string" required>
+  Brief description of the business purpose. Max 256 characters.
+</ParamField>
+
+<ParamField body="name_options" type="array" required>
+  Ordered list of preferred company names. The state will use the first available name.
+
+  <Expandable title="name_options item">
+    <ParamField body="name" type="string" required>
+      Desired company name (without entity suffix).
+    </ParamField>
+    <ParamField body="entity_type_ending" type="string" required>
+      Entity suffix, e.g., `"LLC"`, `"L.L.C."`, `"Limited Liability Company"`.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="members" type="array" required>
+  Company members (owners). Ownership percentages must sum to 100.
+
+  <Expandable title="members item">
+    <ParamField body="ownership_percent" type="number" required>
+      Ownership percentage for this member (1–100).
+    </ParamField>
+    <ParamField body="contact_full_name" type="string" required>
+      Full legal name of the member.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="responsible_party" type="object" required>
+  The person responsible for the company's tax filings (required by the IRS for EIN issuance).
+
+  <Expandable title="responsible_party fields">
+    <ParamField body="contact_full_name" type="string" required>
+      Full legal name of the responsible party.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<ParamField body="registered_agent_provider" type="string" required>
+  Who provides the registered agent. `"naive"` to use Naive's registered agent service, or `"customer"` to supply your own.
+</ParamField>
+
+<ParamField body="mailing_address" type="object">
+  Required when `registered_agent_provider` is `"customer"`. The registered agent's mailing address.
+
+  <Expandable title="mailing_address fields">
+    <ParamField body="line1" type="string" required>
+      Street address line 1.
+    </ParamField>
+    <ParamField body="line2" type="string">
+      Street address line 2 (suite, unit, etc.).
+    </ParamField>
+    <ParamField body="city" type="string" required>
+      City.
+    </ParamField>
+    <ParamField body="state" type="string" required>
+      Two-letter state code.
+    </ParamField>
+    <ParamField body="postal_code" type="string" required>
+      ZIP or postal code.
+    </ParamField>
+    <ParamField body="country" type="string" required>
+      Two-letter country code (e.g., `"US"`).
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/formation/drafts \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "state": "DE",
+    "entity_type": "LLC",
+    "naics_code_id": "nc_5112",
+    "description": "AI-powered marketing automation platform",
+    "name_options": [
+      {"name": "Acme Labs", "entity_type_ending": "LLC"},
+      {"name": "Acme Technologies", "entity_type_ending": "LLC"}
+    ],
+    "members": [
+      {"ownership_percent": 60, "contact_full_name": "Alice Johnson"},
+      {"ownership_percent": 40, "contact_full_name": "Bob Smith"}
+    ],
+    "responsible_party": {
+      "contact_full_name": "Alice Johnson"
+    },
+    "registered_agent_provider": "naive"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/formation/drafts",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "state": "DE",
+        "entity_type": "LLC",
+        "naics_code_id": "nc_5112",
+        "description": "AI-powered marketing automation platform",
+        "name_options": [
+            {"name": "Acme Labs", "entity_type_ending": "LLC"},
+            {"name": "Acme Technologies", "entity_type_ending": "LLC"},
+        ],
+        "members": [
+            {"ownership_percent": 60, "contact_full_name": "Alice Johnson"},
+            {"ownership_percent": 40, "contact_full_name": "Bob Smith"},
+        ],
+        "responsible_party": {"contact_full_name": "Alice Johnson"},
+        "registered_agent_provider": "naive",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/formation/drafts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    state: "DE",
+    entity_type: "LLC",
+    naics_code_id: "nc_5112",
+    description: "AI-powered marketing automation platform",
+    name_options: [
+      { name: "Acme Labs", entity_type_ending: "LLC" },
+      { name: "Acme Technologies", entity_type_ending: "LLC" },
+    ],
+    members: [
+      { ownership_percent: 60, contact_full_name: "Alice Johnson" },
+      { ownership_percent: 40, contact_full_name: "Bob Smith" },
+    ],
+    responsible_party: { contact_full_name: "Alice Johnson" },
+    registered_agent_provider: "naive",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/formation/drafts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    state: "DE",
+    entity_type: "LLC",
+    naics_code_id: "nc_5112",
+    description: "AI-powered marketing automation platform",
+    name_options: [
+      { name: "Acme Labs", entity_type_ending: "LLC" },
+      { name: "Acme Technologies", entity_type_ending: "LLC" },
+    ],
+    members: [
+      { ownership_percent: 60, contact_full_name: "Alice Johnson" },
+      { ownership_percent: 40, contact_full_name: "Bob Smith" },
+    ],
+    responsible_party: { contact_full_name: "Alice Johnson" },
+    registered_agent_provider: "naive",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="draft_id" type="string">
+  Unique identifier for the formation draft.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Current draft status. Initially `"drafting"` or `"kyc_pending"` depending on member verification state.
+</ResponseField>
+
+<ResponseField name="members_needing_kyc" type="array">
+  Array of member names that still require identity verification before the draft can be submitted.
+</ResponseField>
+
+<ResponseField name="responsible_party_needs_kyc" type="boolean">
+  `true` if the responsible party still needs to complete identity verification.
+</ResponseField>
+
+<ResponseField name="estimated_total_cost_cents" type="number">
+  Estimated total cost in cents, including state filing fees and service fees.
+</ResponseField>
+
+```json Example Response
+{
+  "draft_id": "fdr_abc123",
+  "status": "kyc_pending",
+  "members_needing_kyc": ["Alice Johnson", "Bob Smith"],
+  "responsible_party_needs_kyc": true,
+  "estimated_total_cost_cents": 52900
+}
+```
+
+<Note>
+This endpoint creates a local draft only — nothing is filed with the state. All members and the responsible party must complete identity verification before the draft can be [submitted](/api-reference/formation/submit-formation).
+</Note>

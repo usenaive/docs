@@ -1,0 +1,358 @@
+---
+title: "Company Registration"
+description: "The formation primitive — programmatically form a US LLC, obtain an EIN, retrieve filing documents, and receive scanned business mail."
+---
+
+Company Registration is the primitive that lets an employee form a real US legal entity. Naive handles the entire lifecycle: draft the formation with structural details, verify every party's identity via [Identity Verification](/guides/identity-verification), submit the filing, and receive documents and business mail as they arrive. The employee never touches raw PII — identity data flows through a secure vault at submission time.
+
+This guide covers the eight tools that power company registration: from browsing supported states to retrieving scanned business mail years after the entity is formed.
+
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `list_formation_states` | Extended | List US states supported for company formation with fees and SLAs |
+| `search_naics_codes` | Extended | Search the NAICS business classification catalog |
+| `draft_formation` | Extended | Stage a formation draft with structural details (no submission yet) |
+| `submit_formation` | Extended | Submit a KYC-verified formation for state filing |
+| `get_formation_status` | Extended | Check current formation progress and status |
+| `list_formation_documents` | Extended | List documents produced by a formation (Articles, EIN Letter) |
+| `get_formation_document` | Extended | Download a specific formation document |
+| `list_business_mail` | Extended | List scanned business mail received at the registered agent address |
+
+## How It Works
+
+Company registration follows a four-phase lifecycle:
+
+```
+1. Draft Phase
+   └─ Browse states, select NAICS code, define members and name options
+   └─ draft_formation() creates a local draft — nothing is filed yet
+
+2. Verification Phase
+   └─ Each member and the responsible party verifies their identity
+   └─ Uses the Identity Verification primitive (see guide)
+   └─ PII is stored in a secure vault, never on Naive servers
+
+3. Submission Phase
+   └─ submit_formation() commits the draft
+   └─ Identity data is hydrated from the vault at the wire
+   └─ The formation is filed with the state
+
+4. Document Phase
+   └─ Articles of Organization arrive when the state approves
+   └─ EIN Letter arrives when the IRS issues the EIN
+   └─ Business mail arrives at the registered agent address ongoing
+```
+
+## Browsing States and Industries
+
+### Supported states
+
+```bash
+curl https://api.usenaive.ai/v1/formation/states \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "states": [
+    {
+      "code": "WY",
+      "name": "Wyoming",
+      "formation_fee_cents": 10000,
+      "sla_business_days_min": 1,
+      "sla_business_days_max": 3,
+      "notes": "No state income tax, strong privacy protections"
+    },
+    {
+      "code": "DE",
+      "name": "Delaware",
+      "formation_fee_cents": 9000,
+      "sla_business_days_min": 3,
+      "sla_business_days_max": 5,
+      "notes": "Court of Chancery, preferred for venture-backed companies"
+    }
+  ]
+}
+```
+
+### NAICS codes
+
+Search the business classification catalog to find the right industry code for the formation:
+
+```bash
+curl "https://api.usenaive.ai/v1/formation/naics-codes?search=software&limit=5" \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "naics": [
+    { "naicsCodeId": "31tizctUA0I3WDKKH5PMw1mYjE0", "naicsCode": "511210", "industry": "Software Publishers" },
+    { "naicsCodeId": "2o8v0kcaCWyPyi3LJFsCiTCFSyk", "naicsCode": "541511", "industry": "Custom Computer Programming Services" }
+  ],
+  "total_count": 47,
+  "truncated": true
+}
+```
+
+## Creating a Formation Draft
+
+A draft captures all structural details — state, entity type, member ownership percentages, name options, addresses — without submitting anything to the state. PII fields (legal names, SSN, date of birth, residential addresses) are not stored on the draft; they are populated later through identity verification.
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/formation/drafts \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "state": "WY",
+    "entity_type": "LLC",
+    "naics_code_id": "31tizctUA0I3WDKKH5PMw1mYjE0",
+    "description": "A software company focusing on cloud solutions.",
+    "name_options": [
+      { "name": "Apex Cloud", "entity_type_ending": "LLC" },
+      { "name": "Apex Technologies", "entity_type_ending": "LLC" },
+      { "name": "Apex Software", "entity_type_ending": "L.L.C." }
+    ],
+    "members": [
+      { "ownership_percent": 60, "contact_full_name": "Ada Lovelace" },
+      { "ownership_percent": 40, "contact_full_name": "Charles Babbage" }
+    ],
+    "responsible_party": {
+      "contact_full_name": "Ada Lovelace"
+    },
+    "registered_agent_provider": "managed"
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "draft_id": "d8f3a1b2-4c5e-6789-abcd-ef0123456789",
+  "status": "drafting",
+  "members_needing_kyc": ["m_ada_001", "m_charles_002"],
+  "responsible_party_needs_kyc": true,
+  "estimated_total_cost_cents": 15900
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `state` | string | Yes | 2-letter US state abbreviation (from `list_formation_states`) |
+| `entity_type` | string | Yes | `"LLC"` (only supported type currently) |
+| `naics_code_id` | string | Yes | NAICS code ID from `search_naics_codes` |
+| `description` | string | Yes | Business description (max 256 characters) |
+| `name_options` | array | Yes | 1-3 name options, each with `name` and `entity_type_ending` (`LLC`, `L.L.C`, `L.L.C.`, or `Limited Liability Company`) |
+| `members` | array | Yes | LLC members with `ownership_percent` (must sum to 100) and `contact_full_name` |
+| `responsible_party` | object | Yes | The person responsible for the EIN application |
+| `registered_agent_provider` | string | Yes | `"managed"` (Naive-provided) or `"customer"` (bring your own) |
+| `mailing_address` | object | Conditional | Required if `registered_agent_provider` is `"customer"` |
+
+After creating the draft, each member and the responsible party must complete [identity verification](/guides/identity-verification) before the formation can be submitted.
+
+## Submitting the Formation
+
+Once all parties have passed identity verification:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/formation/drafts/d8f3a1b2/submit \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "formation_id": "31oBkHJaKlNsrNR45DLLlvtp441",
+  "status": "submitted",
+  "estimated_completion_at": "2026-05-02T00:00:00Z"
+}
+```
+
+The formation is now committed and filed with the state. Status updates arrive via webhooks and are reflected in `get_formation_status`.
+
+<Warning>
+Once submitted, the formation cannot be amended or cancelled. Verify all details are correct before submitting.
+</Warning>
+
+## Tracking Status
+
+```bash
+curl https://api.usenaive.ai/v1/formation/drafts/d8f3a1b2/status \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "status": "completed",
+  "resolved_name": "Apex Cloud",
+  "resolved_entity_ending": "LLC",
+  "formation_completed_at": "2026-05-01T14:30:00Z",
+  "ein_issued_at": "2026-05-03T09:15:00Z",
+  "document_count": 2,
+  "last_webhook_event": "document_einletter_uploaded",
+  "last_event_received_at": "2026-05-03T09:15:22Z"
+}
+```
+
+### Formation status values
+
+| Status | Meaning |
+|--------|---------|
+| `drafting` | Draft created, awaiting identity verification |
+| `kyc_pending` | Identity verification in progress for one or more parties |
+| `kyc_passed` | All parties verified, ready to submit |
+| `kyc_review` | One or more parties flagged for manual review |
+| `kyc_failed` | Identity verification failed for one or more parties |
+| `customer_created` | Customer record created, formation submission in progress |
+| `submitted` | Formation filed with the state, awaiting approval |
+| `completed` | State approved, entity is formed |
+| `failed` | Formation rejected (rare) |
+
+## Retrieving Documents
+
+After the formation completes, documents become available:
+
+```bash
+curl https://api.usenaive.ai/v1/formation/drafts/d8f3a1b2/documents \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "documents": [
+    {
+      "document_id": "2gm6Y9kmbWaJAZwIaJRD52gnMXr",
+      "name": "Apex-Cloud-ArticlesOfOrganization.pdf",
+      "content_type": "application/pdf",
+      "document_type": "ArticlesOfOrganization",
+      "created_at": "2026-05-01T14:30:00Z",
+      "mirrored_locally": true
+    },
+    {
+      "document_id": "2glyL3kapnzpwqcinpM3rOSJKmx",
+      "name": "Apex-Cloud-EinLetter.pdf",
+      "content_type": "application/pdf",
+      "document_type": "EinLetter",
+      "created_at": "2026-05-03T09:15:00Z",
+      "mirrored_locally": true
+    }
+  ]
+}
+```
+
+### Document types
+
+| Type | Description |
+|------|-------------|
+| `ArticlesOfOrganization` | State-issued formation certificate |
+| `EinLetter` | IRS-issued EIN assignment letter |
+| `Mail` | Scanned business mail received at the registered agent address |
+
+To download a specific document:
+
+```bash
+curl https://api.usenaive.ai/v1/formation/drafts/d8f3a1b2/documents/2gm6Y9k \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+Returns a time-limited download URL (15-minute expiry).
+
+## Business Mail
+
+After formation, business mail sent to the registered agent address is scanned and made available:
+
+```bash
+curl "https://api.usenaive.ai/v1/formation/drafts/d8f3a1b2/mail?since=2026-05-01T00:00:00Z" \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+Mail documents continue to arrive for the lifetime of the entity. The agent can triage incoming mail — surface important items, ignore junk, or route to specific employees.
+
+## Security
+
+### PII handling
+
+Naive servers never hold raw PII (SSN, date of birth, government documents). All sensitive identity data is stored in an encrypted vault and hydrated only at the wire when submitting to state filing services. This is enforced architecturally — there is no tool or endpoint that exposes vault contents to agents or operators.
+
+### Compliance
+
+- Naive operates as an orchestration layer, not a registered agent or entity formation provider
+- State filings are handled by a licensed formation partner
+- All fees are pass-through costs, not Naive revenue
+- BOI/FinCEN reporting requirements apply to the formed entity, not to Naive
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `validation_failed` | Ownership percentages don't sum to 100, or missing required fields | Fix the draft and resubmit |
+| `invalid_state` | Requested state not in supported list | Use `list_formation_states` to see available states |
+| `invalid_naics` | NAICS code ID not found | Use `search_naics_codes` to find valid codes |
+| `kyc_not_passed` | One or more parties haven't completed identity verification | Complete verification for all parties first |
+| `kyc_watchlist_hit` | Unresolved watchlist match on a party | Manual review required |
+| `draft_not_found` | Invalid draft ID or draft already submitted | Check the draft ID |
+| `draft_incomplete` | Draft missing fields populated by identity verification | Ensure all parties have completed KYC |
+
+## All Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [List Formation States](/api-reference/formation/list-formation-states) | GET | Supported states with fees and SLAs |
+| [Search NAICS Codes](/api-reference/formation/search-naics-codes) | GET | Search business classification catalog |
+| [Draft Formation](/api-reference/formation/draft-formation) | POST | Create a formation draft |
+| [Submit Formation](/api-reference/formation/submit-formation) | POST | Submit a verified formation for filing |
+| [Get Formation Status](/api-reference/formation/get-formation-status) | GET | Check formation progress |
+| [List Formation Documents](/api-reference/formation/list-formation-documents) | GET | List documents for a formation |
+| [Get Formation Document](/api-reference/formation/get-formation-document) | GET | Download a specific document |
+| [List Business Mail](/api-reference/formation/list-business-mail) | GET | List scanned business mail |
+
+## Typical Workflow
+
+```
+Agent receives task: "Form an LLC in Wyoming for my consulting business"
+    │
+    ├─ list_formation_states()                    → Browse available states
+    │   → WY: $100 fee, 1-3 business days
+    │
+    ├─ search_naics_codes({ search: "consulting" })
+    │   → 541611: Management Consulting Services
+    │
+    ├─ draft_formation({                          → Stage the formation
+    │    state: "WY", entity_type: "LLC",
+    │    naics_code_id: "...", description: "...",
+    │    name_options: [...], members: [...]
+    │  })
+    │   → draft_id, members_needing_kyc: [m1]
+    │
+    ├─ start_verification({                       → Verify the founder
+    │    formation_draft_id: draft_id,
+    │    member_id: "m1"
+    │  })
+    │   → hosted_url for the user to complete
+    │
+    ├─ [User completes identity verification]
+    │
+    ├─ submit_formation({ draft_id })             → File with the state
+    │   → status: submitted
+    │
+    ├─ [1-3 business days pass]
+    │
+    ├─ get_formation_status({ draft_id })         → Check progress
+    │   → status: completed, EIN issued
+    │
+    └─ list_formation_documents({ draft_id })     → Retrieve documents
+        → Articles of Organization, EIN Letter
+```

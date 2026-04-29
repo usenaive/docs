@@ -1,0 +1,86 @@
+---
+title: "List Formation Documents"
+description: "List all documents associated with a formation draft, such as articles of organization, EIN letters, and operating agreements."
+api: "GET /v1/formation/drafts/{id}/documents"
+---
+
+<ParamField path="id" type="string" required>
+  The `draft_id` returned from [Draft Formation](/api-reference/formation/draft-formation).
+</ParamField>
+
+<ParamField query="types" type="string">
+  Comma-separated list of document types to filter (e.g., `"articles_of_organization,ein_letter"`). Omit to return all documents.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents?types=articles_of_organization" \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    params={"types": "articles_of_organization"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const params = new URLSearchParams({ types: "articles_of_organization" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const params = new URLSearchParams({ types: "articles_of_organization" });
+const response = await fetch(
+  `https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents?${params}`,
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="documents" type="array">
+  Array of document objects. Each contains `document_id`, `name`, `content_type`, `document_type`, `created_at`, and `mirrored_locally`.
+</ResponseField>
+
+```json Example Response
+{
+  "documents": [
+    {
+      "document_id": "doc_001",
+      "name": "Articles of Organization - Acme Labs LLC",
+      "content_type": "application/pdf",
+      "document_type": "articles_of_organization",
+      "created_at": "2026-05-08T14:32:00Z",
+      "mirrored_locally": true
+    },
+    {
+      "document_id": "doc_002",
+      "name": "EIN Confirmation Letter",
+      "content_type": "application/pdf",
+      "document_type": "ein_letter",
+      "created_at": "2026-05-10T09:15:00Z",
+      "mirrored_locally": true
+    },
+    {
+      "document_id": "doc_003",
+      "name": "Operating Agreement",
+      "content_type": "application/pdf",
+      "document_type": "operating_agreement",
+      "created_at": "2026-05-08T14:35:00Z",
+      "mirrored_locally": false
+    }
+  ]
+}
+```
+
+Use [Get Formation Document](/api-reference/formation/get-formation-document) to retrieve a download URL for any individual document.

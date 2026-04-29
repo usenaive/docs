@@ -1,0 +1,87 @@
+---
+title: "Get Formation Status"
+description: "Check the current status of a formation draft, including KYC progress, resolved entity name, and document availability."
+api: "GET /v1/formation/drafts/{id}/status"
+---
+
+<ParamField path="id" type="string" required>
+  The `draft_id` returned from [Draft Formation](/api-reference/formation/draft-formation).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/status \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/status",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/status",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/status",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="status" type="string">
+  Current formation status. One of: `drafting`, `kyc_pending`, `kyc_passed`, `kyc_review`, `kyc_failed`, `customer_created`, `submitted`, `completed`, `failed`.
+</ResponseField>
+
+<ResponseField name="resolved_name" type="string">
+  The company name approved by the state. `null` until the state confirms a name from your `name_options`.
+</ResponseField>
+
+<ResponseField name="resolved_entity_ending" type="string">
+  The entity suffix approved by the state (e.g., `"LLC"`). `null` until resolved.
+</ResponseField>
+
+<ResponseField name="formation_completed_at" type="string">
+  ISO 8601 timestamp when the state completed formation. `null` until `status` is `completed`.
+</ResponseField>
+
+<ResponseField name="ein_issued_at" type="string">
+  ISO 8601 timestamp when the IRS issued the EIN. `null` until the EIN is received.
+</ResponseField>
+
+<ResponseField name="document_count" type="number">
+  Number of documents available for download.
+</ResponseField>
+
+<ResponseField name="last_webhook_event" type="string">
+  The most recent webhook event type sent for this formation (e.g., `formation.completed`, `formation.document_available`).
+</ResponseField>
+
+<ResponseField name="last_event_received_at" type="string">
+  ISO 8601 timestamp of the most recent event.
+</ResponseField>
+
+```json Example Response
+{
+  "status": "completed",
+  "resolved_name": "Acme Labs",
+  "resolved_entity_ending": "LLC",
+  "formation_completed_at": "2026-05-08T14:32:00Z",
+  "ein_issued_at": "2026-05-10T09:15:00Z",
+  "document_count": 4,
+  "last_webhook_event": "formation.completed",
+  "last_event_received_at": "2026-05-08T14:32:00Z"
+}
+```

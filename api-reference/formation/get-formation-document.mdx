@@ -1,0 +1,80 @@
+---
+title: "Get Formation Document"
+description: "Get a temporary download URL for a specific formation document."
+api: "GET /v1/formation/drafts/{id}/documents/{documentId}"
+---
+
+<ParamField path="id" type="string" required>
+  The `draft_id` returned from [Draft Formation](/api-reference/formation/draft-formation).
+</ParamField>
+
+<ParamField path="documentId" type="string" required>
+  The `document_id` from [List Formation Documents](/api-reference/formation/list-formation-documents).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents/doc_001 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents/doc_001",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents/doc_001",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/documents/doc_001",
+  { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="document_id" type="string">
+  The document identifier.
+</ResponseField>
+
+<ResponseField name="document_type" type="string">
+  Type of document (e.g., `articles_of_organization`, `ein_letter`, `operating_agreement`).
+</ResponseField>
+
+<ResponseField name="content_type" type="string">
+  MIME type of the document (e.g., `application/pdf`).
+</ResponseField>
+
+<ResponseField name="download_url" type="string">
+  Pre-signed URL to download the document. Expires after **15 minutes**.
+</ResponseField>
+
+<ResponseField name="fetched_at" type="string">
+  ISO 8601 timestamp when the download URL was generated.
+</ResponseField>
+
+```json Example Response
+{
+  "document_id": "doc_001",
+  "document_type": "articles_of_organization",
+  "content_type": "application/pdf",
+  "download_url": "https://files.usenaive.ai/formation/fdr_abc123/doc_001.pdf?token=eyJ...",
+  "fetched_at": "2026-05-11T16:45:00Z"
+}
+```
+
+<Note>
+The `download_url` expires after 15 minutes. Request a new URL if the link has expired.
+</Note>

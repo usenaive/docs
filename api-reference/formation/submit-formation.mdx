@@ -1,0 +1,78 @@
+---
+title: "Submit Formation"
+description: "Submit a completed formation draft for filing with the state. Irreversible once submitted."
+api: "POST /v1/formation/drafts/{id}/submit"
+---
+
+<ParamField path="id" type="string" required>
+  The `draft_id` returned from [Draft Formation](/api-reference/formation/draft-formation).
+</ParamField>
+
+No request body required.
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/submit \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/submit",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/submit",
+  {
+    method: "POST",
+    headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+  },
+);
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.usenaive.ai/v1/formation/drafts/fdr_abc123/submit",
+  {
+    method: "POST",
+    headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+  },
+);
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="company_id" type="string">
+  The company identifier for the newly submitted formation.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Always `"submitted"` on success.
+</ResponseField>
+
+<ResponseField name="estimated_completion_at" type="string">
+  ISO 8601 timestamp for estimated formation completion, based on the state's SLA.
+</ResponseField>
+
+```json Example Response
+{
+  "company_id": "comp_xyz789",
+  "status": "submitted",
+  "estimated_completion_at": "2026-05-12T00:00:00Z"
+}
+```
+
+<Warning>
+This action is **irreversible**. Once submitted, the formation cannot be amended or cancelled.
+</Warning>
+
+<Note>
+All members and the responsible party must have passed identity verification before submission. If any party has not completed KYC, the request will return a `400` error with details about who still needs verification.
+</Note>
