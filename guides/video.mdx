@@ -1,20 +1,33 @@
 ---
 title: Video Creation
-description: "Two video primitives: HeyGen for AI avatar videos and Submagic for short-form clip extraction from YouTube."
+description: "Two video primitives: AI avatar videos and short-form clip extraction from YouTube."
 ---
 
-Video is the **creation primitive** for moving content. Naive exposes two backends behind a consistent interface: **HeyGen** for AI avatar videos where a digital presenter speaks the employee's script, and **Submagic** for extracting viral-ready short-form clips from existing YouTube content. A marketer or designer employee with the video whitelist can use either without juggling separate accounts — billing, storage, and credentials all flow through the company.
+Video is the **creation primitive** for moving content. Naive exposes two engines behind a consistent interface: **AI avatar videos** where a digital presenter speaks the employee's script, and **clip extraction** for pulling viral-ready short-form clips from existing YouTube content. A marketer or designer employee with the video whitelist can use either without juggling separate accounts — billing, storage, and credentials all flow through the company.
 
-## HeyGen — AI Avatar Videos
+## Tools
 
-HeyGen creates videos with AI-generated avatars that speak your text with realistic lip-sync and natural expressions.
+| Tool | Type | Description |
+|------|------|-------------|
+| `list_video_styles` | Extended | Browse available avatar styles |
+| `create_video` | Extended | Create an AI avatar video from a text prompt |
+| `get_video_session` | Extended | Poll video generation status and progress |
+| `send_video_message` | Extended | Send follow-up instructions to an active session |
+| `get_video` | Extended | Get the final video URL for a completed video |
+| `create_clips` | Extended | Generate short-form clips from a YouTube URL |
+| `get_clip_status` | Extended | Check clip generation progress |
+| `edit_clip` | Extended | Edit a previously generated clip |
+
+## AI Avatar Videos
+
+The video engine creates videos with AI-generated avatars that speak your text with realistic lip-sync and natural expressions.
 
 ### Workflow
 
 <Steps>
   <Step title="Browse avatar styles">
     ```bash
-    curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
+    curl "https://api.usenaive.ai/v1/video/styles?tag=business" \
       -H "Authorization: Bearer nv_sk_your_key"
     ```
 
@@ -34,7 +47,7 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
 
   <Step title="Create the video">
     ```bash
-    curl -X POST https://api.usenaive.ai/v1/heygen/create \
+    curl -X POST https://api.usenaive.ai/v1/video/create \
       -H "Authorization: Bearer nv_sk_your_key" \
       -H "Content-Type: application/json" \
       -d '{
@@ -57,7 +70,7 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
 
   <Step title="Poll for completion">
     ```bash
-    curl https://api.usenaive.ai/v1/heygen/session/sess_abc123 \
+    curl https://api.usenaive.ai/v1/video/session/sess_abc123 \
       -H "Authorization: Bearer nv_sk_your_key"
     ```
 
@@ -79,7 +92,7 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
     Send additional instructions to refine the video while the session is active:
 
     ```bash
-    curl -X POST https://api.usenaive.ai/v1/heygen/session/sess_abc123 \
+    curl -X POST https://api.usenaive.ai/v1/video/session/sess_abc123 \
       -H "Authorization: Bearer nv_sk_your_key" \
       -H "Content-Type: application/json" \
       -d '{ "message": "Add a call-to-action at the end: Visit acme.com to get started" }'
@@ -90,7 +103,7 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
     Once the session status shows `completed` with a `videoId`:
 
     ```bash
-    curl https://api.usenaive.ai/v1/heygen/video/vid_abc123 \
+    curl https://api.usenaive.ai/v1/video/video/vid_abc123 \
       -H "Authorization: Bearer nv_sk_your_key"
     ```
 
@@ -99,9 +112,9 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
     {
       "ok": true,
       "status": "completed",
-      "videoUrl": "https://cdn.heygen.com/video/abc123.mp4",
+      "videoUrl": "https://cdn.usenaive.ai/video/abc123.mp4",
       "duration": 45,
-      "thumbnailUrl": "https://cdn.heygen.com/thumb/abc123.jpg"
+      "thumbnailUrl": "https://cdn.usenaive.ai/video/thumb/abc123.jpg"
     }
     ```
 
@@ -109,37 +122,37 @@ HeyGen creates videos with AI-generated avatars that speak your text with realis
   </Step>
 </Steps>
 
-### HeyGen Tools Reference
+### Avatar Video Tools
 
 | Tool | Method | Description |
 |------|--------|-------------|
-| `list_heygen_styles` | GET | Browse available avatar styles |
-| `create_heygen_video` | POST | Create a new video from a text prompt |
-| `get_heygen_session` | GET | Poll session status and progress |
-| `send_heygen_message` | POST | Send follow-up instructions to an active session |
-| `get_heygen_video` | GET | Get the final video URL (credits billed on first retrieval) |
+| `list_video_styles` | GET | Browse available avatar styles |
+| `create_video` | POST | Create a new video from a text prompt |
+| `get_video_session` | GET | Poll session status and progress |
+| `send_video_message` | POST | Send follow-up instructions to an active session |
+| `get_video` | GET | Get the final video URL (credits billed on first retrieval) |
 
 ### Cost
 
-Each HeyGen video costs approximately **5-10 credits**. Credits are billed when you first retrieve the final video with `get_heygen_video`.
+Each avatar video costs approximately **5-10 credits**. Credits are billed when you first retrieve the final video with `get_video`.
 
 ### Error Recovery
 
 | Error | Recovery |
 |-------|----------|
 | `insufficient_credits` | Top up credits at the developer portal |
-| `session_not_found` | Session doesn't exist or has already completed — start a new one |
+| `session_not_found` | Session doesn't exist — start a new one |
 
-## Submagic — YouTube Clip Extraction
+## Clip Extraction
 
-Submagic takes a YouTube video URL and generates short-form clips optimized for social media — with auto-generated captions, smart cropping, and engaging formatting.
+The clip engine takes a YouTube video URL and generates short-form clips optimized for social media — with auto-generated captions, smart cropping, and engaging formatting.
 
 ### Workflow
 
 <Steps>
   <Step title="Create clips from a YouTube URL">
     ```bash
-    curl -X POST https://api.usenaive.ai/v1/submagic/clips \
+    curl -X POST https://api.usenaive.ai/v1/clips/clips \
       -H "Authorization: Bearer nv_sk_your_key" \
       -H "Content-Type: application/json" \
       -d '{ "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ" }'
@@ -156,7 +169,7 @@ Submagic takes a YouTube video URL and generates short-form clips optimized for 
 
   <Step title="Poll for completion">
     ```bash
-    curl https://api.usenaive.ai/v1/submagic/status/proj_abc123 \
+    curl https://api.usenaive.ai/v1/clips/status/proj_abc123 \
       -H "Authorization: Bearer nv_sk_your_key"
     ```
 
@@ -176,7 +189,7 @@ Submagic takes a YouTube video URL and generates short-form clips optimized for 
     Trim, adjust captions, or modify formatting:
 
     ```bash
-    curl -X POST https://api.usenaive.ai/v1/submagic/edit \
+    curl -X POST https://api.usenaive.ai/v1/clips/edit \
       -H "Authorization: Bearer nv_sk_your_key" \
       -H "Content-Type: application/json" \
       -d '{ "clip_id": "clip_1", "trim_start": 5, "trim_end": 25 }'
@@ -193,24 +206,24 @@ Submagic takes a YouTube video URL and generates short-form clips optimized for 
       -d '{
         "content": "The key insight from our latest episode",
         "platforms": ["TIKTOK", "INSTAGRAM", "YOUTUBE"],
-        "media_urls": ["https://cdn.submagic.com/clip_1.mp4"],
+        "media_urls": ["https://cdn.usenaive.ai/clips/clip_1.mp4"],
         "youtube_type": "SHORT"
       }'
     ```
   </Step>
 </Steps>
 
-### Submagic Tools Reference
+### Clip Extraction Tools
 
 | Tool | Method | Description |
 |------|--------|-------------|
-| `create_magic_clips` | POST | Generate clips from a YouTube URL |
-| `get_submagic_status` | GET | Check clip generation progress |
-| `edit_submagic_clip` | POST | Edit a generated clip |
+| `create_clips` | POST | Generate clips from a YouTube URL |
+| `get_clip_status` | GET | Check clip generation progress |
+| `edit_clip` | POST | Edit a generated clip |
 
-## Choosing Between HeyGen and Submagic
+## Choosing Between Avatar Videos and Clip Extraction
 
-| | HeyGen | Submagic |
+| | Avatar Video | Clip Extraction |
 |---|--------|---------|
 | **Input** | Text script | YouTube URL |
 | **Output** | AI avatar video | Short-form clips |
@@ -219,5 +232,35 @@ Submagic takes a YouTube video URL and generates short-form clips optimized for 
 | **Cost** | ~5-10 credits | Per-project cost |
 
 <Tip>
-Combine both: create a long-form HeyGen video, upload it to YouTube, then use Submagic to generate short clips for TikTok and Instagram Reels.
+Combine both: create a long-form avatar video, upload it to YouTube, then use clip extraction to generate short clips for TikTok and Instagram Reels.
 </Tip>
+
+## Typical Workflow
+
+```
+Agent receives task: "Create a product announcement video and clip it for social"
+    │
+    ├─ create_video({                          → Generate full video
+    │    prompt: "Welcome to Acme 2.0..."
+    │  })
+    │   → sessionId: sess_abc123
+    │
+    ├─ get_video_session({ sessionId })        → Poll until complete
+    │   → status: completed, videoId: vid_xyz
+    │
+    ├─ get_video({ videoId })                  → Get video URL
+    │   → videoUrl: https://cdn.usenaive.ai/video/...
+    │
+    ├─ create_clips({                          → Extract clips for social
+    │    youtube_url: "[uploaded video URL]"
+    │  })
+    │   → projectId: proj_def456
+    │
+    ├─ get_clip_status({ projectId })          → Poll until clips ready
+    │   → 3 clips generated
+    │
+    └─ create_social_post({                    → Post clips to social
+         media_urls: ["clip_url"],
+         platforms: ["TIKTOK", "INSTAGRAM"]
+       })
+```

@@ -1,10 +1,10 @@
 ---
 title: "Tool Catalog"
-description: "Complete list of all 98 tools — 54 primitives and 44 platform orchestration tools — organized by category."
+description: "Complete list of all 54 tools organized by category, with core/extended status and one-line descriptions."
 sidebarTitle: "Tool Catalog"
 ---
 
-The Naive platform provides **98 tools** across two layers: **54 primitives** (employee-level tools for doing work) and **44 platform orchestration tools** (user-level tools for managing the platform, coming soon). Of the primitives, 8 are registered as [core tools](/mcp/core-tools) in the MCP context window; the remaining 46 are accessible via the [meta-tools](/mcp/meta-tools) discovery flow.
+The Naive platform provides **54 tools** across **11 categories**. 8 are registered as [core tools](/mcp/core-tools) in the MCP context window; the remaining 46 are accessible via the [meta-tools](/mcp/meta-tools) discovery flow.
 
 <Note>
   **Core** tools (marked ★) are callable directly. **Extended** tools require `naive_search → naive_tool_help → naive_execute`. See the [API reference](/api-reference) for full parameter documentation.
@@ -41,14 +41,14 @@ The Naive platform provides **98 tools** across two layers: **54 primitives** (e
 |------|--------|-------------|
 | `generate_images` | ★ Core | Generate images from a text prompt using Gemini AI |
 | `search_stock_media` | ★ Core | Search Pexels for free stock videos and photos |
-| `list_heygen_styles` | Extended | Browse available HeyGen avatar styles |
-| `create_heygen_video` | Extended | Create an AI avatar video using HeyGen |
-| `get_heygen_session` | Extended | Check HeyGen video session status and progress |
-| `send_heygen_message` | Extended | Send a follow-up message to a HeyGen session |
-| `get_heygen_video` | Extended | Get the final video URL for a completed video |
-| `create_magic_clips` | Extended | Create short-form clips from a YouTube video via Submagic |
-| `get_submagic_status` | Extended | Check Submagic clip generation status |
-| `edit_submagic_clip` | Extended | Edit a previously generated Submagic clip |
+| `list_video_styles` | Extended | Browse available AI avatar styles |
+| `create_video` | Extended | Create an AI avatar video |
+| `get_video_session` | Extended | Check video session status and progress |
+| `send_video_message` | Extended | Send a follow-up message to a video session |
+| `get_video` | Extended | Get the final video URL for a completed video |
+| `create_clips` | Extended | Create short-form clips from a YouTube video |
+| `get_clip_status` | Extended | Check clip generation status |
+| `edit_clip` | Extended | Edit a previously generated clip |
 
 ## Research (3 tools)
 
@@ -121,7 +121,7 @@ The Naive platform provides **98 tools** across two layers: **54 primitives** (e
 
 ---
 
-## Summary — Primitives
+## Summary
 
 | Category | Tools | Core | Extended |
 |----------|-------|------|----------|
@@ -137,138 +137,3 @@ The Naive platform provides **98 tools** across two layers: **54 primitives** (e
 | Credentials | 3 | 0 | 3 |
 | Billing | 1 | 0 | 1 |
 | **Total** | **54** | **8** | **46** |
-
----
-
-## Platform Orchestration <sup>Coming Soon</sup>
-
-<Info>
-  The Platform Orchestration tools are **coming soon**. They will be available in the MCP server when running in **orchestration mode** and use **user-level keys** (`nv_pk_...`) instead of employee keys.
-</Info>
-
-These tools manage the Naive platform itself — companies, employees, tasks, deliverables, loops — rather than acting as an employee. They are a separate layer from the primitives above.
-
-### Companies (5 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_companies` | List all companies the operator owns or has access to |
-| `create_company` | Create a new AI company (billable) |
-| `get_company` | Get company details and profile |
-| `update_company` | Update company name, brand, and strategy |
-| `delete_company` | Remove a company and all its resources |
-
-### Employees (8 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_employees` | List all employees in a company |
-| `create_employee` | Hire a custom employee with role and primitive whitelist |
-| `create_employee_from_template` | Hire an employee from a pre-built template |
-| `get_employee` | Get full employee profile |
-| `update_employee` | Update employee profile, focus, strategy, and memo |
-| `configure_employee` | Configure employee settings, assignments, and visibility |
-| `pause_resume_employee` | Pause or resume an employee's runtime |
-| `delete_employee` | Decommission an employee and release resources |
-
-### Templates (2 tools)
-
-| Tool | Description |
-|------|-------------|
-| `search_templates` | Search available employee templates by query or department |
-| `get_template` | Get full template details including skills, prompts, and defaults |
-
-### Tasks (7 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_tasks` | List tasks with filters by assignee and status |
-| `create_task` | Create a task and assign it to an employee |
-| `get_task` | Get full task details with comments |
-| `update_task` | Update task status, priority, or description |
-| `checkout_task` | Claim a task for an employee |
-| `post_task_comment` | Add a comment to a task |
-| `delegate_tasks` | Batch-create tasks across multiple employees |
-
-### Deliverables (5 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_deliverables` | List deliverables with status and type filters |
-| `submit_deliverable` | Submit a work artifact for review |
-| `get_deliverable` | Get full deliverable details |
-| `update_deliverable` | Update deliverable content before or after review |
-| `approve_deliverable` | Approve a deliverable, optionally triggering deployment |
-
-### Loops (5 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_loops` | List loops with employee and status filters |
-| `create_loop` | Create a recurring, reactive, or generational loop |
-| `update_loop` | Update loop program, evaluation, or cadence |
-| `trigger_loop` | Manually trigger a loop cycle |
-| `log_loop_cycle` | Log the completion of a loop cycle |
-
-### Goals (3 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_goals` | List company-level goals |
-| `create_goal` | Create a goal (can be nested under a parent) |
-| `update_goal` | Update goal title, description, or status |
-
-### Campaigns (3 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_campaigns` | List campaigns with status and progress |
-| `create_campaign` | Create a campaign with phases and success criteria |
-| `update_campaign` | Update campaign details and progress |
-
-### Channels (3 tools)
-
-| Tool | Description |
-|------|-------------|
-| `list_channels` | List internal communication channels |
-| `post_to_channel` | Post a message to a channel |
-| `read_channel` | Read messages from a channel |
-
-### Notifications (1 tool)
-
-| Tool | Description |
-|------|-------------|
-| `notify_user` | Send a notification to the platform operator |
-
-### Team (1 tool)
-
-| Tool | Description |
-|------|-------------|
-| `get_team` | Get the full team roster with reporting structure |
-
-### Summary — Platform Orchestration
-
-| Category | Tools |
-|----------|-------|
-| Companies | 5 |
-| Employees | 8 |
-| Templates | 2 |
-| Tasks | 7 |
-| Deliverables | 5 |
-| Loops | 5 |
-| Goals | 3 |
-| Campaigns | 3 |
-| Channels | 3 |
-| Notifications | 1 |
-| Team | 1 |
-| **Total** | **44** |
-
----
-
-## Combined Totals
-
-| Layer | Tools | Key Type |
-|-------|-------|----------|
-| Primitives | 54 | Employee (`nv_sk_...`) |
-| Platform Orchestration | 44 | User (`nv_pk_...`) |
-| **Total** | **98** | |

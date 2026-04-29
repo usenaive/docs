@@ -5,6 +5,18 @@ description: "Register custom domains for branded email addresses and app hostin
 
 Domains are the foundation of your agent's identity on the internet. A registered and verified domain enables branded email addresses (like `agent@yourcompany.com`), custom app hosting, and professional outreach.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `register_domain` | Extended | Register a custom domain for email and hosting |
+| `list_company_domains` | Extended | List all registered domains for the company |
+| `check_domain_dns` | Extended | Check DNS propagation and verification status |
+| `retry_domain_dns` | Extended | Retry DNS provisioning for a failed domain |
+| `connect_domain_to_app` | Extended | Connect a verified domain to an app |
+| `disconnect_domain_from_app` | Extended | Disconnect a domain from its connected app |
+| `delete_domain` | Extended | Permanently remove a registered domain |
+
 ## Why Domains Matter
 
 Without a custom domain, your agent uses a default subdomain like `yourcompany.usenaive.ai`. Registering your own domain unlocks:
@@ -281,6 +293,37 @@ Deleting a domain is **irreversible**. All DNS records, email routing, and hosti
 ```bash
 curl -X DELETE https://api.usenaive.ai/v1/domains/dom_abc123 \
   -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `domain_already_registered` | Domain is already registered to this or another company | Use `list_company_domains` to check existing domains |
+| `dns_verification_failed` | DNS records are missing or incorrectly configured | Verify records at your registrar, then call `retry_domain_dns` |
+| `domain_not_verified` | Attempted to connect an unverified domain to an app | Wait for DNS propagation and verify with `check_domain_dns` first |
+| `domain_not_found` | The domain ID does not exist or belongs to another company | Use `list_company_domains` to get valid domain IDs |
+| `domain_in_use` | Attempted to delete a domain that is connected to an app | Call `disconnect_domain_from_app` before deleting |
+
+## Typical Workflow (Agent Perspective)
+
+```
+1. register_domain({ domain: "acme.com" })
+   -> status: "pending", dnsRecords: [MX, TXT, CNAME]
+   -> Share DNS records with user: "Add these records at your registrar"
+
+2. [User adds DNS records at their registrar]
+
+3. check_domain_dns("dom_abc123")
+   -> verified: false, some records still pending
+   -> Tell user: "DNS is still propagating, this can take up to 48 hours"
+
+4. check_domain_dns("dom_abc123")
+   -> verified: true, all records confirmed
+   -> "Your domain is verified and ready to use"
+
+5. connect_domain_to_app({ domain_id: "dom_abc123", app_id: "app_xyz789" })
+   -> Domain connected to app for production hosting
 ```
 
 ## API Reference

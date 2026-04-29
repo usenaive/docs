@@ -1,11 +1,11 @@
 ---
-title: "Edit Submagic Clip"
-description: "Edit a previously generated Submagic clip (trim, adjust captions, etc.)."
-api: "POST /v1/submagic/edit"
+title: "Edit Clip"
+description: "Edit a previously generated clip (trim, adjust captions, etc.)."
+api: "POST /v1/clips/edit"
 ---
 
 <ParamField body="clip_url" type="string" required>
-  URL of the clip to edit, from [Get Submagic Status](/api-reference/creation/get-submagic-status).
+  URL of the clip to edit, from [Get Clip Status](/api-reference/creation/get-clip-status).
 </ParamField>
 
 <ParamField body="template_name" type="string">
@@ -14,11 +14,11 @@ api: "POST /v1/submagic/edit"
 
 <CodeGroup>
 ```bash curl
-curl -X POST https://api.usenaive.ai/v1/submagic/edit \
+curl -X POST https://api.usenaive.ai/v1/clips/edit \
   -H "Authorization: Bearer nv_sk_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "clip_url": "https://cdn.submagic.co/clips/clip_1.mp4",
+    "clip_url": "https://cdn.usenaive.ai/clips/clip_1.mp4",
     "template_name": "neon-captions"
   }'
 ```
@@ -27,10 +27,10 @@ curl -X POST https://api.usenaive.ai/v1/submagic/edit \
 import requests
 
 response = requests.post(
-    "https://api.usenaive.ai/v1/submagic/edit",
+    "https://api.usenaive.ai/v1/clips/edit",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
     json={
-        "clip_url": "https://cdn.submagic.co/clips/clip_1.mp4",
+        "clip_url": "https://cdn.usenaive.ai/clips/clip_1.mp4",
         "template_name": "neon-captions",
     },
 )
@@ -38,14 +38,14 @@ data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/submagic/edit", {
+const response = await fetch("https://api.usenaive.ai/v1/clips/edit", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    clip_url: "https://cdn.submagic.co/clips/clip_1.mp4",
+    clip_url: "https://cdn.usenaive.ai/clips/clip_1.mp4",
     template_name: "neon-captions",
   }),
 });
@@ -53,14 +53,14 @@ const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/submagic/edit", {
+const response = await fetch("https://api.usenaive.ai/v1/clips/edit", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    clip_url: "https://cdn.submagic.co/clips/clip_1.mp4",
+    clip_url: "https://cdn.usenaive.ai/clips/clip_1.mp4",
     template_name: "neon-captions",
   }),
 });
@@ -80,7 +80,7 @@ const data = await response.json();
 {
   "ok": true,
   "result": {
-    "url": "https://cdn.submagic.co/clips/clip_1_edited.mp4",
+    "url": "https://cdn.usenaive.ai/clips/clip_1_edited.mp4",
     "template": "neon-captions"
   }
 }

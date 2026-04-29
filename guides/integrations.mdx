@@ -5,6 +5,15 @@ description: "The integrations primitive — connect employees to 100+ SaaS tool
 
 Integrations is the primitive that lets an employee reach into the rest of your stack. Naive bundles two backends behind one consistent API: **Composio** for SaaS integrations (Slack, GitHub, HubSpot, Linear, Notion, and 100+ others) and **CMS connectors** for content platforms (Webflow, Ghost, Shopify, Framer). Connection auth is stored at the company level so multiple employees can share the same Slack workspace or HubSpot account without juggling tokens.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `check_integrations` | Core | List all available integrations (CMS, Composio, browser) |
+| `get_integration_tools` | Extended | Get available actions for a specific integration |
+| `execute_integration` | Extended | Execute a tool on a connected integration |
+| `get_composio_auth_url` | Extended | Get OAuth URL for connecting third-party services |
+
 ## Discovery
 
 Start by checking what's available:
@@ -92,31 +101,31 @@ All integrations follow the same three-step pattern: discover, inspect, execute.
 Composio provides OAuth-based integrations with 100+ SaaS platforms. Here are some commonly used toolkits:
 
 <CardGroup cols={3}>
-  <Card title="Slack" icon="slack">
+  <Card title="Slack">
     Send messages, list channels, manage reactions
   </Card>
-  <Card title="GitHub" icon="github">
+  <Card title="GitHub">
     Create issues, PRs, list repos, manage branches
   </Card>
-  <Card title="HubSpot" icon="hubspot">
+  <Card title="HubSpot">
     Manage contacts, deals, companies, notes
   </Card>
-  <Card title="Notion" icon="book">
+  <Card title="Notion">
     Create pages, update databases, search content
   </Card>
-  <Card title="Google Sheets" icon="table">
+  <Card title="Google Sheets">
     Read/write spreadsheet data, create sheets
   </Card>
-  <Card title="Google Calendar" icon="calendar">
+  <Card title="Google Calendar">
     Create events, list upcoming, check availability
   </Card>
-  <Card title="Gmail" icon="envelope">
+  <Card title="Gmail">
     Send emails, search inbox, manage labels
   </Card>
-  <Card title="Shopify" icon="cart-shopping">
+  <Card title="Shopify">
     Manage products, orders, customers, inventory
   </Card>
-  <Card title="Stripe" icon="stripe">
+  <Card title="Stripe">
     Create customers, manage subscriptions, payments
   </Card>
 </CardGroup>
@@ -194,6 +203,14 @@ The post is created as a **draft** in Ghost — the user publishes it when ready
 | `params` | object | No | Tool parameters (default `{}`) |
 | `integration_id` | string | Conditional | Required for CMS integrations |
 | `toolkit` | string | Conditional | Required for Composio integrations |
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `integration_not_connected` | Target integration not yet connected | Use `get_composio_auth_url` to get the OAuth URL |
+| `tool_not_found` | Specified tool doesn't exist for this integration | Call `get_integration_tools` to list available tools |
+| `auth_expired` | Integration OAuth token expired | Re-authorize via the Composio portal |
 
 ## Typical Agent Flow
 

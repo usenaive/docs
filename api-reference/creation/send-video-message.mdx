@@ -1,11 +1,11 @@
 ---
-title: "Send HeyGen Message"
-description: "Send a follow-up message to an active HeyGen video session."
-api: "POST /v1/heygen/session/:sessionId"
+title: "Send Video Message"
+description: "Send a follow-up message to an active video session."
+api: "POST /v1/video/session/:sessionId"
 ---
 
 <ParamField path="sessionId" type="string" required>
-  Active session ID from [Create HeyGen Video](/api-reference/creation/create-heygen-video).
+  Active session ID from [Create Video](/api-reference/creation/create-video).
 </ParamField>
 
 <ParamField body="message" type="string" required>
@@ -14,7 +14,7 @@ api: "POST /v1/heygen/session/:sessionId"
 
 <CodeGroup>
 ```bash curl
-curl -X POST https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
+curl -X POST https://api.usenaive.ai/v1/video/session/hs_abc123 \
   -H "Authorization: Bearer nv_sk_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{"message": "Add a call to action at the end: Visit acme.com"}'
@@ -24,7 +24,7 @@ curl -X POST https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
 import requests
 
 response = requests.post(
-    "https://api.usenaive.ai/v1/heygen/session/hs_abc123",
+    "https://api.usenaive.ai/v1/video/session/hs_abc123",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
     json={"message": "Add a call to action at the end: Visit acme.com"},
 )
@@ -32,7 +32,7 @@ data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/session/hs_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/video/session/hs_abc123", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",
@@ -44,7 +44,7 @@ const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/session/hs_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/video/session/hs_abc123", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",

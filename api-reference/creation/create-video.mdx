@@ -1,7 +1,7 @@
 ---
-title: "Create HeyGen Video"
-description: "Create an AI avatar video using HeyGen with realistic lip-sync."
-api: "POST /v1/heygen/create"
+title: "Create Video"
+description: "Create an AI avatar video with realistic lip-sync."
+api: "POST /v1/video/create"
 ---
 
 <ParamField body="prompt" type="string" required>
@@ -13,7 +13,7 @@ api: "POST /v1/heygen/create"
 </ParamField>
 
 <ParamField body="style_id" type="string">
-  Avatar style ID from [List HeyGen Styles](/api-reference/creation/list-heygen-styles).
+  Avatar style ID from [List Video Styles](/api-reference/creation/list-video-styles).
 </ParamField>
 
 <ParamField body="faceless" type="boolean">
@@ -26,7 +26,7 @@ api: "POST /v1/heygen/create"
 
 <CodeGroup>
 ```bash curl
-curl -X POST https://api.usenaive.ai/v1/heygen/create \
+curl -X POST https://api.usenaive.ai/v1/video/create \
   -H "Authorization: Bearer nv_sk_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{
@@ -40,7 +40,7 @@ curl -X POST https://api.usenaive.ai/v1/heygen/create \
 import requests
 
 response = requests.post(
-    "https://api.usenaive.ai/v1/heygen/create",
+    "https://api.usenaive.ai/v1/video/create",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
     json={
         "prompt": "Welcome to Acme Corp! We are revolutionizing the way businesses operate with AI-powered automation.",
@@ -52,7 +52,7 @@ data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/create", {
+const response = await fetch("https://api.usenaive.ai/v1/video/create", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",
@@ -68,7 +68,7 @@ const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/create", {
+const response = await fetch("https://api.usenaive.ai/v1/video/create", {
   method: "POST",
   headers: {
     "Authorization": "Bearer nv_sk_your_key_here",
@@ -109,4 +109,4 @@ const data = await response.json();
 }
 ```
 
-Video generation is async — poll with [Get HeyGen Session](/api-reference/creation/get-heygen-session). Costs ~5–10 credits per video.
+Video generation is async — poll with [Get Video Session](/api-reference/creation/get-video-session). Costs ~5–10 credits per video.

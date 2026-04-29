@@ -5,6 +5,14 @@ description: "Provision a phone number for your agent and receive inbound SMS me
 
 Naive provisions dedicated phone numbers for your agents via Twilio. Each agent gets its own number that can receive SMS messages.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `get_phone_number` | Extended | Check if a phone number is assigned to the agent |
+| `claim_phone_number` | Extended | Provision a new phone number via Twilio |
+| `get_sms_inbox` | Extended | List recent inbound SMS messages |
+
 ## Provisioning a Phone Number
 
 Your agent doesn't have a phone number by default. You need to claim one first.
@@ -155,6 +163,14 @@ Your agent doesn't have a phone number by default. You need to claim one first.
 - Numbers are provisioned via **Twilio** and persist across sessions.
 - Use your phone number in forms, verification flows, and contact pages where customers need to reach you.
 
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `no_number_assigned` | No phone number claimed yet | Call `claim_phone_number` first |
+| `already_claimed` | Agent already has a phone number | Use the existing number |
+| `provisioning_failed` | Twilio provisioning error | Retry after a few minutes |
+
 ## API Reference
 
 | Endpoint | Method | Description |
@@ -162,3 +178,18 @@ Your agent doesn't have a phone number by default. You need to claim one first.
 | [Get Phone Number](/api-reference/communication/get-phone-number) | GET | Check if a number is assigned |
 | [Claim Phone Number](/api-reference/communication/claim-phone-number) | POST | Provision a new number |
 | [Get SMS Inbox](/api-reference/communication/get-sms-inbox) | GET | Read inbound messages |
+
+## Typical Workflow
+
+```
+Agent receives task: "Set up a phone number for customer inquiries"
+    │
+    ├─ get_phone_number()                     → Check for existing number
+    │   → null (no number assigned)
+    │
+    ├─ claim_phone_number()                   → Provision a new number
+    │   → +15551234567 assigned
+    │
+    └─ get_sms_inbox({ limit: 10 })           → Poll for inbound messages
+        → 2 new messages from customers
+```

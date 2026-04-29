@@ -13,6 +13,14 @@ Payments is the primitive that gives an employee the ability to *buy things*. Na
 3. **Never log card details** — treat card numbers, CVVs, and expiry like passwords
 </Warning>
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `list_payment_cards` | Extended | List virtual payment cards assigned to the agent |
+| `get_card_details` | Extended | Get full card details (number, CVV, expiry) for checkout |
+| `log_card_transaction` | Extended | Log a purchase made with a payment card |
+
 ## Workflow
 
 The payment card workflow is straightforward: list available cards, get details for checkout, make the purchase, and log the transaction.
@@ -164,6 +172,14 @@ Storing credentials in the transaction log keeps a complete record: what was pur
 | `merchant_name` | string | Yes | Where the purchase was made |
 | `description` | string | Yes | What was purchased |
 | `credential_data` | object | No | Login credentials received from the purchase |
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `no_cards_available` | No payment cards assigned to this agent | Contact the operator to issue a card |
+| `card_limit_exceeded` | Purchase exceeds card spending limit | Use a different card or request a limit increase |
+| `card_expired` | Card has expired | Request a new card from the operator |
 
 ## Typical Agent Flow
 

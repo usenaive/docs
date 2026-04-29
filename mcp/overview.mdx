@@ -24,7 +24,7 @@ Agent Harness (Claude, Cursor, Hermes, custom)
   api.usenaive.ai           ← Primitives API
         │
         ▼
-  Real-world services       ← email, bundle.social, HeyGen, Stripe Issuing, etc.
+  Real-world services       ← email, bundle.social, Stripe Issuing, etc.
 ```
 
 The MCP server runs as a local subprocess launched by your harness. It communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io), translating tool calls into authenticated HTTPS requests against the Naive Primitives API. Identity (which employee, which company) comes from the API key — Core handles the rest.
@@ -148,13 +148,3 @@ These hints help your agent chain actions together without needing explicit inst
 
 All primitives authenticate via the API key bound to a single **employee**. The key resolves to that employee and its parent **company** in Naive Core — you never need to pass `agent_id` or company identifiers. Email addresses, phone numbers, social accounts, payment cards, credentials, and credit balances are all scoped automatically.
 
-## Orchestration Mode <sup>Coming Soon</sup>
-
-The MCP server will support a second mode — **orchestration mode** — that expands the available tool surface with **44 additional platform orchestration tools** for managing companies, employees, tasks, deliverables, loops, and more. This mode uses **user-level keys** (`nv_pk_...`) instead of employee keys.
-
-When orchestration mode is available, `naive init` will ask which mode you want:
-
-- **Primitives mode** (default): 54 tools for doing work as an employee
-- **Orchestration mode**: All 54 primitives plus 44 platform management tools
-
-See the [Tool Catalog](/mcp/tool-catalog) for the full list of platform orchestration tools and the [Platform Orchestration Guide](/guides/platform-orchestration) for details on the two-tier architecture.

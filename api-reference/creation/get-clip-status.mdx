@@ -1,16 +1,16 @@
 ---
-title: "Get Submagic Status"
-description: "Check Submagic clip generation status."
-api: "GET /v1/submagic/status/:projectId"
+title: "Get Clip Status"
+description: "Check clip generation status."
+api: "GET /v1/clips/status/:projectId"
 ---
 
 <ParamField path="projectId" type="string" required>
-  Project ID from [Create Magic Clips](/api-reference/creation/create-magic-clips).
+  Project ID from [Create Clips](/api-reference/creation/create-clips).
 </ParamField>
 
 <CodeGroup>
 ```bash curl
-curl https://api.usenaive.ai/v1/submagic/status/sm_abc123 \
+curl https://api.usenaive.ai/v1/clips/status/sm_abc123 \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
@@ -18,21 +18,21 @@ curl https://api.usenaive.ai/v1/submagic/status/sm_abc123 \
 import requests
 
 response = requests.get(
-    "https://api.usenaive.ai/v1/submagic/status/sm_abc123",
+    "https://api.usenaive.ai/v1/clips/status/sm_abc123",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
 )
 data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/submagic/status/sm_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/clips/status/sm_abc123", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/submagic/status/sm_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/clips/status/sm_abc123", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
@@ -57,7 +57,7 @@ const data = await response.json();
   "clips": [
     {
       "id": "clip_1",
-      "url": "https://cdn.submagic.co/clips/clip_1.mp4",
+      "url": "https://cdn.usenaive.ai/clips/clip_1.mp4",
       "duration": 30,
       "title": "Best Moment - 0:45"
     }
@@ -65,4 +65,4 @@ const data = await response.json();
 }
 ```
 
-Use [Edit Submagic Clip](/api-reference/creation/edit-submagic-clip) to modify generated clips.
+Use [Edit Clip](/api-reference/creation/edit-clip) to modify generated clips.

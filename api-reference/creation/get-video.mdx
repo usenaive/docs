@@ -1,16 +1,16 @@
 ---
-title: "Get HeyGen Video"
-description: "Get the final video URL and metadata for a completed HeyGen video."
-api: "GET /v1/heygen/video/:videoId"
+title: "Get Video"
+description: "Get the final video URL and metadata for a completed video."
+api: "GET /v1/video/:videoId"
 ---
 
 <ParamField path="videoId" type="string" required>
-  Video ID from [Get HeyGen Session](/api-reference/creation/get-heygen-session) (available when status is `completed`).
+  Video ID from [Get Video Session](/api-reference/creation/get-video-session) (available when status is `completed`).
 </ParamField>
 
 <CodeGroup>
 ```bash curl
-curl https://api.usenaive.ai/v1/heygen/video/hv_def456 \
+curl https://api.usenaive.ai/v1/video/hv_def456 \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
@@ -18,21 +18,21 @@ curl https://api.usenaive.ai/v1/heygen/video/hv_def456 \
 import requests
 
 response = requests.get(
-    "https://api.usenaive.ai/v1/heygen/video/hv_def456",
+    "https://api.usenaive.ai/v1/video/hv_def456",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
 )
 data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/video/hv_def456", {
+const response = await fetch("https://api.usenaive.ai/v1/video/hv_def456", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/video/hv_def456", {
+const response = await fetch("https://api.usenaive.ai/v1/video/hv_def456", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
@@ -63,9 +63,9 @@ const data = await response.json();
 {
   "ok": true,
   "status": "completed",
-  "videoUrl": "https://cdn.heygen.com/videos/hv_def456.mp4",
+  "videoUrl": "https://cdn.usenaive.ai/video/videos/hv_def456.mp4",
   "duration": 45,
-  "thumbnailUrl": "https://cdn.heygen.com/thumbs/hv_def456.jpg"
+  "thumbnailUrl": "https://cdn.usenaive.ai/video/thumbs/hv_def456.jpg"
 }
 ```
 

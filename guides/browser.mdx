@@ -5,6 +5,14 @@ description: "The browser primitive — managed Chrome DevTools Protocol session
 
 Browser is the primitive for the long tail of work that doesn't have a clean API. Naive provisions managed browser sessions that expose a Chrome DevTools Protocol (CDP) endpoint per employee. The agent (or its Playwright/Puppeteer driver) connects to that endpoint to fill forms, run checkout flows, scrape data, and operate any web UI it needs to. Stored credentials and cookies are scoped to the employee, so each session boots up "logged in" wherever it should be.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `ensure_browser_session` | Extended | Start or ensure a Chrome CDP session is running |
+| `stop_browser_session` | Extended | Stop a running browser session |
+| `get_browser_session` | Extended | Check the current browser session status |
+
 ## Workflow
 
 <Steps>
@@ -115,6 +123,14 @@ Response:
 | `stop_browser_session` | POST | `/v1/browser/stop` | Stop the running session |
 | `get_browser_session` | GET | `/v1/browser` | Check session status |
 
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `session_unavailable` | Browser infrastructure not ready | Retry after a few seconds |
+| `session_timeout` | Session timed out due to inactivity | Call `ensure_browser_session` to start a new one |
+| `already_stopped` | No active session to stop | No action needed |
+
 ## Combining with Payment Cards
 
 A common pattern is using browser sessions with virtual cards for automated purchasing:
@@ -131,3 +147,24 @@ A common pattern is using browser sessions with virtual cards for automated purc
 <Tip>
 Always stop browser sessions when you're done. Running sessions consume resources and will eventually time out, but explicit cleanup is faster and more reliable.
 </Tip>
+
+## Typical Workflow
+
+```
+Agent receives task: "Log into Webflow and update the pricing page"
+    |
+    |-- ensure_browser_session()               -> Start CDP session
+    |   -> cdpUrl: wss://browser.usenaive.ai/session/abc123
+    |
+    |-- list_connections()                     -> Find Webflow credentials
+    |   -> conn_abc: Webflow, status: connected
+    |
+    |-- get_connection_credentials({           -> Get login details
+    |    connection_id: "conn_abc"
+    |  })
+    |   -> username, password, login URL
+    |
+    |-- [Playwright: navigate, log in, edit pricing, save]
+    |
+    +-- stop_browser_session()                 -> Clean up
+```

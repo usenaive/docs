@@ -1,7 +1,7 @@
 ---
-title: "List HeyGen Styles"
-description: "Browse available HeyGen avatar styles for AI video creation."
-api: "GET /v1/heygen/styles"
+title: "List Video Styles"
+description: "Browse available avatar styles for AI video creation."
+api: "GET /v1/video/styles"
 ---
 
 <ParamField query="tag" type="string">
@@ -14,7 +14,7 @@ api: "GET /v1/heygen/styles"
 
 <CodeGroup>
 ```bash curl
-curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
+curl "https://api.usenaive.ai/v1/video/styles?tag=business" \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
@@ -22,7 +22,7 @@ curl "https://api.usenaive.ai/v1/heygen/styles?tag=business" \
 import requests
 
 response = requests.get(
-    "https://api.usenaive.ai/v1/heygen/styles",
+    "https://api.usenaive.ai/v1/video/styles",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
     params={"tag": "business"},
 )
@@ -30,14 +30,14 @@ data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/styles?tag=business", {
+const response = await fetch("https://api.usenaive.ai/v1/video/styles?tag=business", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/styles?tag=business", {
+const response = await fetch("https://api.usenaive.ai/v1/video/styles?tag=business", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
@@ -60,10 +60,10 @@ const data = await response.json();
       "id": "style_business_01",
       "name": "Professional Presenter",
       "tags": ["business", "formal"],
-      "previewUrl": "https://cdn.heygen.com/previews/style_01.jpg"
+      "previewUrl": "https://cdn.usenaive.ai/video/previews/style_01.jpg"
     }
   ]
 }
 ```
 
-Use the `id` value when creating videos with [Create HeyGen Video](/api-reference/creation/create-heygen-video).
+Use the `id` value when creating videos with [Create Video](/api-reference/creation/create-video).

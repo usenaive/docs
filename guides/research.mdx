@@ -5,6 +5,14 @@ description: "The research primitive — three tools at different depths for web
 
 Research is the primitive that gives an employee its eyes on the live web. Naive exposes three tools at different levels of depth and cost — `web_search`, `read_url`, and `research` — so the employee picks the right one for the job: a quick fact lookup, a single-page extract, or a multi-step synthesis with citations. Use the lightest tool that meets your needs to keep latency and cost low.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `web_search` | Core | Search the web for current information via Tavily or Brave |
+| `read_url` | Extended | Fetch a URL and extract main text content |
+| `research` | Extended | Multi-step deep research with search, fetch, and synthesis |
+
 ## Three Tools, Three Levels
 
 | Tool | What it does | Speed | Cost |
@@ -151,6 +159,15 @@ curl -X POST https://api.usenaive.ai/v1/research \
 - Strategy development
 - Any question that requires multiple sources synthesized into a coherent answer
 
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `rate_limited` | Too many search requests | Wait and retry |
+| `url_blocked` | Target URL is a local or private address | Use a public URL |
+| `fetch_failed` | Could not fetch the target URL | Try a different URL or use `web_search` instead |
+| `synthesis_failed` | Groq synthesis step failed | Retry, or fall back to `web_search` + `read_url` manually |
+
 ## Choosing the Right Tool
 
 <Tabs>
@@ -200,3 +217,27 @@ curl -X POST https://api.usenaive.ai/v1/research \
 <Tip>
 Start with `web_search`. If snippets aren't enough, follow up with `read_url`. Only use `research` when you need a synthesized multi-source answer — it's significantly more expensive but produces better results for complex questions.
 </Tip>
+
+## Typical Workflow
+
+```
+Agent receives task: "Research competitor pricing for our Q3 strategy"
+    |
+    |-- web_search({                           -> Find relevant sources
+    |    query: "competitor SaaS pricing 2026",
+    |    count: 5
+    |  })
+    |   -> 5 results with URLs
+    |
+    |-- read_url({                             -> Deep dive on best result
+    |    url: "https://competitor.com/pricing",
+    |    focus: "pricing tiers and features"
+    |  })
+    |   -> Extracted pricing details
+    |
+    +-- research({                             -> Comprehensive analysis
+         query: "How does our pricing compare to competitors in the AI tools market?",
+         max_results: 5
+       })
+       -> Synthesized report with citations
+```

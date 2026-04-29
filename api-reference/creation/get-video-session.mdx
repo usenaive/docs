@@ -1,16 +1,16 @@
 ---
-title: "Get HeyGen Session"
-description: "Check HeyGen video session status and progress."
-api: "GET /v1/heygen/session/:sessionId"
+title: "Get Video Session"
+description: "Check video session status and progress."
+api: "GET /v1/video/session/:sessionId"
 ---
 
 <ParamField path="sessionId" type="string" required>
-  Session ID from [Create HeyGen Video](/api-reference/creation/create-heygen-video).
+  Session ID from [Create Video](/api-reference/creation/create-video).
 </ParamField>
 
 <CodeGroup>
 ```bash curl
-curl https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
+curl https://api.usenaive.ai/v1/video/session/hs_abc123 \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
@@ -18,21 +18,21 @@ curl https://api.usenaive.ai/v1/heygen/session/hs_abc123 \
 import requests
 
 response = requests.get(
-    "https://api.usenaive.ai/v1/heygen/session/hs_abc123",
+    "https://api.usenaive.ai/v1/video/session/hs_abc123",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
 )
 data = response.json()
 ```
 
 ```typescript TypeScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/session/hs_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/video/session/hs_abc123", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
 ```
 
 ```javascript JavaScript
-const response = await fetch("https://api.usenaive.ai/v1/heygen/session/hs_abc123", {
+const response = await fetch("https://api.usenaive.ai/v1/video/session/hs_abc123", {
   headers: { "Authorization": "Bearer nv_sk_your_key_here" },
 });
 const data = await response.json();
@@ -60,7 +60,7 @@ const data = await response.json();
 </ResponseField>
 
 <ResponseField name="videoId" type="string">
-  Video ID — available when status is `completed`. Use with [Get HeyGen Video](/api-reference/creation/get-heygen-video).
+  Video ID — available when status is `completed`. Use with [Get Video](/api-reference/creation/get-video).
 </ResponseField>
 
 ```json Example Response

@@ -62,10 +62,10 @@ distribution:  create_social_post ★, get_social_media_status ★,
                upload_social_media
 
 creation:      generate_images ★, search_stock_media ★,
-               list_heygen_styles, create_heygen_video,
-               get_heygen_session, send_heygen_message,
-               get_heygen_video, create_magic_clips,
-               get_submagic_status, edit_submagic_clip
+               list_video_styles, create_video,
+               get_video_session, send_video_message,
+               get_video, create_clips,
+               get_clip_status, edit_clip
 
 research:      web_search ★, read_url, research
 
@@ -131,20 +131,20 @@ The context includes actionable guides for common multi-step workflows. These he
   </Step>
 </Steps>
 
-### HeyGen Avatar Video
+### AI Avatar Video
 
 <Steps>
   <Step title="Browse styles">
-    Call `list_heygen_styles` to see available avatar options.
+    Call `list_video_styles` to see available avatar options.
   </Step>
   <Step title="Create video">
-    Use `create_heygen_video` with a prompt. Video generation is async.
+    Use `create_video` with a prompt. Video generation is async.
   </Step>
   <Step title="Poll status">
-    Check progress with `get_heygen_session` until status is `completed`.
+    Check progress with `get_video_session` until status is `completed`.
   </Step>
   <Step title="Get final URL">
-    Retrieve the video with `get_heygen_video`.
+    Retrieve the video with `get_video`.
   </Step>
 </Steps>
 

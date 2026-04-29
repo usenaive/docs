@@ -5,6 +5,20 @@ description: "The distribution primitive — post to 13 platforms from a single 
 
 Social media is the **distribution primitive** in Naive. Any employee with the social media whitelist can post across 13 platforms through a unified API — they write the content, pick the platforms, and Naive handles the posting via [bundle.social](https://bundle.social). Connections, account auth, and rate limiting all happen at the company level so multiple employees can coordinate on a single brand voice.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `create_social_post` | Core | Create and publish a social media post across platforms |
+| `get_social_media_status` | Core | Check social media activation and connected accounts |
+| `activate_social_media` | Extended | Activate social media integration (one-time setup) |
+| `get_social_portal_link` | Extended | Generate a portal URL for connecting social accounts |
+| `list_social_posts` | Extended | List recent social media posts with status filter |
+| `get_social_post` | Extended | Get full details of a specific social post |
+| `get_social_post_analytics` | Extended | Get engagement metrics for a published post |
+| `get_social_post_comments` | Extended | Get comments and replies on a published post |
+| `upload_social_media` | Extended | Upload media to CDN for use in social posts |
+
 ## Supported Platforms
 
 | Platform | Text Only | Media Required | Character Limit | Notes |

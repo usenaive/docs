@@ -5,6 +5,13 @@ description: "Two visual primitives: AI image generation with Gemini and free st
 
 Images are a **creation primitive** in Naive. Two tools cover the full range of what an employee usually needs: **AI image generation** via Gemini for original visuals, and **stock media search** via Pexels for free, license-clean photography. Both write into the calling employee's workspace, so downstream primitives (social posts, email campaigns, video scripts) can reference the same assets.
 
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `generate_images` | Core | Generate images from a text prompt using Gemini AI |
+| `search_stock_media` | Core | Search Pexels for free stock videos and photos |
+
 ## Generating Images
 
 The `generate_images` tool creates images from text prompts using Gemini. It returns both a workspace file path and a public HTTPS URL for each image.
@@ -44,7 +51,7 @@ curl -X POST https://api.usenaive.ai/v1/images/generate \
 The `url` field returns a public HTTPS link. Use these URLs directly in:
 
 - **Social media posts** — pass as `media_urls` to `create_social_post`
-- **HeyGen videos** — reference in video creation prompts
+- **AI avatar videos** — reference in video creation prompts
 - **Email content** — embed in email body
 - **External services** — any system that accepts image URLs
 
@@ -159,6 +166,14 @@ curl "https://api.usenaive.ai/v1/stock-media/search?query=team%20meeting&type=ph
 Stock media URLs are direct HTTPS links from Pexels. They work in social posts, video creation, and anywhere you need free media. Credit: Pexels.
 </Info>
 
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `insufficient_credits` | Not enough credits for image generation | Top up credits at the developer portal |
+| `invalid_prompt` | Prompt was flagged by content filters | Rewrite the prompt to avoid restricted content |
+| `rate_limited` | Too many generation requests | Wait and retry with exponential backoff |
+
 ## When to Use Each
 
 | Need | Tool | Why |
@@ -168,3 +183,27 @@ Stock media URLs are direct HTTPS links from Pexels. They work in social posts, 
 | Generic b-roll or backgrounds | `search_stock_media` | Fast, free, high quality |
 | Video backgrounds | `search_stock_media` | Professional footage, no generation wait |
 | Social media graphics | `generate_images` | Custom content stands out more |
+
+## Typical Workflow
+
+```
+Agent receives task: "Create social media graphics for the product launch"
+    |
+    +- generate_images({                      -> Generate custom hero image
+    |    prompt: "Product launch banner...",
+    |    count: 4, size: "1792x1024"
+    |  })
+    |   -> 4 images generated
+    |
+    +- search_stock_media({                   -> Find supporting b-roll
+    |    query: "team celebration",
+    |    type: "photo", per_page: 5
+    |  })
+    |   -> 5 stock photos returned
+    |
+    +- create_social_post({                   -> Post with generated image
+         content: "We just launched...",
+         platforms: ["INSTAGRAM", "LINKEDIN"],
+         media_urls: ["generated_image_url"]
+       })
+```
