@@ -1,0 +1,49 @@
+---
+title: "List Segments"
+description: "Retrieve all contact segments."
+api: "GET /v1/email/segments"
+---
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/email/segments \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/email/segments",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/segments", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/segments", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="data" type="array">
+  Array of segment objects.
+</ResponseField>
+
+```json Example Response
+{
+  "data": [
+    { "id": "seg_abc123", "name": "Newsletter Subscribers" },
+    { "id": "seg_def456", "name": "Premium Users" }
+  ]
+}
+```

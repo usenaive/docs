@@ -1,0 +1,109 @@
+---
+title: "Create Broadcast"
+description: "Create a new email broadcast campaign."
+api: "POST /v1/email/broadcasts"
+---
+
+<ParamField body="name" type="string" required>
+  Internal name for the broadcast.
+</ParamField>
+
+<ParamField body="from" type="string" required>
+  Sender email address.
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  Email subject line.
+</ParamField>
+
+<ParamField body="html" type="string">
+  HTML email body. Provide either `html` or `text`.
+</ParamField>
+
+<ParamField body="text" type="string">
+  Plain text email body.
+</ParamField>
+
+<ParamField body="segment_id" type="string">
+  Target segment ID for the broadcast.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/broadcasts \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "April Newsletter",
+    "from": "news@acme.com",
+    "subject": "What'\''s new in April",
+    "html": "<h1>April Updates</h1><p>Here is what happened this month.</p>",
+    "segment_id": "seg_abc123"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/email/broadcasts",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "name": "April Newsletter",
+        "from": "news@acme.com",
+        "subject": "What's new in April",
+        "html": "<h1>April Updates</h1><p>Here is what happened this month.</p>",
+        "segment_id": "seg_abc123",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/broadcasts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "April Newsletter",
+    from: "news@acme.com",
+    subject: "What's new in April",
+    html: "<h1>April Updates</h1><p>Here is what happened this month.</p>",
+    segment_id: "seg_abc123",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/broadcasts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "April Newsletter",
+    from: "news@acme.com",
+    subject: "What's new in April",
+    html: "<h1>April Updates</h1><p>Here is what happened this month.</p>",
+    segment_id: "seg_abc123",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  The broadcast ID.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "bc_abc123",
+  "name": "April Newsletter",
+  "status": "draft"
+}
+```

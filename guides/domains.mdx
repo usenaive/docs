@@ -82,7 +82,7 @@ Register → Configure DNS → Verify → Active → Connect to apps
         "dnsRecords": [
           { "type": "MX", "name": "acme.com", "value": "feedback-smtp.us-east-1.amazonses.com", "priority": 10 },
           { "type": "TXT", "name": "acme.com", "value": "v=spf1 include:amazonses.com ~all" },
-          { "type": "CNAME", "name": "resend._domainkey.acme.com", "value": "resend.domainkey.us-east-1.amazonses.com" }
+          { "type": "CNAME", "name": "mail._domainkey.acme.com", "value": "dkim.mail.us-east-1.amazonses.com" }
         ]
       }
     }
@@ -96,7 +96,7 @@ Register → Configure DNS → Verify → Active → Connect to apps
     |------|------|-------|
     | MX | `acme.com` | `feedback-smtp.us-east-1.amazonses.com` (priority 10) |
     | TXT | `acme.com` | `v=spf1 include:amazonses.com ~all` |
-    | CNAME | `resend._domainkey.acme.com` | `resend.domainkey.us-east-1.amazonses.com` |
+    | CNAME | `mail._domainkey.acme.com` | `dkim.mail.us-east-1.amazonses.com` |
 
     <Info>
     DNS propagation typically takes 5-30 minutes, but can take up to 48 hours in some cases.
@@ -146,7 +146,7 @@ Register → Configure DNS → Verify → Active → Connect to apps
       "records": [
         { "type": "MX", "name": "acme.com", "value": "...", "status": "verified" },
         { "type": "TXT", "name": "acme.com", "value": "...", "status": "pending" },
-        { "type": "CNAME", "name": "resend._domainkey.acme.com", "value": "...", "status": "pending" }
+        { "type": "CNAME", "name": "mail._domainkey.acme.com", "value": "...", "status": "pending" }
       ]
     }
     ```

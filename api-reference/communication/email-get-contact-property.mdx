@@ -1,0 +1,61 @@
+---
+title: "Get Contact Property"
+description: "Retrieve a single contact property definition."
+api: "GET /v1/email/contact-properties/:propertyId"
+---
+
+<ParamField path="propertyId" type="string" required>
+  The property ID.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/email/contact-properties/prop_abc123 \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/email/contact-properties/prop_abc123",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contact-properties/prop_abc123", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contact-properties/prop_abc123", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  Property ID.
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Property name.
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Data type.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "prop_abc123",
+  "name": "company",
+  "type": "string",
+  "description": "Company name"
+}
+```

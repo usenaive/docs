@@ -1,0 +1,100 @@
+---
+title: "Create Contact"
+description: "Create a new email contact."
+api: "POST /v1/email/contacts"
+---
+
+<ParamField body="email" type="string" required>
+  Contact email address.
+</ParamField>
+
+<ParamField body="first_name" type="string">
+  Contact's first name.
+</ParamField>
+
+<ParamField body="last_name" type="string">
+  Contact's last name.
+</ParamField>
+
+<ParamField body="unsubscribed" type="boolean">
+  Whether the contact is unsubscribed. Defaults to `false`.
+</ParamField>
+
+<ParamField body="properties" type="object">
+  Custom properties as key-value pairs.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/contacts \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "steve@example.com",
+    "first_name": "Steve",
+    "last_name": "Wozniak",
+    "properties": {"company": "Acme"}
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/email/contacts",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "email": "steve@example.com",
+        "first_name": "Steve",
+        "last_name": "Wozniak",
+        "properties": {"company": "Acme"},
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contacts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: "steve@example.com",
+    first_name: "Steve",
+    last_name: "Wozniak",
+    properties: { company: "Acme" },
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contacts", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: "steve@example.com",
+    first_name: "Steve",
+    last_name: "Wozniak",
+    properties: { company: "Acme" },
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  The newly created contact ID.
+</ResponseField>
+
+```json Example Response
+{
+  "object": "contact",
+  "id": "ct_abc123"
+}
+```

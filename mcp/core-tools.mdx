@@ -14,7 +14,7 @@ These 8 tools were chosen for the context window because they represent the **hi
 
 ## send_email
 
-Send an outbound email from the agent's provisioned email address via Resend.
+Send an outbound email from the agent's provisioned email address.
 
 <ParamField body="to" type="string" required>
   Recipient email address.
@@ -37,7 +37,7 @@ Send an outbound email from the agent's provisioned email address via Resend.
 </ResponseField>
 
 <ResponseField name="emailId" type="string">
-  Resend message ID, or `null` if sending failed.
+  Email message ID, or `null` if sending failed.
 </ResponseField>
 
 ```json Example

@@ -1,0 +1,90 @@
+---
+title: "Update Contact Topics"
+description: "Update topic subscription preferences for a contact."
+api: "POST /v1/email/contacts/:contactId/topics"
+---
+
+<ParamField path="contactId" type="string" required>
+  The contact ID.
+</ParamField>
+
+<ParamField body="topics" type="array" required>
+  Array of objects with `id` and `subscribed` boolean.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/contacts/ct_abc123/topics \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topics": [
+      {"id": "top_abc123", "subscribed": true},
+      {"id": "top_def456", "subscribed": false}
+    ]
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/email/contacts/ct_abc123/topics",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "topics": [
+            {"id": "top_abc123", "subscribed": True},
+            {"id": "top_def456", "subscribed": False},
+        ]
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contacts/ct_abc123/topics", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    topics: [
+      { id: "top_abc123", subscribed: true },
+      { id: "top_def456", subscribed: false },
+    ],
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/contacts/ct_abc123/topics", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    topics: [
+      { id: "top_abc123", subscribed: true },
+      { id: "top_def456", subscribed: false },
+    ],
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="data" type="array">
+  Updated topic preferences.
+</ResponseField>
+
+```json Example Response
+{
+  "data": [
+    { "id": "top_abc123", "name": "Product Updates", "subscribed": true },
+    { "id": "top_def456", "name": "Marketing", "subscribed": false }
+  ]
+}
+```

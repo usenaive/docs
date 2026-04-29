@@ -203,30 +203,43 @@ To send emails from your own domain instead of `*.usenaive.ai`:
   </Step>
 </Steps>
 
-## Full Resend API Access
+## Email Marketing Primitives
 
-Beyond `send_email` and `list_inbox`, you have access to the **entire Resend API** through the [`resend_api`](/api-reference/communication/resend-api) proxy tool. This includes:
+Beyond basic sending and inbox, Naive provides a full suite of email marketing primitives:
 
-- **Contacts** — create, update, delete, and list contacts
-- **Segments** — organize contacts into groups
-- **Broadcasts** — send marketing email campaigns to segments
-- **Templates** — create reusable email templates
-- **Topics** — manage subscription preferences
-- **Batch sends** — send up to 100 emails at once
-- **Delivery tracking** — check email delivery status
+<CardGroup cols={2}>
+  <Card title="Contacts" icon="users" href="/api-reference/communication/email-create-contact">
+    Create, update, and manage your contact list with custom properties
+  </Card>
+  <Card title="Segments" icon="layer-group" href="/api-reference/communication/email-create-segment">
+    Group contacts into segments for targeted campaigns
+  </Card>
+  <Card title="Broadcasts" icon="bullhorn" href="/api-reference/communication/email-create-broadcast">
+    Send marketing email campaigns to segments
+  </Card>
+  <Card title="Templates" icon="file-lines" href="/api-reference/communication/email-create-template">
+    Create reusable email templates with variables
+  </Card>
+  <Card title="Topics" icon="tags" href="/api-reference/communication/email-create-topic">
+    Manage subscription topics for opt-in/opt-out
+  </Card>
+  <Card title="Batch Sends" icon="envelopes-bulk" href="/api-reference/communication/email-send-batch">
+    Send up to 100 transactional emails in a single call
+  </Card>
+</CardGroup>
+
+### Example: Contact Management + Campaign
 
 ```
-resend_api({
-  method: "POST",
-  path: "/contacts",
-  body: { email: "lead@company.com", first_name: "Alex" }
-})
+email_create_contact({ email: "lead@company.com", first_name: "Alex" })
+email_create_segment({ name: "Webinar Leads" })
+email_add_contact_to_segment({ contact_id: "...", segment_id: "..." })
+email_create_broadcast({ name: "Follow-up", from: "team@acme.com", subject: "Great meeting you", html: "..." , segment_id: "..." })
+email_send_broadcast({ broadcast_id: "..." })
 ```
-
-See the [Resend API docs](https://resend.com/docs/api-reference) for all available endpoints and parameters.
 
 <Info>
-Use `send_email` for simple sends — it handles agent identity, sensitive data blocking, and audit logging. Use `resend_api` for everything else: contacts, segments, broadcasts, templates, batch sends.
+Use `send_email` for individual transactional emails — it handles agent identity, sensitive data blocking, and audit logging. Use the email marketing primitives for contact management, segmentation, and bulk campaigns.
 </Info>
 
 ## Typical Workflow
@@ -234,16 +247,16 @@ Use `send_email` for simple sends — it handles agent identity, sensitive data 
 ```
 Agent receives task: "Follow up with leads from yesterday's webinar"
     │
-    ├─ list_inbox()                    → Check for any replies first
+    ├─ list_inbox()                          → Check for any replies first
     │
-    ├─ get_email_body({ email_id })    → Read relevant replies
+    ├─ get_email_body({ email_id })          → Read relevant replies
     │
-    ├─ resend_api({ method: "POST",   → Add lead to contacts
-    │    path: "/contacts",
-    │    body: { email: "lead@company.com", first_name: "Alex" }
+    ├─ email_create_contact({                → Add lead to contact list
+    │    email: "lead@company.com",
+    │    first_name: "Alex"
     │  })
     │
-    └─ send_email({                    → Send personalized follow-ups
+    └─ send_email({                          → Send personalized follow-ups
          to: "lead@company.com",
          subject: "Great seeing you at the webinar",
          body: "Hi Alex, ...",

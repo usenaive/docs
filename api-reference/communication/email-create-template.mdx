@@ -1,0 +1,93 @@
+---
+title: "Create Template"
+description: "Create a new email template."
+api: "POST /v1/email/templates"
+---
+
+<ParamField body="name" type="string" required>
+  Template name.
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  Default subject line.
+</ParamField>
+
+<ParamField body="html" type="string">
+  HTML template body. Supports variables like `{{first_name}}`.
+</ParamField>
+
+<ParamField body="text" type="string">
+  Plain text template body.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/templates \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Welcome Email",
+    "subject": "Welcome, {{first_name}}!",
+    "html": "<h1>Welcome!</h1><p>Thanks for signing up, {{first_name}}.</p>"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/email/templates",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "name": "Welcome Email",
+        "subject": "Welcome, {{first_name}}!",
+        "html": "<h1>Welcome!</h1><p>Thanks for signing up, {{first_name}}.</p>",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/templates", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Welcome Email",
+    subject: "Welcome, {{first_name}}!",
+    html: "<h1>Welcome!</h1><p>Thanks for signing up, {{first_name}}.</p>",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/templates", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: "Welcome Email",
+    subject: "Welcome, {{first_name}}!",
+    html: "<h1>Welcome!</h1><p>Thanks for signing up, {{first_name}}.</p>",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  The template ID.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "tpl_abc123",
+  "name": "Welcome Email",
+  "status": "draft"
+}
+```

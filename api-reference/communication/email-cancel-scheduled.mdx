@@ -1,0 +1,57 @@
+---
+title: "Cancel Scheduled Email"
+description: "Cancel a previously scheduled email before it is sent."
+api: "POST /v1/email/sent/:emailId/cancel"
+---
+
+<ParamField path="emailId" type="string" required>
+  The ID of the scheduled email to cancel.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/email/sent/em_abc123/cancel \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/email/sent/em_abc123/cancel",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/email/sent/em_abc123/cancel", {
+  method: "POST",
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/email/sent/em_abc123/cancel", {
+  method: "POST",
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="id" type="string">
+  The cancelled email ID.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Updated status, will be `cancelled`.
+</ResponseField>
+
+```json Example Response
+{
+  "id": "em_abc123",
+  "status": "cancelled"
+}
+```

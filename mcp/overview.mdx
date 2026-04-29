@@ -24,7 +24,7 @@ Agent Harness (Claude, Cursor, Hermes, custom)
   api.usenaive.ai           ← Primitives API
         │
         ▼
-  Real-world services       ← Resend, bundle.social, HeyGen, Stripe Issuing, etc.
+  Real-world services       ← email, bundle.social, HeyGen, Stripe Issuing, etc.
 ```
 
 The MCP server runs as a local subprocess launched by your harness. It communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io), translating tool calls into authenticated HTTPS requests against the Naive Primitives API. Identity (which employee, which company) comes from the API key — Core handles the rest.
