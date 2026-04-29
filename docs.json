@@ -117,7 +117,8 @@
               "api-reference/communication/get-email-body",
               "api-reference/communication/get-phone-number",
               "api-reference/communication/claim-phone-number",
-              "api-reference/communication/get-sms-inbox"
+              "api-reference/communication/get-sms-inbox",
+              "api-reference/communication/resend-api"
             ]
           },
           {

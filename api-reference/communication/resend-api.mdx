@@ -1,0 +1,291 @@
+---
+title: "Resend API Proxy"
+description: "Proxy any Resend API call through Naive. Access contacts, segments, broadcasts, templates, batch emails, and more."
+api: "POST /v1/resend"
+---
+
+Forward any [Resend API](https://resend.com/docs/api-reference) request through Naive's managed infrastructure. Your agent gets full access to Resend's API without managing API keys directly.
+
+<ParamField body="method" type="string" required>
+  HTTP method: `GET`, `POST`, `PATCH`, or `DELETE`.
+</ParamField>
+
+<ParamField body="path" type="string" required>
+  Resend API path (e.g. `/contacts`, `/emails/batch`, `/segments/seg_abc123`). Must start with `/`.
+</ParamField>
+
+<ParamField body="body" type="object">
+  Request body for POST/PATCH requests. Passed as JSON to the Resend API.
+</ParamField>
+
+<Warning>
+  Domain management paths (`/domains`) are blocked — use Naive's dedicated [domain primitives](/api-reference/domains/register-domain) instead.
+</Warning>
+
+## Available Endpoints
+
+| Category | Endpoints | Resend Docs |
+|----------|-----------|-------------|
+| Emails | `POST /emails`, `POST /emails/batch`, `GET /emails/:id` | [Emails](https://resend.com/docs/api-reference/emails) |
+| Contacts | `POST/GET/PATCH/DELETE /contacts` | [Contacts](https://resend.com/docs/api-reference/contacts) |
+| Contact Properties | `POST/GET/PATCH/DELETE /contact-properties` | [Properties](https://resend.com/docs/api-reference/contacts/contact-properties) |
+| Segments | `POST/GET/DELETE /segments`, `GET /segments/:id/contacts` | [Segments](https://resend.com/docs/api-reference/segments) |
+| Topics | `POST/GET/PATCH/DELETE /topics` | [Topics](https://resend.com/docs/api-reference/topics) |
+| Broadcasts | `POST/GET/PATCH/DELETE /broadcasts` | [Broadcasts](https://resend.com/docs/api-reference/broadcasts) |
+| Templates | `POST/GET/PATCH/DELETE /templates` | [Templates](https://resend.com/docs/api-reference/templates) |
+
+## Examples
+
+### Create a contact
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/resend \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "POST",
+    "path": "/contacts",
+    "body": {
+      "email": "steve@example.com",
+      "first_name": "Steve",
+      "last_name": "Wozniak"
+    }
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/resend",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "method": "POST",
+        "path": "/contacts",
+        "body": {
+            "email": "steve@example.com",
+            "first_name": "Steve",
+            "last_name": "Wozniak",
+        },
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    method: "POST",
+    path: "/contacts",
+    body: {
+      email: "steve@example.com",
+      first_name: "Steve",
+      last_name: "Wozniak",
+    },
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    method: "POST",
+    path: "/contacts",
+    body: {
+      email: "steve@example.com",
+      first_name: "Steve",
+      last_name: "Wozniak",
+    },
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+### List all contacts
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/resend \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"method": "GET", "path": "/contacts"}'
+```
+
+```python Python
+response = requests.post(
+    "https://api.usenaive.ai/v1/resend",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"method": "GET", "path": "/contacts"},
+)
+contacts = response.json()["data"]
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ method: "GET", path: "/contacts" }),
+});
+const { data: contacts } = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ method: "GET", path: "/contacts" }),
+});
+const { data: contacts } = await response.json();
+```
+</CodeGroup>
+
+### Send batch emails
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/resend \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "method": "POST",
+    "path": "/emails/batch",
+    "body": [
+      {"from": "agent@acme.com", "to": "a@example.com", "subject": "Hello A", "text": "Hi A!"},
+      {"from": "agent@acme.com", "to": "b@example.com", "subject": "Hello B", "text": "Hi B!"}
+    ]
+  }'
+```
+
+```python Python
+response = requests.post(
+    "https://api.usenaive.ai/v1/resend",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "method": "POST",
+        "path": "/emails/batch",
+        "body": [
+            {"from": "agent@acme.com", "to": "a@example.com", "subject": "Hello A", "text": "Hi A!"},
+            {"from": "agent@acme.com", "to": "b@example.com", "subject": "Hello B", "text": "Hi B!"},
+        ],
+    },
+)
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    method: "POST",
+    path: "/emails/batch",
+    body: [
+      { from: "agent@acme.com", to: "a@example.com", subject: "Hello A", text: "Hi A!" },
+      { from: "agent@acme.com", to: "b@example.com", subject: "Hello B", text: "Hi B!" },
+    ],
+  }),
+});
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    method: "POST",
+    path: "/emails/batch",
+    body: [
+      { from: "agent@acme.com", to: "a@example.com", subject: "Hello A", text: "Hi A!" },
+      { from: "agent@acme.com", to: "b@example.com", subject: "Hello B", text: "Hi B!" },
+    ],
+  }),
+});
+```
+</CodeGroup>
+
+### Create a segment
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/resend \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"method": "POST", "path": "/segments", "body": {"name": "Newsletter Subscribers"}}'
+```
+
+```python Python
+response = requests.post(
+    "https://api.usenaive.ai/v1/resend",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"method": "POST", "path": "/segments", "body": {"name": "Newsletter Subscribers"}},
+)
+```
+
+```typescript TypeScript
+await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ method: "POST", path: "/segments", body: { name: "Newsletter Subscribers" } }),
+});
+```
+
+```javascript JavaScript
+await fetch("https://api.usenaive.ai/v1/resend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ method: "POST", path: "/segments", body: { name: "Newsletter Subscribers" } }),
+});
+```
+</CodeGroup>
+
+<ResponseField name="status" type="number">
+  HTTP status code from the Resend API.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response body from the Resend API. Format varies by endpoint — see [Resend API docs](https://resend.com/docs/api-reference).
+</ResponseField>
+
+```json Example Response (Create Contact)
+{
+  "status": 200,
+  "data": {
+    "object": "contact",
+    "id": "e169aa45-1ecf-4183-9955-b1499d5701d3"
+  }
+}
+```
+
+<Info>
+For simple single-email sends, prefer the dedicated [send_email](/api-reference/communication/send-email) endpoint — it handles agent identity, sensitive data blocking, and audit logging automatically. Use the Resend proxy for everything else: contacts, segments, broadcasts, templates, batch sends, and delivery tracking.
+</Info>

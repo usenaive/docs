@@ -203,6 +203,32 @@ To send emails from your own domain instead of `*.usenaive.ai`:
   </Step>
 </Steps>
 
+## Full Resend API Access
+
+Beyond `send_email` and `list_inbox`, you have access to the **entire Resend API** through the [`resend_api`](/api-reference/communication/resend-api) proxy tool. This includes:
+
+- **Contacts** — create, update, delete, and list contacts
+- **Segments** — organize contacts into groups
+- **Broadcasts** — send marketing email campaigns to segments
+- **Templates** — create reusable email templates
+- **Topics** — manage subscription preferences
+- **Batch sends** — send up to 100 emails at once
+- **Delivery tracking** — check email delivery status
+
+```
+resend_api({
+  method: "POST",
+  path: "/contacts",
+  body: { email: "lead@company.com", first_name: "Alex" }
+})
+```
+
+See the [Resend API docs](https://resend.com/docs/api-reference) for all available endpoints and parameters.
+
+<Info>
+Use `send_email` for simple sends — it handles agent identity, sensitive data blocking, and audit logging. Use `resend_api` for everything else: contacts, segments, broadcasts, templates, batch sends.
+</Info>
+
 ## Typical Workflow
 
 ```
@@ -211,6 +237,11 @@ Agent receives task: "Follow up with leads from yesterday's webinar"
     ├─ list_inbox()                    → Check for any replies first
     │
     ├─ get_email_body({ email_id })    → Read relevant replies
+    │
+    ├─ resend_api({ method: "POST",   → Add lead to contacts
+    │    path: "/contacts",
+    │    body: { email: "lead@company.com", first_name: "Alex" }
+    │  })
     │
     └─ send_email({                    → Send personalized follow-ups
          to: "lead@company.com",
