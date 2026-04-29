@@ -1,0 +1,336 @@
+---
+title: "Brand Kit"
+description: "AI-generate and manage brand identity — tagline, color palette, style direction, font preference, tone, and logo."
+---
+
+Brand Kit is the identity primitive for your agent's company. It centralizes tagline, color palette, style direction, font, tone, and logo into a single persisted object that downstream tools and deliverables reference for visual and voice consistency.
+
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `recommend_brand_kit` | Core | AI-generate a brand identity from company context |
+| `read_brand_kit` | Extended | Get the current persisted brand kit |
+| `update_brand_kit` | Extended | Update brand kit fields (partial updates supported) |
+| `generate_brand_logo` | Extended | AI-generate logo SVG options |
+
+## Why Brand Kit Matters
+
+Without a centralized brand kit, agents make inconsistent design and voice decisions across deliverables — landing pages use different colors than social posts, email copy doesn't match the website tone. Brand Kit solves this:
+
+- **Visual consistency** — Colors, style, and font flow into every generated deliverable
+- **Voice alignment** — Tone and tagline keep copy on-brand across channels
+- **Logo management** — Generate, select, and persist logos alongside the palette
+- **AI-powered bootstrap** — Go from zero to complete brand identity in one tool call
+
+## Brand Kit Lifecycle
+
+```
+Recommend → Review → Persist → Generate Logos → Select → Save Logo
+                       ↑                                    |
+                       └──── Update individual fields ──────┘
+```
+
+<Steps>
+  <Step title="Generate a brand recommendation">
+    Use `recommend_brand_kit` to AI-generate a complete brand identity. All inputs are optional — the endpoint infers from the company profile if no overrides are provided.
+
+    <CodeGroup>
+    ```bash curl
+    curl -X POST https://api.usenaive.ai/v1/brand-kit/recommend \
+      -H "Authorization: Bearer nv_sk_your_key_here" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "industry": "fintech",
+        "target_audience": "developers",
+        "style_preferences": "minimal, dark theme"
+      }'
+    ```
+
+    ```python Python
+    import requests
+
+    response = requests.post(
+        "https://api.usenaive.ai/v1/brand-kit/recommend",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+        json={
+            "industry": "fintech",
+            "target_audience": "developers",
+            "style_preferences": "minimal, dark theme",
+        },
+    )
+    brand = response.json()
+    print(brand["brandKit"]["tagline"])
+    print(brand["brandKit"]["colors"])
+    ```
+
+    ```typescript TypeScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit/recommend", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        industry: "fintech",
+        target_audience: "developers",
+        style_preferences: "minimal, dark theme",
+      }),
+    });
+    const { brandKit } = await response.json();
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit/recommend", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        industry: "fintech",
+        target_audience: "developers",
+        style_preferences: "minimal, dark theme",
+      }),
+    });
+    const { brandKit } = await response.json();
+    ```
+    </CodeGroup>
+
+    **Response:**
+
+    ```json
+    {
+      "brandKit": {
+        "tagline": "Ship faster with AI",
+        "colors": {
+          "primary": "#1a1a2e",
+          "secondary": "#16213e",
+          "accent": "#0f3460"
+        },
+        "styleDirection": "minimal modern",
+        "fontPreference": "Inter",
+        "tone": "confident, technical, approachable"
+      }
+    }
+    ```
+
+    <Info>
+    The recommendation is **not** automatically saved. Review it first, then persist with `update_brand_kit`.
+    </Info>
+  </Step>
+
+  <Step title="Save the approved brand kit">
+    Once the user approves the recommendation (or adjusts it), persist it with `update_brand_kit`. Only provided fields are written — omitted fields remain unchanged.
+
+    <CodeGroup>
+    ```bash curl
+    curl -X PUT https://api.usenaive.ai/v1/brand-kit \
+      -H "Authorization: Bearer nv_sk_your_key_here" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "tagline": "Ship faster with AI",
+        "colors": { "primary": "#1a1a2e", "secondary": "#16213e", "accent": "#0f3460" },
+        "styleDirection": "minimal modern",
+        "fontPreference": "Inter",
+        "tone": "confident, technical, approachable"
+      }'
+    ```
+
+    ```python Python
+    response = requests.put(
+        "https://api.usenaive.ai/v1/brand-kit",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+        json={
+            "tagline": "Ship faster with AI",
+            "colors": {"primary": "#1a1a2e", "secondary": "#16213e", "accent": "#0f3460"},
+            "styleDirection": "minimal modern",
+            "fontPreference": "Inter",
+            "tone": "confident, technical, approachable",
+        },
+    )
+    ```
+
+    ```typescript TypeScript
+    await fetch("https://api.usenaive.ai/v1/brand-kit", {
+      method: "PUT",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tagline: "Ship faster with AI",
+        colors: { primary: "#1a1a2e", secondary: "#16213e", accent: "#0f3460" },
+        styleDirection: "minimal modern",
+        fontPreference: "Inter",
+        tone: "confident, technical, approachable",
+      }),
+    });
+    ```
+
+    ```javascript JavaScript
+    await fetch("https://api.usenaive.ai/v1/brand-kit", {
+      method: "PUT",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        tagline: "Ship faster with AI",
+        colors: { primary: "#1a1a2e", secondary: "#16213e", accent: "#0f3460" },
+        styleDirection: "minimal modern",
+        fontPreference: "Inter",
+        tone: "confident, technical, approachable",
+      }),
+    });
+    ```
+    </CodeGroup>
+  </Step>
+
+  <Step title="Generate logo options">
+    With the brand identity established, generate matching logo SVGs:
+
+    <CodeGroup>
+    ```bash curl
+    curl -X POST https://api.usenaive.ai/v1/brand-kit/generate-logo \
+      -H "Authorization: Bearer nv_sk_your_key_here" \
+      -H "Content-Type: application/json" \
+      -d '{"style": "geometric, single color"}'
+    ```
+
+    ```python Python
+    response = requests.post(
+        "https://api.usenaive.ai/v1/brand-kit/generate-logo",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+        json={"style": "geometric, single color"},
+    )
+    logos = response.json()["logos"]
+    print(f"Generated {len(logos)} logo options")
+    ```
+
+    ```typescript TypeScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit/generate-logo", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ style: "geometric, single color" }),
+    });
+    const { logos } = await response.json();
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit/generate-logo", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer nv_sk_your_key_here",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ style: "geometric, single color" }),
+    });
+    const { logos } = await response.json();
+    ```
+    </CodeGroup>
+
+    Present the SVG options to the user. Once they select one, save it:
+
+    ```bash
+    curl -X PUT https://api.usenaive.ai/v1/brand-kit \
+      -H "Authorization: Bearer nv_sk_your_key_here" \
+      -H "Content-Type: application/json" \
+      -d '{"logoSvg": "<svg>...</svg>"}'
+    ```
+  </Step>
+
+  <Step title="Read the persisted brand kit">
+    At any point, read the full brand kit to use in downstream work:
+
+    <CodeGroup>
+    ```bash curl
+    curl https://api.usenaive.ai/v1/brand-kit \
+      -H "Authorization: Bearer nv_sk_your_key_here"
+    ```
+
+    ```python Python
+    response = requests.get(
+        "https://api.usenaive.ai/v1/brand-kit",
+        headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    )
+    kit = response.json()["brandKit"]
+    print(f"Tagline: {kit['tagline']}")
+    print(f"Primary color: {kit['colors']['primary']}")
+    ```
+
+    ```typescript TypeScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    const { brandKit } = await response.json();
+    ```
+
+    ```javascript JavaScript
+    const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+      headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+    });
+    const { brandKit } = await response.json();
+    ```
+    </CodeGroup>
+
+    ```json
+    {
+      "brandKit": {
+        "tagline": "Ship faster with AI",
+        "colors": { "primary": "#1a1a2e", "secondary": "#16213e", "accent": "#0f3460" },
+        "styleDirection": "minimal modern",
+        "fontPreference": "Inter",
+        "tone": "confident, technical, approachable",
+        "logoKey": "logos/abc123.svg",
+        "updatedAt": "2025-06-15T10:30:00Z"
+      }
+    }
+    ```
+  </Step>
+</Steps>
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `no_profile` | No company profile found for AI generation | Create a company profile first, or provide `company_description` and `industry` inputs |
+| `generation_failed` | AI brand generation failed | Retry, or provide more specific inputs (`industry`, `style_preferences`) |
+| `invalid_colors` | Color values are not valid hex strings | Use hex format like `"#1a1a2e"` for primary, secondary, and accent |
+| `no_fields` | `update_brand_kit` called with no fields | Include at least one field to update |
+| `no_brand_context` | Logo generation has no brand context to work with | Run `recommend_brand_kit` or `update_brand_kit` first to establish identity |
+
+## Typical Workflow (Agent Perspective)
+
+```
+1. recommend_brand_kit({ industry: "fintech", style_preferences: "bold, dark" })
+   -> brandKit: { tagline, colors, styleDirection, fontPreference, tone }
+   -> Present to user: "Here's a recommended brand identity for your company"
+
+2. [User reviews and approves, possibly tweaking tagline or colors]
+
+3. update_brand_kit({ tagline: "...", colors: {...}, styleDirection: "...", ... })
+   -> Brand kit persisted
+
+4. generate_brand_logo({ style: "geometric, single color" })
+   -> logos: ["<svg>...</svg>", "<svg>...</svg>", "<svg>...</svg>"]
+   -> Present options to user: "Pick your preferred logo"
+
+5. update_brand_kit({ logoSvg: "<svg>...</svg>" })
+   -> Selected logo saved to brand kit
+
+6. read_brand_kit()
+   -> Full brand kit available for downstream deliverables
+```
+
+## API Reference
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [Recommend Brand Kit](/api-reference/brand/recommend-brand-kit) | POST | AI-generate a brand identity recommendation |
+| [Read Brand Kit](/api-reference/brand/read-brand-kit) | GET | Get the current persisted brand kit |
+| [Update Brand Kit](/api-reference/brand/update-brand-kit) | PUT | Update brand kit fields |
+| [Generate Brand Logo](/api-reference/brand/generate-brand-logo) | POST | AI-generate logo SVG options |

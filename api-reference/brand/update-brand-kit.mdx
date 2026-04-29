@@ -1,0 +1,120 @@
+---
+title: "Update Brand Kit"
+description: "Update the company's brand kit fields (tagline, colors, style, font, tone, logo)."
+api: "PUT /v1/brand-kit"
+---
+
+<ParamField body="tagline" type="string">
+  Company tagline or slogan.
+</ParamField>
+
+<ParamField body="colors" type="object">
+  Brand color palette: `{ primary, secondary, accent }` as hex values (e.g., `#1a1a2e`).
+</ParamField>
+
+<ParamField body="styleDirection" type="string">
+  Visual style direction (e.g., `minimal modern`, `bold enterprise`).
+</ParamField>
+
+<ParamField body="fontPreference" type="string">
+  Preferred font family (e.g., `Inter`, `Geist`, `DM Sans`).
+</ParamField>
+
+<ParamField body="tone" type="string">
+  Brand voice and tone description (e.g., `confident, technical, approachable`).
+</ParamField>
+
+<ParamField body="logoSvg" type="string">
+  SVG string for the company logo.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X PUT https://api.usenaive.ai/v1/brand-kit \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "tagline": "Ship faster with AI",
+    "colors": { "primary": "#1a1a2e", "secondary": "#16213e", "accent": "#0f3460" },
+    "styleDirection": "minimal modern",
+    "fontPreference": "Inter",
+    "tone": "confident, technical, approachable"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.put(
+    "https://api.usenaive.ai/v1/brand-kit",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "tagline": "Ship faster with AI",
+        "colors": {"primary": "#1a1a2e", "secondary": "#16213e", "accent": "#0f3460"},
+        "styleDirection": "minimal modern",
+        "fontPreference": "Inter",
+        "tone": "confident, technical, approachable",
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    tagline: "Ship faster with AI",
+    colors: { primary: "#1a1a2e", secondary: "#16213e", accent: "#0f3460" },
+    styleDirection: "minimal modern",
+    fontPreference: "Inter",
+    tone: "confident, technical, approachable",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+  method: "PUT",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    tagline: "Ship faster with AI",
+    colors: { primary: "#1a1a2e", secondary: "#16213e", accent: "#0f3460" },
+    styleDirection: "minimal modern",
+    fontPreference: "Inter",
+    tone: "confident, technical, approachable",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="brandKit" type="object">
+  The updated brand kit with all current fields and an `updatedAt` timestamp.
+</ResponseField>
+
+```json Example Response
+{
+  "brandKit": {
+    "tagline": "Ship faster with AI",
+    "colors": {
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "accent": "#0f3460"
+    },
+    "styleDirection": "minimal modern",
+    "fontPreference": "Inter",
+    "tone": "confident, technical, approachable",
+    "updatedAt": "2025-06-15T10:30:00Z"
+  }
+}
+```
+
+All fields are optional — only provided fields are updated. At least one field must be included. To save a generated logo, pass the SVG string as `logoSvg`.

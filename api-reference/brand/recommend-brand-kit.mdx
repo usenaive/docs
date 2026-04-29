@@ -1,0 +1,103 @@
+---
+title: "Recommend Brand Kit"
+description: "AI-generate a brand identity (tagline, colors, style, font, tone) from company context."
+api: "POST /v1/brand-kit/recommend"
+---
+
+<ParamField body="company_description" type="string">
+  Override company description for generation context. If omitted, uses existing company profile.
+</ParamField>
+
+<ParamField body="industry" type="string">
+  Industry or vertical to tailor the brand identity (e.g., `fintech`, `healthcare`, `e-commerce`).
+</ParamField>
+
+<ParamField body="target_audience" type="string">
+  Target audience to shape tone and style (e.g., `developers`, `enterprise buyers`, `gen-z consumers`).
+</ParamField>
+
+<ParamField body="style_preferences" type="string">
+  Directional hints for visual style (e.g., `minimal and dark`, `playful and colorful`, `enterprise and trustworthy`).
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/brand-kit/recommend \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "industry": "fintech",
+    "target_audience": "developers",
+    "style_preferences": "minimal, dark theme"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/brand-kit/recommend",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "industry": "fintech",
+        "target_audience": "developers",
+        "style_preferences": "minimal, dark theme",
+    },
+)
+brand = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    industry: "fintech",
+    target_audience: "developers",
+    style_preferences: "minimal, dark theme",
+  }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit/recommend", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    industry: "fintech",
+    target_audience: "developers",
+    style_preferences: "minimal, dark theme",
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="brandKit" type="object">
+  AI-generated brand identity with `tagline`, `colors` (`primary`, `secondary`, `accent`), `styleDirection`, `fontPreference`, and `tone`.
+</ResponseField>
+
+```json Example Response
+{
+  "brandKit": {
+    "tagline": "Ship faster with AI",
+    "colors": {
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "accent": "#0f3460"
+    },
+    "styleDirection": "minimal modern",
+    "fontPreference": "Inter",
+    "tone": "confident, technical, approachable"
+  }
+}
+```
+
+All inputs are optional. If omitted, the endpoint infers context from the existing company profile. The result is a recommendation — use [Update Brand Kit](/api-reference/brand/update-brand-kit) to persist it.

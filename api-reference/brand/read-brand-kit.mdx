@@ -1,0 +1,62 @@
+---
+title: "Read Brand Kit"
+description: "Get the current brand kit for the company."
+api: "GET /v1/brand-kit"
+---
+
+No parameters required. The company is resolved from the API key.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/brand-kit \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/brand-kit",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+kit = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="brandKit" type="object | null">
+  The company's brand kit with `tagline`, `colors`, `styleDirection`, `fontPreference`, `tone`, `logoKey`, and `updatedAt`. Returns `null` if no brand kit exists.
+</ResponseField>
+
+```json Example Response
+{
+  "brandKit": {
+    "tagline": "Ship faster with AI",
+    "colors": {
+      "primary": "#1a1a2e",
+      "secondary": "#16213e",
+      "accent": "#0f3460"
+    },
+    "styleDirection": "minimal modern",
+    "fontPreference": "Inter",
+    "tone": "confident, technical, approachable",
+    "logoKey": "logos/abc123.svg",
+    "updatedAt": "2025-06-15T10:30:00Z"
+  }
+}
+```
+
+If no brand kit has been saved, the response may include a synthesized kit from legacy profile fields or return `null`. Use [Recommend Brand Kit](/api-reference/brand/recommend-brand-kit) to generate one, or [Update Brand Kit](/api-reference/brand/update-brand-kit) to set fields manually.

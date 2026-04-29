@@ -1,0 +1,77 @@
+---
+title: "Generate Brand Logo"
+description: "AI-generate logo SVGs based on the company's brand identity."
+api: "POST /v1/brand-kit/generate-logo"
+---
+
+<ParamField body="style" type="string">
+  Style hints for logo generation (e.g., `geometric`, `wordmark`, `minimal icon`, `single color`).
+</ParamField>
+
+<ParamField body="company_name" type="string">
+  Company name to incorporate in the logo. Defaults to the company profile name.
+</ParamField>
+
+<ParamField body="tagline" type="string">
+  Tagline for additional context in logo generation.
+</ParamField>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/brand-kit/generate-logo \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{"style": "geometric, single color"}'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/brand-kit/generate-logo",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"style": "geometric, single color"},
+)
+logos = response.json()["logos"]
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit/generate-logo", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ style: "geometric, single color" }),
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/brand-kit/generate-logo", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ style: "geometric, single color" }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="logos" type="array">
+  Array of generated logo SVG strings.
+</ResponseField>
+
+```json Example Response
+{
+  "logos": [
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">...</svg>",
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">...</svg>",
+    "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\">...</svg>"
+  ]
+}
+```
+
+All inputs are optional. If omitted, the endpoint uses the company's existing brand kit and profile for context. For best results, run [Recommend Brand Kit](/api-reference/brand/recommend-brand-kit) first to establish colors and style. Save the chosen logo with [Update Brand Kit](/api-reference/brand/update-brand-kit) using the `logoSvg` field.
