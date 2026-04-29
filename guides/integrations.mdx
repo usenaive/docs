@@ -1,18 +1,18 @@
 ---
 title: Third-Party Integrations
-description: "The integrations primitive — connect employees to 100+ SaaS tools via Composio and CMS platforms like Webflow, Ghost, and Shopify."
+description: "The integrations primitive — connect employees to 100+ SaaS tools and CMS platforms like Webflow, Ghost, and Shopify."
 ---
 
-Integrations is the primitive that lets an employee reach into the rest of your stack. Naive bundles two backends behind one consistent API: **Composio** for SaaS integrations (Slack, GitHub, HubSpot, Linear, Notion, and 100+ others) and **CMS connectors** for content platforms (Webflow, Ghost, Shopify, Framer). Connection auth is stored at the company level so multiple employees can share the same Slack workspace or HubSpot account without juggling tokens.
+Integrations is the primitive that lets an employee reach into the rest of your stack. Naive bundles two integration systems behind one consistent API: **SaaS connectors** for SaaS integrations (Slack, GitHub, HubSpot, Linear, Notion, and 100+ others) and **CMS connectors** for content platforms (Webflow, Ghost, Shopify, Framer). Connection auth is stored at the company level so multiple employees can share the same Slack workspace or HubSpot account without juggling tokens.
 
 ## Tools
 
 | Tool | Type | Description |
 |------|------|-------------|
-| `check_integrations` | Core | List all available integrations (CMS, Composio, browser) |
+| `check_integrations` | Core | List all available integrations (CMS, SaaS, browser) |
 | `get_integration_tools` | Extended | Get available actions for a specific integration |
 | `execute_integration` | Extended | Execute a tool on a connected integration |
-| `get_composio_auth_url` | Extended | Get OAuth URL for connecting third-party services |
+| `get_integration_auth_url` | Extended | Get OAuth URL for connecting third-party services |
 
 ## Discovery
 
@@ -32,7 +32,7 @@ curl https://api.usenaive.ai/v1/integrations \
       { "id": "int_abc", "type": "webflow", "name": "Acme Marketing Site", "status": "connected" },
       { "id": "int_def", "type": "ghost", "name": "Acme Blog", "status": "connected" }
     ],
-    "composio": [
+    "saas": [
       { "toolkit": "SLACK", "status": "connected" },
       { "toolkit": "GITHUB", "status": "connected" },
       { "toolkit": "HUBSPOT", "status": "available" }
@@ -53,7 +53,7 @@ All integrations follow the same three-step pattern: discover, inspect, execute.
     ```bash
     check_integrations()
     ```
-    Returns all CMS, Composio, and browser integrations with their current status.
+    Returns all CMS, SaaS, and browser integrations with their current status.
   </Step>
 
   <Step title="Get available tools for an integration">
@@ -62,8 +62,8 @@ All integrations follow the same three-step pattern: discover, inspect, execute.
     curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=cms&integration_id=int_abc" \
       -H "Authorization: Bearer nv_sk_your_key"
 
-    # For a Composio toolkit
-    curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=SLACK" \
+    # For a SaaS toolkit
+    curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=saas&toolkit=SLACK" \
       -H "Authorization: Bearer nv_sk_your_key"
     ```
 
@@ -84,7 +84,7 @@ All integrations follow the same three-step pattern: discover, inspect, execute.
       -H "Authorization: Bearer nv_sk_your_key" \
       -H "Content-Type: application/json" \
       -d '{
-        "integration_type": "composio",
+        "integration_type": "saas",
         "toolkit": "SLACK",
         "tool_name": "SLACK_SEND_MESSAGE",
         "params": {
@@ -96,9 +96,9 @@ All integrations follow the same three-step pattern: discover, inspect, execute.
   </Step>
 </Steps>
 
-## Composio Integrations
+## SaaS Integrations
 
-Composio provides OAuth-based integrations with 100+ SaaS platforms. Here are some commonly used toolkits:
+Naive provides OAuth-based integrations with 100+ SaaS platforms. Here are some commonly used toolkits:
 
 <CardGroup cols={3}>
   <Card title="Slack">
@@ -130,23 +130,23 @@ Composio provides OAuth-based integrations with 100+ SaaS platforms. Here are so
   </Card>
 </CardGroup>
 
-### Connecting Composio Integrations
+### Connecting SaaS Integrations
 
-To connect a new Composio integration, get the OAuth authorization URL:
+To connect a new SaaS integration, get the OAuth authorization URL:
 
 ```bash
-curl https://api.usenaive.ai/v1/integrations/composio-url \
+curl https://api.usenaive.ai/v1/integrations/auth-url \
   -H "Authorization: Bearer nv_sk_your_key"
 ```
 
 Response:
 ```json
 {
-  "url": "https://app.composio.dev/auth/abc123"
+  "url": "https://usenaive.ai/connect/auth/abc123"
 }
 ```
 
-Share this URL with the user. They'll authorize the integration through Composio's OAuth flow, and it will appear in `check_integrations` once connected.
+Share this URL with the user. They'll authorize the integration through the OAuth flow, and it will appear in `check_integrations` once connected.
 
 ## CMS Integrations
 
@@ -192,25 +192,25 @@ The post is created as a **draft** in Ghost — the user publishes it when ready
 | `check_integrations` | GET | `/v1/integrations` | List all available integrations (core tool) |
 | `get_integration_tools` | GET | `/v1/integrations/tools` | List tools for a specific integration |
 | `execute_integration` | POST | `/v1/integrations/execute` | Execute a tool on an integration |
-| `get_composio_auth_url` | GET | `/v1/integrations/composio-url` | Get OAuth URL for connecting new integrations |
+| `get_integration_auth_url` | GET | `/v1/integrations/auth-url` | Get OAuth URL for connecting new integrations |
 
 ### execute_integration Parameters
 
 | Param | Type | Required | Description |
 |-------|------|----------|-------------|
-| `integration_type` | string | Yes | `cms` or `composio` |
+| `integration_type` | string | Yes | `cms` or `saas` |
 | `tool_name` | string | Yes | Tool to execute |
 | `params` | object | No | Tool parameters (default `{}`) |
 | `integration_id` | string | Conditional | Required for CMS integrations |
-| `toolkit` | string | Conditional | Required for Composio integrations |
+| `toolkit` | string | Conditional | Required for SaaS integrations |
 
 ## Error Handling
 
 | Error | Cause | Recovery |
 |-------|-------|----------|
-| `integration_not_connected` | Target integration not yet connected | Use `get_composio_auth_url` to get the OAuth URL |
+| `integration_not_connected` | Target integration not yet connected | Use `get_integration_auth_url` to get the OAuth URL |
 | `tool_not_found` | Specified tool doesn't exist for this integration | Call `get_integration_tools` to list available tools |
-| `auth_expired` | Integration OAuth token expired | Re-authorize via the Composio portal |
+| `auth_expired` | Integration OAuth token expired | Re-authorize via the integrations portal |
 
 ## Typical Agent Flow
 
@@ -232,7 +232,7 @@ Task: "Post our new blog article to Ghost and share it on Slack"
    → Draft created in Ghost
 
 4. execute_integration({
-     integration_type: "composio",
+     integration_type: "saas",
      toolkit: "SLACK",
      tool_name: "SLACK_SEND_MESSAGE",
      params: { channel: "#content", text: "New blog draft ready for review: ..." }

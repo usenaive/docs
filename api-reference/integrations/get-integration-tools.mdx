@@ -1,11 +1,11 @@
 ---
 title: "Get Integration Tools"
-description: "Get available tools and actions for a specific CMS or Composio integration."
+description: "Get available tools and actions for a specific CMS or SaaS integration."
 api: "GET /v1/integrations/tools"
 ---
 
 <ParamField query="integration_type" type="string" required>
-  `cms` or `composio`.
+  `cms` or `saas`.
 </ParamField>
 
 <ParamField query="integration_id" type="string">
@@ -13,12 +13,12 @@ api: "GET /v1/integrations/tools"
 </ParamField>
 
 <ParamField query="toolkit" type="string">
-  Required for Composio integrations. The toolkit name (e.g., `slack`, `github`, `notion`).
+  Required for SaaS integrations. The toolkit name (e.g., `slack`, `github`, `notion`).
 </ParamField>
 
 <CodeGroup>
 ```bash curl
-curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack" \
+curl "https://api.usenaive.ai/v1/integrations/tools?integration_type=saas&toolkit=slack" \
   -H "Authorization: Bearer nv_sk_your_key_here"
 ```
 
@@ -28,14 +28,14 @@ import requests
 response = requests.get(
     "https://api.usenaive.ai/v1/integrations/tools",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
-    params={"integration_type": "composio", "toolkit": "slack"},
+    params={"integration_type": "saas", "toolkit": "slack"},
 )
 data = response.json()
 ```
 
 ```typescript TypeScript
 const response = await fetch(
-  "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack",
+  "https://api.usenaive.ai/v1/integrations/tools?integration_type=saas&toolkit=slack",
   { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
 );
 const data = await response.json();
@@ -43,7 +43,7 @@ const data = await response.json();
 
 ```javascript JavaScript
 const response = await fetch(
-  "https://api.usenaive.ai/v1/integrations/tools?integration_type=composio&toolkit=slack",
+  "https://api.usenaive.ai/v1/integrations/tools?integration_type=saas&toolkit=slack",
   { headers: { "Authorization": "Bearer nv_sk_your_key_here" } },
 );
 const data = await response.json();

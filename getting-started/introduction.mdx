@@ -58,7 +58,7 @@ Primitives are the atomic capabilities that agents can't do on their own. An LLM
     Chrome DevTools Protocol sessions for Playwright/Puppeteer with stored credentials
   </Card>
   <Card title="Integrations">
-    100+ SaaS integrations via Composio (Slack, GitHub, HubSpot) plus CMS platforms (Webflow, Ghost, Shopify)
+    100+ SaaS integrations (Slack, GitHub, HubSpot) plus CMS platforms (Webflow, Ghost, Shopify)
   </Card>
   <Card title="Web Research">
     Real-time web search, URL content extraction, and multi-step research with citations
@@ -87,7 +87,7 @@ Primitives are the atomic capabilities that agents can't do on their own. An LLM
              │
              ▼
    Real-world services (email infrastructure, bundle.social,
-   Stripe Issuing, Twilio, Composio, Tavily, …)
+   Stripe Issuing, Twilio, Tavily, …)
 ```
 
 Every API key is scoped to one **employee** inside one **company**. When an employee calls a primitive, Naive resolves identity automatically — no `agent_id` to pass, no company id to look up. The employee's email address, social accounts, payment cards, and credentials are all wired in by Core.
@@ -144,7 +144,7 @@ You can use the primitives API on its own (connect your own agent harness to our
 | Distribution | 9 | `create_social_post`, `get_social_media_status` | Social media posting and analytics |
 | Creation | 10 | `generate_images`, `search_stock_media` | Images, video, clips, stock media |
 | Research | 3 | `web_search` | Web search, URL reading, deep research |
-| Integrations | 4 | `check_integrations` | CMS and SaaS integrations via Composio |
+| Integrations | 4 | `check_integrations` | CMS and SaaS integrations |
 | Domains | 7 | — | Custom domain registration and DNS |
 | Payment Cards | 3 | — | Virtual cards and transaction logging |
 | Connections | 5 | — | Browser integration credentials |

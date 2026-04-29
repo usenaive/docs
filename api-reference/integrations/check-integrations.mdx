@@ -1,6 +1,6 @@
 ---
 title: "Check Integrations"
-description: "List all available integrations across CMS platforms, Composio toolkits, and browser connections."
+description: "List all available integrations across CMS platforms, SaaS toolkits, and browser connections."
 api: "GET /v1/integrations"
 ---
 
@@ -38,7 +38,7 @@ const data = await response.json();
 </CodeGroup>
 
 <ResponseField name="integrations" type="object">
-  Integration groups: `cms` (Webflow, Ghost, Shopify, Framer), `composio` (100+ SaaS toolkits), and `connections` (browser integrations).
+  Integration groups: `cms` (Webflow, Ghost, Shopify, Framer), `saas` (100+ SaaS toolkits), and `connections` (browser integrations).
 </ResponseField>
 
 ```json Example Response
@@ -47,7 +47,7 @@ const data = await response.json();
     "cms": [
       {"id": "cms_1", "type": "webflow", "name": "My Webflow Site", "status": "connected"}
     ],
-    "composio": [
+    "saas": [
       {"toolkit": "slack", "status": "connected"},
       {"toolkit": "github", "status": "available"}
     ],

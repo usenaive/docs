@@ -1,0 +1,50 @@
+---
+title: "Get Integration Auth URL"
+description: "Get the authentication URL for connecting third-party integrations."
+api: "GET /v1/integrations/auth-url"
+---
+
+No parameters required.
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/integrations/auth-url \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/integrations/auth-url",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/integrations/auth-url", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+
+```javascript JavaScript
+const response = await fetch("https://api.usenaive.ai/v1/integrations/auth-url", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="url" type="string | null">
+  Integration auth URL. `null` if not configured.
+</ResponseField>
+
+```json Example Response
+{
+  "url": "https://usenaive.ai/connect/auth/abc123"
+}
+```
+
+Share this URL with the user to authorize third-party integrations (GitHub, Slack, HubSpot, etc.) via the OAuth flow.

@@ -1,11 +1,11 @@
 ---
 title: "Execute Integration"
-description: "Execute a tool on a connected CMS or Composio integration."
+description: "Execute a tool on a connected CMS or SaaS integration."
 api: "POST /v1/integrations/execute"
 ---
 
 <ParamField body="integration_type" type="string" required>
-  `cms` or `composio`.
+  `cms` or `saas`.
 </ParamField>
 
 <ParamField body="tool_name" type="string" required>
@@ -21,7 +21,7 @@ api: "POST /v1/integrations/execute"
 </ParamField>
 
 <ParamField body="toolkit" type="string">
-  Composio toolkit name.
+  SaaS toolkit name.
 </ParamField>
 
 <CodeGroup>
@@ -30,7 +30,7 @@ curl -X POST https://api.usenaive.ai/v1/integrations/execute \
   -H "Authorization: Bearer nv_sk_your_key_here" \
   -H "Content-Type: application/json" \
   -d '{
-    "integration_type": "composio",
+    "integration_type": "saas",
     "toolkit": "slack",
     "tool_name": "SLACK_SEND_MESSAGE",
     "params": {"channel": "#general", "text": "Hello from Naive!"}
@@ -44,7 +44,7 @@ response = requests.post(
     "https://api.usenaive.ai/v1/integrations/execute",
     headers={"Authorization": "Bearer nv_sk_your_key_here"},
     json={
-        "integration_type": "composio",
+        "integration_type": "saas",
         "toolkit": "slack",
         "tool_name": "SLACK_SEND_MESSAGE",
         "params": {"channel": "#general", "text": "Hello from Naive!"},
@@ -61,7 +61,7 @@ const response = await fetch("https://api.usenaive.ai/v1/integrations/execute", 
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    integration_type: "composio",
+    integration_type: "saas",
     toolkit: "slack",
     tool_name: "SLACK_SEND_MESSAGE",
     params: { channel: "#general", text: "Hello from Naive!" },
@@ -78,7 +78,7 @@ const response = await fetch("https://api.usenaive.ai/v1/integrations/execute", 
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    integration_type: "composio",
+    integration_type: "saas",
     toolkit: "slack",
     tool_name: "SLACK_SEND_MESSAGE",
     params: { channel: "#general", text: "Hello from Naive!" },
