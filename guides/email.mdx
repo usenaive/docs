@@ -1,11 +1,11 @@
 ---
 title: Email
-description: "Email is the most-used Naive primitive — every employee gets a provisioned address and can send, receive, and read mail through three tools."
+description: "Email is the most-used Naive primitive — every employee gets a provisioned address and can send, receive, and read mail through ten tools."
 ---
 
 Email is one of the most fundamental [primitives](/getting-started/introduction) in Naive. Every employee in a [Naive Core company](/core/employees) is provisioned with their own email address the moment they're hired, so sending and receiving mail works out of the box — no DNS, no warm-up, no auth dance.
 
-This guide covers the three primitives that power email: `send_email`, `list_inbox`, and `get_email_body`.
+This guide covers the ten tools that power email — from single sends to batch operations, delivery tracking, scheduling, and attachments.
 
 ## The Employee's Email Address
 
@@ -25,9 +25,16 @@ Want to send from your own domain (e.g., `agent@acme.com`)? See [Custom Domain S
 
 | Tool | Type | Description |
 |------|------|-------------|
-| `send_email` | Core | Send an outbound email |
+| `send_email` | Core | Send an outbound email with audit logging and sensitive data blocking |
 | `list_inbox` | Core | List recent inbound emails (metadata only) |
-| `get_email_body` | Extended | Read the full body of an inbound email |
+| `get_email_body` | Extended | Read the full body of a specific inbound email |
+| `email_send_batch` | Extended | Send up to 100 individual emails in one call |
+| `email_list_sent` | Extended | List all sent emails with delivery status |
+| `email_get_sent_status` | Extended | Check delivery status, opens, clicks, and bounces for a specific email |
+| `email_cancel_scheduled` | Extended | Cancel a scheduled email before it sends |
+| `email_update_scheduled` | Extended | Modify a scheduled email's send time |
+| `email_list_sent_attachments` | Extended | List attachments from a sent email |
+| `email_get_sent_attachment` | Extended | Download a specific attachment |
 
 ## Sending Email
 
@@ -202,42 +209,6 @@ To send emails from your own domain instead of `*.usenaive.ai`:
     Once verified, your agent's emails will come from your custom domain automatically.
   </Step>
 </Steps>
-
-## All Email Endpoints
-
-### Core Email (via Naive internal API)
-
-| Endpoint | Description |
-|----------|-------------|
-| [Send Email](/api-reference/communication/send-email) | Send a single email with audit logging and sensitive data blocking |
-| [List Inbox](/api-reference/communication/list-inbox) | List inbound email metadata (subject, sender, date) |
-| [Get Email Body](/api-reference/communication/get-email-body) | Read the full body of an inbound email |
-
-### Batch & Tracking
-
-| Endpoint | Description |
-|----------|-------------|
-| [Send Batch](/api-reference/communication/email-send-batch) | Send up to 100 individual emails in one call |
-| [List Sent](/api-reference/communication/email-list-sent) | List all sent emails with delivery status |
-| [Get Sent Status](/api-reference/communication/email-get-sent-status) | Check delivery status, opens, clicks, bounces for a specific email |
-
-### Scheduling
-
-| Endpoint | Description |
-|----------|-------------|
-| [Cancel Scheduled](/api-reference/communication/email-cancel-scheduled) | Cancel a scheduled email before it sends |
-| [Update Scheduled](/api-reference/communication/email-update-scheduled) | Modify a scheduled email's send time |
-
-### Attachments
-
-| Endpoint | Description |
-|----------|-------------|
-| [List Attachments](/api-reference/communication/email-list-sent-attachments) | List attachments from a sent email |
-| [Get Attachment](/api-reference/communication/email-get-sent-attachment) | Download a specific attachment |
-
-<Info>
-`send_email` is the primary sending primitive — it handles agent identity, sensitive data blocking, and audit logging. Use `email_send_batch` for high-volume sends (up to 100 per call). Use the tracking and scheduling endpoints to monitor delivery and manage scheduled sends.
-</Info>
 
 ## Typical Workflow
 

@@ -325,15 +325,3 @@ curl -X DELETE https://api.usenaive.ai/v1/domains/dom_abc123 \
 5. connect_domain_to_app({ domain_id: "dom_abc123", app_id: "app_xyz789" })
    -> Domain connected to app for production hosting
 ```
-
-## API Reference
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| [Register Domain](/api-reference/domains/register-domain) | POST | Register a new domain |
-| [List Domains](/api-reference/domains/list-company-domains) | GET | List all company domains |
-| [Check DNS](/api-reference/domains/check-domain-dns) | GET | Verify DNS propagation |
-| [Retry DNS](/api-reference/domains/retry-domain-dns) | POST | Re-trigger DNS verification |
-| [Connect to App](/api-reference/domains/connect-domain-to-app) | POST | Link domain to an app |
-| [Disconnect from App](/api-reference/domains/disconnect-domain-from-app) | POST | Unlink domain from app |
-| [Delete Domain](/api-reference/domains/delete-domain) | DELETE | Permanently remove domain |

@@ -122,16 +122,6 @@ The video engine creates videos with AI-generated avatars that speak your text w
   </Step>
 </Steps>
 
-### Avatar Video Tools
-
-| Tool | Method | Description |
-|------|--------|-------------|
-| `list_video_styles` | GET | Browse available avatar styles |
-| `create_video` | POST | Create a new video from a text prompt |
-| `get_video_session` | GET | Poll session status and progress |
-| `send_video_message` | POST | Send follow-up instructions to an active session |
-| `get_video` | GET | Get the final video URL (credits billed on first retrieval) |
-
 ### Cost
 
 Each avatar video costs approximately **5-10 credits**. Credits are billed when you first retrieve the final video with `get_video`.
@@ -212,14 +202,6 @@ The clip engine takes a YouTube video URL and generates short-form clips optimiz
     ```
   </Step>
 </Steps>
-
-### Clip Extraction Tools
-
-| Tool | Method | Description |
-|------|--------|-------------|
-| `create_clips` | POST | Generate clips from a YouTube URL |
-| `get_clip_status` | GET | Check clip generation progress |
-| `edit_clip` | POST | Edit a generated clip |
 
 ## Choosing Between Avatar Videos and Clip Extraction
 

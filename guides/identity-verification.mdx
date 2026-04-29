@@ -223,15 +223,6 @@ All PII is stored in an encrypted vault backed by nitro enclaves. Naive servers 
 | `playbook_not_found` | No verification path configured for this party type | Contact support |
 | `revoke_rejected` | Vault provider refused revocation (e.g. legal hold) | Contact support |
 
-## All Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| [Start Verification](/api-reference/verification/start-verification) | POST | Generate a hosted verification URL |
-| [Get Verification Status](/api-reference/verification/get-verification-status) | GET | Check verification status for a party |
-| [List Watchlist Hits](/api-reference/verification/list-watchlist-hits) | GET | View watchlist match summaries |
-| [Revoke Verification Consent](/api-reference/verification/revoke-verification-consent) | POST | GDPR/CCPA consent revocation |
-
 ## Typical Workflow
 
 ```

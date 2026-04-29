@@ -155,14 +155,6 @@ The `credential_data` object supports these fields:
 Storing credentials in the transaction log keeps a complete record: what was purchased, how much it cost, and how to access it. Use `store_credential` for long-term credential storage.
 </Tip>
 
-## Tools Reference
-
-| Tool | Method | Path | Description |
-|------|--------|------|-------------|
-| `list_payment_cards` | GET | `/v1/payments/cards` | List cards assigned to the agent |
-| `get_card_details` | GET | `/v1/payments/cards/:cardId` | Get full card details for checkout |
-| `log_card_transaction` | POST | `/v1/payments/transactions` | Log a purchase (mandatory after every use) |
-
 ## Transaction Log Parameters
 
 | Param | Type | Required | Description |

@@ -7,19 +7,11 @@ Research is the primitive that gives an employee its eyes on the live web. Naive
 
 ## Tools
 
-| Tool | Type | Description |
-|------|------|-------------|
-| `web_search` | Core | Search the web for current information via Tavily or Brave |
-| `read_url` | Extended | Fetch a URL and extract main text content |
-| `research` | Extended | Multi-step deep research with search, fetch, and synthesis |
-
-## Three Tools, Three Levels
-
-| Tool | What it does | Speed | Cost |
-|------|-------------|-------|------|
-| `web_search` | Search query → ranked results with snippets | Fast (~1s) | Low |
-| `read_url` | Fetch URL → extracted text content | Fast (~2s) | Low |
-| `research` | Search + fetch + synthesize → answer with citations | Slow (~10-15s) | Higher |
+| Tool | Type | Description | Speed | Cost |
+|------|------|-------------|-------|------|
+| `web_search` | Core | Search the web for current information — returns ranked results with snippets | Fast (~1s) | Low |
+| `read_url` | Extended | Fetch a URL and extract main text content | Fast (~2s) | Low |
+| `research` | Extended | Multi-step deep research — search, fetch, and synthesize with citations | Slow (~10-15s) | Higher |
 
 ## web_search
 

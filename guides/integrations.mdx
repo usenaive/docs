@@ -185,25 +185,6 @@ curl -X POST https://api.usenaive.ai/v1/integrations/execute \
 
 The post is created as a **draft** in Ghost — the user publishes it when ready.
 
-## Tools Reference
-
-| Tool | Method | Path | Description |
-|------|--------|------|-------------|
-| `check_integrations` | GET | `/v1/integrations` | List all available integrations (core tool) |
-| `get_integration_tools` | GET | `/v1/integrations/tools` | List tools for a specific integration |
-| `execute_integration` | POST | `/v1/integrations/execute` | Execute a tool on an integration |
-| `get_integration_auth_url` | GET | `/v1/integrations/auth-url` | Get OAuth URL for connecting new integrations |
-
-### execute_integration Parameters
-
-| Param | Type | Required | Description |
-|-------|------|----------|-------------|
-| `integration_type` | string | Yes | `cms` or `saas` |
-| `tool_name` | string | Yes | Tool to execute |
-| `params` | object | No | Tool parameters (default `{}`) |
-| `integration_id` | string | Conditional | Required for CMS integrations |
-| `toolkit` | string | Conditional | Required for SaaS integrations |
-
 ## Error Handling
 
 | Error | Cause | Recovery |
