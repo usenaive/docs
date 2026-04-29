@@ -7,24 +7,37 @@ description: "API key format, Bearer token authentication, rate limits, and erro
 
 Every request to the Naive API requires a Bearer token in the `Authorization` header. API keys are created at [usenaive.ai/developers](https://usenaive.ai/developers).
 
-### Key Format
+Naive uses **two key types** for two different API surfaces:
 
-```
-nv_sk_a1b2c3d4e5f6...
-```
+| Key Type | Prefix | Scoped To | API Surface |
+|----------|--------|-----------|-------------|
+| Employee key | `nv_sk_...` | One employee + one company | [Primitives API](/api-reference/overview) — email, social, search, images, payments, etc. |
+| User key | `nv_pk_...` | The operator across all their companies | [Platform API](/api-reference/platform/overview) — companies, employees, tasks, deliverables, loops, etc. |
 
-All keys start with `nv_sk_` followed by a random string. Keys are shown only once at creation — Naive stores a **SHA-256 hash** of the key, never the raw value.
+### Employee Keys (`nv_sk_...`)
 
-### Key Scoping
-
-Each API key is bound to one **employee** inside one **company** in Naive Core. When you authenticate:
+Each employee key is bound to one **employee** inside one **company** in Naive Core. When you authenticate:
 
 1. The API hashes your key with SHA-256
 2. Looks up the hash in the `agent_api_keys` table
 3. Resolves the `agentId` (employee) and `companyId`
 4. All resources are automatically scoped — email addresses, social accounts, payment cards, and credentials belong to that employee inside its company
 
-You never need to pass `agent_id` or `company_id` in your requests. Identity is resolved from your key, the same way Naive Core wires every employee into its environment.
+You never need to pass `agent_id` or `company_id` in your requests. Identity is resolved from your key.
+
+### User Keys (`nv_pk_...`)
+
+User keys are scoped to the **operator** (you), not a single employee. They authenticate against the [Platform Orchestration API](/api-reference/platform/overview) for managing companies, employees, tasks, and more.
+
+Because a user key spans multiple companies, you select which company to operate on with the `X-Company-Id` header:
+
+```bash
+curl https://api.usenaive.ai/v1/tasks \
+  -H "Authorization: Bearer nv_pk_your_key_here" \
+  -H "X-Company-Id: company_abc123"
+```
+
+Some endpoints (like listing your companies) don't require `X-Company-Id` — the key alone is sufficient.
 
 ## Making Authenticated Requests
 

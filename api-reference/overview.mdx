@@ -3,7 +3,11 @@ title: "API Overview"
 description: "Base URL, authentication, rate limits, and error handling for the Naive Primitives API."
 ---
 
-The Naive Primitives API is the **tools layer** every employee in Naive Core calls to act on the real world. Each endpoint is a single atomic capability — send an email, post to a social platform, generate an image, charge a card, register a domain — wrapped behind one consistent authentication model. If you're looking for the *environment* layer (companies, employees, orchestration), see [Naive Core](/core/companies) instead.
+Naive exposes two API surfaces under one base URL, separated by key type:
+
+- **Primitives API** (this tab) — the tools layer every employee calls to act on the real world. Each endpoint is a single atomic capability — send an email, post to a social platform, generate an image, charge a card, register a domain. Authenticated with **employee keys** (`nv_sk_...`), scoped to one employee inside one company.
+
+- **[Platform Orchestration API](/api-reference/platform/overview)** — the management layer for operators. Create companies, hire employees, delegate tasks, manage deliverables, run loops. Authenticated with **user-level keys** (`nv_pk_...`), scoped to the operator across all their companies. See the [Platform API tab](/api-reference/platform/overview) for full documentation.
 
 ## Base URL
 

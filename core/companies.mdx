@@ -44,9 +44,17 @@ Companies are created from the dashboard at [usenaive.ai](https://usenaive.ai). 
 
 Once created, the company is live — its first employee can call any whitelisted primitive immediately, and you can [hire more employees](/core/employees) as the work grows.
 
-<Note>
-The Company / Employee management API lives in [Paperclip](https://github.com/usenaive), Naive's open-source Core control plane. The endpoints documented in [API Reference](/api-reference/overview) are the *primitives* a company's employees call — not the company-management API itself.
-</Note>
+## Managing Companies via API
+
+The [Platform Orchestration API](/api-reference/platform/overview) exposes full company CRUD using **user-level keys** (`nv_pk_...`), separate from the employee keys used for primitives:
+
+| Operation | Endpoint | Description |
+|-----------|----------|-------------|
+| [List Companies](/api-reference/platform/companies/list-companies) | `GET /v1/companies` | List all companies you own or have access to |
+| [Create Company](/api-reference/platform/companies/create-company) | `POST /v1/companies` | Spin up a new AI company |
+| [Get Company](/api-reference/platform/companies/get-company) | `GET /v1/companies/{id}` | Get company details and profile |
+| [Update Company](/api-reference/platform/companies/update-company) | `PATCH /v1/companies/{id}` | Update company name, brand, and strategy |
+| [Delete Company](/api-reference/platform/companies/delete-company) | `DELETE /v1/companies/{id}` | Remove a company and all its resources |
 
 ## Related
 

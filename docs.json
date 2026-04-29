@@ -100,6 +100,15 @@
               "guides/identity-verification",
               "guides/brand-kit"
             ]
+          },
+          {
+            "group": "Platform Orchestration",
+            "pages": [
+              "guides/platform-orchestration",
+              "guides/platform-company",
+              "guides/platform-templates",
+              "guides/platform-orchestration-tools"
+            ]
           }
         ]
       },
@@ -270,6 +279,115 @@
               "api-reference/system/status",
               "api-reference/system/tools-search",
               "api-reference/system/tools-detail"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Platform API",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "api-reference/platform/overview"
+            ]
+          },
+          {
+            "group": "Companies",
+            "pages": [
+              "api-reference/platform/companies/list-companies",
+              "api-reference/platform/companies/create-company",
+              "api-reference/platform/companies/get-company",
+              "api-reference/platform/companies/update-company",
+              "api-reference/platform/companies/delete-company"
+            ]
+          },
+          {
+            "group": "Employees",
+            "pages": [
+              "api-reference/platform/employees/list-employees",
+              "api-reference/platform/employees/create-employee",
+              "api-reference/platform/employees/create-employee-from-template",
+              "api-reference/platform/employees/get-employee",
+              "api-reference/platform/employees/update-employee",
+              "api-reference/platform/employees/configure-employee",
+              "api-reference/platform/employees/pause-resume-employee",
+              "api-reference/platform/employees/delete-employee"
+            ]
+          },
+          {
+            "group": "Templates",
+            "pages": [
+              "api-reference/platform/templates/search-templates",
+              "api-reference/platform/templates/get-template"
+            ]
+          },
+          {
+            "group": "Tasks",
+            "pages": [
+              "api-reference/platform/tasks/list-tasks",
+              "api-reference/platform/tasks/create-task",
+              "api-reference/platform/tasks/get-task",
+              "api-reference/platform/tasks/update-task",
+              "api-reference/platform/tasks/checkout-task",
+              "api-reference/platform/tasks/post-task-comment",
+              "api-reference/platform/tasks/delegate-tasks"
+            ]
+          },
+          {
+            "group": "Deliverables",
+            "pages": [
+              "api-reference/platform/deliverables/list-deliverables",
+              "api-reference/platform/deliverables/submit-deliverable",
+              "api-reference/platform/deliverables/get-deliverable",
+              "api-reference/platform/deliverables/update-deliverable",
+              "api-reference/platform/deliverables/approve-deliverable"
+            ]
+          },
+          {
+            "group": "Loops",
+            "pages": [
+              "api-reference/platform/loops/list-loops",
+              "api-reference/platform/loops/create-loop",
+              "api-reference/platform/loops/update-loop",
+              "api-reference/platform/loops/trigger-loop",
+              "api-reference/platform/loops/log-loop-cycle"
+            ]
+          },
+          {
+            "group": "Goals",
+            "pages": [
+              "api-reference/platform/goals/list-goals",
+              "api-reference/platform/goals/create-goal",
+              "api-reference/platform/goals/update-goal"
+            ]
+          },
+          {
+            "group": "Campaigns",
+            "pages": [
+              "api-reference/platform/campaigns/list-campaigns",
+              "api-reference/platform/campaigns/create-campaign",
+              "api-reference/platform/campaigns/update-campaign"
+            ]
+          },
+          {
+            "group": "Channels",
+            "pages": [
+              "api-reference/platform/channels/list-channels",
+              "api-reference/platform/channels/post-to-channel",
+              "api-reference/platform/channels/read-channel"
+            ]
+          },
+          {
+            "group": "Notifications",
+            "pages": [
+              "api-reference/platform/notifications/notify-user"
+            ]
+          },
+          {
+            "group": "Team",
+            "pages": [
+              "api-reference/platform/team/get-team"
             ]
           }
         ]

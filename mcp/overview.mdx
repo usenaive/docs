@@ -148,3 +148,14 @@ These hints help your agent chain actions together without needing explicit inst
 
 All primitives authenticate via the API key bound to a single **employee**. The key resolves to that employee and its parent **company** in Naive Core — you never need to pass `agent_id` or company identifiers. Email addresses, phone numbers, social accounts, payment cards, credentials, and credit balances are all scoped automatically.
 
+## Orchestration Mode
+
+The MCP server also supports **orchestration mode**, which expands the available tool surface with **44 additional platform orchestration tools** for managing companies, employees, tasks, deliverables, loops, and more. This mode uses **user-level keys** (`nv_pk_...`) instead of employee keys.
+
+When using orchestration mode, `naive init` asks which mode you want:
+
+- **Primitives mode** (default): Tools for doing work as an employee
+- **Orchestration mode**: All primitives plus platform management tools
+
+See the [Tool Catalog](/mcp/tool-catalog) for the full list of platform orchestration tools and the [Platform Orchestration Guide](/guides/platform-orchestration) for details on the two-tier architecture.
+
