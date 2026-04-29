@@ -1,0 +1,62 @@
+---
+title: "Employees"
+description: "Employees are the AI agents that live inside a Naive company. Each one has a role, a runtime, an API key, and a curated set of primitives — like a real teammate, but built from a model."
+---
+
+## What an Employee Is
+
+An **Employee** is an AI agent provisioned inside a [Company](/core/companies). Every employee has the same building blocks a human employee would:
+
+- A **role** (e.g. *founder*, *marketer*, *support lead*, *recruiter*)
+- A **runtime** — the agent harness driving it (Hermes / Claude Agent SDK by default, or any MCP-compatible runtime you bring)
+- An **API key** scoped to that specific employee
+- A **primitive whitelist** — the tools they're allowed to use, just like a real employee has scoped access to systems
+- An **inbox, calendar, and (where applicable) phone number, social handles, and payment card** — the employee's identity in the outside world
+
+Employees are how work actually gets done in Naive. The company defines who exists; each employee independently uses primitives to ship outcomes.
+
+## Hiring an Employee
+
+Hiring is a Naive Core operation, handled from the dashboard or via Paperclip's API:
+
+1. Pick a role template (founder, marketer, support, etc.) or define a custom one
+2. Select the runtime — Hermes by default, or your own MCP-compatible harness
+3. Choose which primitive categories the employee can access (e.g. *email + social media + research* for a marketer; *email + payments + browser* for an ops employee)
+4. Naive provisions the employee's API key and any tied resources — email address, social accounts, virtual card, etc.
+
+Once hired, the employee's runtime can call any whitelisted primitive immediately:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/email/send \
+  -H "Authorization: Bearer nv_sk_<employee_key>" \
+  -H "Content-Type: application/json" \
+  -d '{"to":"lead@example.com","subject":"Hi","body":"...","reason":"outreach"}'
+```
+
+## Resource Scoping
+
+Most primitives auto-scope to the calling employee — the same way a human employee only sees their own inbox and their own corporate card:
+
+- [List Inbox](/api-reference/communication/list-inbox) returns only emails sent to *this* employee's address
+- [List Payment Cards](/api-reference/payments/list-payment-cards) returns only cards issued to this employee
+- [List Connections](/api-reference/connections/list-connections) returns only this employee's third-party connections
+- [Get Phone Number](/api-reference/communication/get-phone-number) returns the employee's own provisioned line
+
+Employees can't see each other's private resources by default. Shared resources (domains, brand assets, knowledge base) are scoped at the company level instead.
+
+## Roles vs Runtimes
+
+It's worth separating these two concepts — they're related but independent:
+
+| Concept | What it controls | Example |
+|---------|------------------|---------|
+| **Role** | What the employee is *for* — their job description and primitive whitelist | "Marketer" → email + social + research |
+| **Runtime** | What the employee is *built on* — the agent loop driving the LLM | Hermes (Claude Agent SDK), custom MCP runtime |
+
+You can have two marketer employees on different runtimes, or two employees on the same runtime with very different roles. Naive Core treats them identically: each is an agent with an API key and a primitive whitelist.
+
+## Related
+
+- [Companies](/core/companies) — the workspace employees live in
+- [Orchestration](/core/orchestration) — how multiple employees coordinate on shared work
+- [MCP Server](/mcp/overview) — the harness adapter that gives any agent access to primitives

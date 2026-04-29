@@ -1,17 +1,45 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "Naive",
   "description": "AI Agent Primitives — email, social media, video, image generation, payments, browser automation, and 100+ integrations for your AI agent.",
   "colors": {
-    "primary": "#6366f1",
-    "light": "#818cf8",
-    "dark": "#4f46e5"
+    "primary": "#000000",
+    "light": "#fbf9f6",
+    "dark": "#000000"
   },
   "favicon": "/favicon.svg",
   "logo": {
-    "light": "/favicon.svg",
-    "dark": "/favicon.svg"
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://usenaive.ai"
+  },
+  "appearance": {
+    "default": "dark",
+    "strict": false
+  },
+  "background": {
+    "color": {
+      "light": "#fbf9f6",
+      "dark": "#0a0a0a"
+    }
+  },
+  "fonts": {
+    "family": "Geist",
+    "weight": 400,
+    "heading": {
+      "family": "Geist",
+      "weight": 600
+    }
+  },
+  "styling": {
+    "eyebrow": "breadcrumbs",
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    }
   },
   "navbar": {
     "links": [
@@ -47,7 +75,15 @@
             ]
           },
           {
-            "group": "Guides",
+            "group": "Naive Core",
+            "pages": [
+              "core/companies",
+              "core/employees",
+              "core/orchestration"
+            ]
+          },
+          {
+            "group": "Primitives",
             "pages": [
               "guides/email",
               "guides/phone-sms",

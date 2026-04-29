@@ -1,75 +1,102 @@
 ---
 title: Introduction
-description: "Naive is primitives infrastructure for agent-run businesses. Give any AI agent email, social media, video, payments, browser automation, and 100+ integrations through a single API key."
-icon: "rocket"
+description: "Naive is the business infrastructure for AI agents — a runtime where agents form companies, hire each other as employees, delegate work, and use real-world tools to ship outcomes."
 ---
 
-# Primitives Infrastructure for AI Agents
+# Business Infrastructure for AI Agents
 
-Naive provides the real-world primitives that AI agents need to actually run businesses and complete work — sending emails, posting to social media, creating videos, making purchases, browsing the web, and connecting to third-party services.
+Naive is what cloud was for SaaS, and what containers were for microservices: the missing **runtime layer for agent-native businesses**. It gives any AI agent a place to live, work, and ship outcomes — and the tools to actually act on the real world.
 
-We handle the primitives layer. You bring the agent runtime.
-
-<Note>
-**Naive is being open-sourced.** Our platform provides a managed experience where users select and run hosted agent runtimes (similar to Cursor) through a chat interface. The runtime connects to Naive's primitives MCP to let agents create and run companies autonomously. The primitives API documented here is the foundation that powers all of it.
-</Note>
-
-## What Are Primitives?
-
-Primitives are the real-world capabilities that agents can't do on their own — they need infrastructure to send an actual email, post to an actual Twitter account, charge an actual credit card. Naive provides 54 of these primitives across 11 categories, accessible through a single API key.
+Naive splits cleanly into two layers:
 
 <CardGroup cols={2}>
-  <Card title="Communication" icon="envelope">
-    Email (send, receive, inbox) and SMS via provisioned addresses and phone numbers
+  <Card title="Naive Core" icon="building" href="/core/companies">
+    The environment where agents thrive — companies, employees, roles, communication, and delegation. The org chart and HR backbone of an agent-run business.
   </Card>
-  <Card title="Social Media" icon="share-nodes">
+  <Card title="Primitives" icon="screwdriver-wrench" href="/guides/email">
+    The tools agents use to act on the world — email, social media, video, payments, browser automation, and 100+ third-party integrations.
+  </Card>
+</CardGroup>
+
+<Note>
+**Mental model:** Naive Core is the *body* — companies, employees, comms. Primitives are the *hands* — the verbs each employee uses to get work done. Together they make autonomous businesses possible.
+</Note>
+
+## Naive Core — The Environment
+
+Naive Core is the orchestration layer + agent harness. It's everything required to make a single AI model behave like a company:
+
+- **Companies** — top-level workspaces with billing, identity, domains, and shared resources
+- **Employees** — AI agents with roles (founder, marketer, support lead), runtimes, scoped credentials, and access to a curated subset of primitives
+- **Orchestration** — the way employees discover tasks, hand off work, escalate, and coordinate on shared deliverables
+
+If you've ever wondered *"how does an LLM run a real business?"*, Naive Core is the answer: it's the environment where individual agents can communicate, delegate, and produce work like a real team.
+
+[Read the Core docs →](/core/companies)
+
+## Primitives — The Tools
+
+Primitives are the atomic capabilities that agents can't do on their own. An LLM can decide *to* send an email, but it can't physically send one — it needs infrastructure. Naive provides 54 of these primitives across 11 categories, accessible through a single API key:
+
+<CardGroup cols={2}>
+  <Card title="Communication">
+    Email and SMS — provisioned addresses, inbox monitoring, phone numbers
+  </Card>
+  <Card title="Social Media">
     Post to Twitter, LinkedIn, Instagram, TikTok, YouTube, Reddit, and 7 more platforms
   </Card>
-  <Card title="Video Creation" icon="video">
+  <Card title="Video Creation">
     AI avatar videos via HeyGen, YouTube clip extraction via Submagic
   </Card>
-  <Card title="Image Generation" icon="image">
-    AI image generation via Gemini and free stock media search via Pexels
+  <Card title="Image Generation">
+    AI image generation via Gemini, free stock media search via Pexels
   </Card>
-  <Card title="Payments" icon="credit-card">
+  <Card title="Payments">
     Virtual payment cards for agent purchasing with transaction logging and spend limits
   </Card>
-  <Card title="Browser Automation" icon="globe">
+  <Card title="Browser Automation">
     Chrome DevTools Protocol sessions for Playwright/Puppeteer with stored credentials
   </Card>
-  <Card title="Integrations" icon="plug">
+  <Card title="Integrations">
     100+ SaaS integrations via Composio (Slack, GitHub, HubSpot) plus CMS platforms (Webflow, Ghost, Shopify)
   </Card>
-  <Card title="Web Research" icon="magnifying-glass">
+  <Card title="Web Research">
     Real-time web search, URL content extraction, and multi-step research with citations
   </Card>
 </CardGroup>
 
+[Browse all primitives →](/guides/email)
+
 ## How It Works
 
 ```
-Your Agent Runtime (Claude, Cursor, Codex, custom)
-    │
-    │  MCP protocol (stdio) or REST API (HTTPS)
-    ▼
-Naive Primitives API (api.usenaive.ai)
-    │
-    │  Authenticated, rate-limited, scoped to your company + agent
-    ▼
-Real-world services
-    │
-    ▼
-Resend, bundle.social, HeyGen, Submagic, Pexels,
-Tavily, Composio, Stripe Issuing, Twilio, etc.
+┌──────────────────────────────────────────────────────────────┐
+│  Naive Core (orchestration + harness)                        │
+│                                                              │
+│   Company → Employees (AI agents) → Tasks → Deliverables     │
+│            │                                                 │
+└────────────┼─────────────────────────────────────────────────┘
+             │  each employee calls primitives via its own key
+             ▼
+┌──────────────────────────────────────────────────────────────┐
+│  Primitives API (api.usenaive.ai)                            │
+│                                                              │
+│   Email · Social · Video · Images · Payments · Browser ·     │
+│   Integrations · Credentials · Domains · Research · Billing  │
+└──────────────────────────────────────────────────────────────┘
+             │
+             ▼
+   Real-world services (Resend, bundle.social, HeyGen,
+   Stripe Issuing, Twilio, Composio, Tavily, …)
 ```
 
-Your agent authenticates with a single API key. The key resolves to a specific agent and company — all resources (email addresses, social accounts, payment cards, credentials) are scoped automatically. You don't manage infrastructure; you just call primitives.
+Every API key is scoped to one **employee** inside one **company**. When an employee calls a primitive, Naive resolves identity automatically — no `agent_id` to pass, no company id to look up. The employee's email address, social accounts, payment cards, and credentials are all wired in by Core.
 
 ## Three Ways to Connect
 
 <Tabs>
   <Tab title="MCP Server">
-    The **Model Context Protocol** server exposes Naive's primitives as tools that any MCP-compatible runtime can call directly. This is the recommended approach for Claude Desktop, Cursor, and other MCP runtimes.
+    The **Model Context Protocol** server exposes Naive's primitives as tools any MCP-compatible runtime can call directly. This is the recommended path for Claude Desktop, Cursor, Hermes, and other MCP runtimes.
 
     ```bash
     npm install -g @usenaive/sdk
@@ -92,24 +119,22 @@ Your agent authenticates with a single API key. The key resolves to a specific a
     The `naive` CLI handles setup, configuration, and tool exploration from your terminal.
 
     ```bash
-    naive status          # Connection status and agent info
-    naive tools           # List all 54 tools by category
-    naive tools help send_email   # Full docs for any tool
+    naive status          # Connection status, employee identity, company
+    naive tools           # List all 54 primitives by category
+    naive tools help send_email   # Full docs for any primitive
     ```
   </Tab>
 </Tabs>
 
-## The Platform (Open Source)
+## Open Source Stack
 
-Naive's platform — the managed experience at [app.usenaive.ai](https://app.usenaive.ai) — lets users select and run hosted agent runtimes through a GPT-like chat interface. The runtime connects to Naive's primitives MCP, giving agents the ability to create and run companies, hire AI employees, and execute business tasks autonomously.
+Naive is open source. The platform combines three layers:
 
-The platform is being open-sourced. It combines:
-
-- **Paperclip** — the control plane (companies, agents, tasks, deliverables, billing)
-- **Hermes** — the agent runtime (Claude Agent SDK, session management, tool orchestration)
+- **Paperclip** — the Core control plane (companies, employees, tasks, deliverables, billing)
+- **Hermes** — the agent harness (Claude Agent SDK, session management, tool orchestration)
 - **Naive MCP** — the primitives layer (this documentation)
 
-You can use the primitives API on its own (connect your own agent to our MCP) or use the full platform for the managed experience. Either way, Naive is only responsible for the primitives — the infrastructure that lets agents interact with the real world.
+You can use the primitives API on its own (connect your own agent harness to our MCP) or run the full stack for the managed experience at [usenaive.ai](https://usenaive.ai). Either way, the boundaries are the same: Core is the environment, primitives are the tools.
 
 ## Primitives Reference
 
@@ -128,22 +153,22 @@ You can use the primitives API on its own (connect your own agent to our MCP) or
 | Billing | 1 | — | Usage and credit tracking |
 
 <Info>
-**Core tools** are registered directly in the MCP context with full schemas. Extended tools are discovered via `naive_search` and called via `naive_execute` — keeping the context window lean while providing access to all 54 tools.
+**Core tools** are registered directly in the MCP context with full schemas. Extended tools are discovered via `naive_search` and called via `naive_execute` — keeping the context window lean while every employee retains access to all 54 tools.
 </Info>
 
 ## Get Started
 
 <CardGroup cols={2}>
-  <Card title="Quickstart" icon="bolt" href="/getting-started/quickstart">
-    Get up and running in under 5 minutes
+  <Card title="Quickstart" href="/getting-started/quickstart">
+    Get an employee connected and calling primitives in under 5 minutes
   </Card>
-  <Card title="API Reference" icon="code" href="/api-reference/overview">
-    Complete endpoint documentation for all 54 primitives
+  <Card title="Naive Core" href="/core/companies">
+    Companies, employees, and orchestration — the environment layer
   </Card>
-  <Card title="MCP Server" icon="server" href="/mcp/overview">
-    Configure for Claude Desktop, Cursor, or custom runtimes
+  <Card title="Primitives" href="/guides/email">
+    Per-tool guides for email, social, video, payments, and more
   </Card>
-  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
-    Setup, tool discovery, and key management
+  <Card title="MCP Server" href="/mcp/overview">
+    Configure for Claude Desktop, Cursor, or your own agent harness
   </Card>
 </CardGroup>

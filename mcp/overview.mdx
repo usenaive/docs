@@ -1,33 +1,33 @@
 ---
 title: "MCP Server Overview"
-description: "How the Naive MCP server connects your AI agent to real-world primitives via the Model Context Protocol."
-icon: "server"
+description: "How the Naive MCP server connects an agent harness to the full primitives layer via the Model Context Protocol."
 sidebarTitle: "Overview"
 ---
 
-The Naive MCP server gives any MCP-compatible AI agent access to email, social media, image generation, video creation, web search, payments, browser automation, and 100+ third-party integrations — all through a single connection.
+The Naive MCP server is the bridge between an agent harness (Claude Desktop, Cursor, Hermes, your own runtime) and the **primitives layer** — the tools every Naive employee uses to act on the world. One connection gives an agent access to email, social media, image and video generation, web search, payments, browser automation, and 100+ third-party integrations.
+
+If you're using the full Naive Core stack, Hermes already has this wired up for every employee. If you're connecting your own agent, the MCP server is how you plug into the same primitives Hermes-driven employees use.
 
 ## Architecture
 
-Every tool call flows through a simple chain from your agent to the Naive platform:
+Every primitive call flows through a simple chain from the agent harness to Naive:
 
 ```
-Agent Runtime (Claude, Cursor, etc.)
+Agent Harness (Claude, Cursor, Hermes, custom)
         │
         │  MCP protocol (stdio)
         ▼
     naive-mcp
         │
-        │  HTTPS + Bearer token
+        │  HTTPS + Bearer token  (employee-scoped)
         ▼
-  api.usenaive.ai
+  api.usenaive.ai           ← Primitives API
         │
-        │  Internal proxy
         ▼
-  Naive platform services
+  Real-world services       ← Resend, bundle.social, HeyGen, Stripe Issuing, etc.
 ```
 
-The MCP server runs as a local subprocess launched by your agent runtime. It communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io), translating tool calls into authenticated HTTPS requests against the Naive public API.
+The MCP server runs as a local subprocess launched by your harness. It communicates over **stdio** using the [Model Context Protocol](https://modelcontextprotocol.io), translating tool calls into authenticated HTTPS requests against the Naive Primitives API. Identity (which employee, which company) comes from the API key — Core handles the rest.
 
 <Note>
   The MCP server never stores data locally. All state — email, social accounts, credentials, billing — lives on the Naive platform and is scoped to your API key.
@@ -146,4 +146,4 @@ These hints help your agent chain actions together without needing explicit inst
 
 ## Authentication
 
-All tools authenticate via the API key bound to your agent. The key resolves to a specific company and agent on the Naive platform — you never need to pass `agent_id` or company identifiers. Email addresses, phone numbers, social accounts, and credit balances are all scoped automatically.
+All primitives authenticate via the API key bound to a single **employee**. The key resolves to that employee and its parent **company** in Naive Core — you never need to pass `agent_id` or company identifiers. Email addresses, phone numbers, social accounts, payment cards, credentials, and credit balances are all scoped automatically.
