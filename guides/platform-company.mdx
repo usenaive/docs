@@ -1,0 +1,60 @@
+---
+title: "Company & Employees"
+description: "Create and manage AI companies, hire and configure employees, and view the team roster. 14 tools using user-level keys."
+---
+
+<Info>
+  The Platform Orchestration API is **coming soon**. This guide describes the planned tools and their behavior.
+</Info>
+
+This guide covers the **company and employee lifecycle** in the Platform API — creating workspaces, hiring agents, configuring their profiles, and managing the team. These tools use **user-level keys** (`nv_pk_...`), not employee keys. See the [Platform Overview](/guides/platform-orchestration) for background on the two key types.
+
+---
+
+## Companies (5 tools)
+
+A **Company** is the top-level workspace in Naive. Every employee, API key, email address, social account, payment card, credential, and domain belongs to exactly one company. A single operator typically runs one company per business; agencies and platforms can spin up many. [Learn more about companies](/core/companies).
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_companies` | [`GET /v1/companies`](/api-reference/platform/companies/list-companies) | List all companies the authenticated user owns or has access to. No `X-Company-Id` header needed — the key alone determines which companies you can see. Returns id, name, slug, credit balance, and employee count per company. |
+| `create_company` | [`POST /v1/companies`](/api-reference/platform/companies/create-company) | Create a new AI company. Provisions an owner employee, API key, email address, and default billing limits. **Billable action** — may return `402` with a Stripe payment link if the user's plan limit is reached. Body: `name` (required). |
+| `get_company` | [`GET /v1/companies/{id}`](/api-reference/platform/companies/get-company) | Get full company details including profile: name, description, audience, positioning, current focus, strategy, brand voice, brand colors, brand guidelines, and employee count. |
+| `update_company` | [`PATCH /v1/companies/{id}`](/api-reference/platform/companies/update-company) | Update company name and/or profile fields. All fields optional: name, description, audience, positioning, current_focus, strategy, brand_voice, brand_colors, brand_guidelines. |
+| `delete_company` | [`DELETE /v1/companies/{id}`](/api-reference/platform/companies/delete-company) | Remove a company and all its resources. Requires `confirm: true` in the body. Revokes all API keys, decommissions all employees, releases all domains and resources. Destructive and irreversible. |
+
+---
+
+## Employees (8 tools)
+
+An **Employee** is an AI agent provisioned inside a company. Each employee has a role (marketer, support lead, founder), a runtime (Hermes / Claude Agent SDK or custom MCP), an API key scoped to that employee, and a primitive whitelist controlling which tools they can use. Employees are how work gets done — the company defines who exists, each employee independently uses primitives to ship outcomes. [Learn more about employees](/core/employees).
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_employees` | [`GET /v1/employees`](/api-reference/platform/employees/list-employees) | List all employees in the selected company. Returns each employee's paperclipId, agentId, name, title, role, capabilities array, reportsTo (for org chart), and status. |
+| `create_employee` | [`POST /v1/employees`](/api-reference/platform/employees/create-employee) | Hire a custom employee. Specify name, title, role, and which primitive categories they can access. Returns the employee object including the API key (shown once — store it). **Billable** if over plan seat limit (`402`). |
+| `create_employee_from_template` | [`POST /v1/employees/from-template`](/api-reference/platform/employees/create-employee-from-template) | Hire an employee from a pre-built template. The template defines the employee's skills, prompt files (CLAUDE.md, HEARTBEAT.md, PERSONA.md), default tasks, default loops, and runtime configuration. Body: `template_slug` (required), `name` (optional override). See [Templates](/guides/platform-templates) for browsing available templates. |
+| `get_employee` | [`GET /v1/employees/{id}`](/api-reference/platform/employees/get-employee) | Get full employee profile: focus (what they're working on), context (background info), strategy (how they approach work), notes, memo (persistent scratchpad, max 4000 chars), template assignment, email address, and capabilities. |
+| `update_employee` | [`PATCH /v1/employees/{id}`](/api-reference/platform/employees/update-employee) | Update employee profile fields: focus, context, strategy, notes (all optional strings), and memo (persistent scratchpad, max 4000 chars). These fields shape how the employee's runtime reasons about its work. |
+| `configure_employee` | [`PUT /v1/employees/{id}/configure`](/api-reference/platform/employees/configure-employee) | Configure employee settings: name, display_name, title, hidden (boolean — hides from org chart), context, focus, template assignment, app_id assignment, department. Used for administrative changes, not profile content. |
+| `pause_resume_employee` | [`POST /v1/employees/{id}/pause`](/api-reference/platform/employees/pause-resume-employee) | Pause an employee's runtime. Paused employees stop processing tasks and heartbeats — they're still provisioned but inactive. Also: `POST /v1/employees/{id}/resume` to reactivate. |
+| `delete_employee` | [`DELETE /v1/employees/{id}`](/api-reference/platform/employees/delete-employee) | Decommission an employee. Revokes their API key, resets the flex slot, cleans up tied resources (email, phone, social accounts). Irreversible. |
+
+---
+
+## Team (1 tool)
+
+Quick access to the full team roster with reporting structure — the operational view optimized for org-chart rendering. Distinct from `list_employees` because it returns the operational shape (openclaw IDs, adapter info, `reportsTo`) rather than the management view.
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `get_team` | [`GET /v1/team`](/api-reference/platform/team/get-team) | Get the full team roster. Returns each employee's paperclipId, agentId, name, title, role, capabilities array, reportsTo (agent id or null), and status (`active`/`paused`/`decommissioned`). For management operations (hire, configure, delete), use the Employees tools above. |
+
+---
+
+## Related
+
+- [Platform Overview](/guides/platform-orchestration) — what platform orchestration is and how the two key types work
+- [Templates](/guides/platform-templates) — browse and inspect pre-built employee templates
+- [Orchestration](/guides/platform-orchestration-tools) — tasks, deliverables, loops, goals, campaigns, channels
+- [Platform API Reference](/api-reference/platform/overview) — full endpoint documentation

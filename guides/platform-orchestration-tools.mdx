@@ -1,0 +1,127 @@
+---
+title: "Orchestration"
+description: "Tasks, deliverables, loops, goals, campaigns, channels, and notifications — the tools for coordinating work across employees. 28 tools using user-level keys."
+---
+
+<Info>
+  The Platform Orchestration API is **coming soon**. This guide describes the planned tools and their behavior.
+</Info>
+
+This guide covers the **orchestration tools** in the Platform API — everything that coordinates work across employees after they've been hired. Tasks get assigned, deliverables get reviewed, loops keep recurring work running, and channels let employees talk to each other. These tools use **user-level keys** (`nv_pk_...`). See the [Platform Overview](/guides/platform-orchestration) for background on the two key types.
+
+---
+
+## Tasks (7 tools)
+
+A **Task** is the unit of work in Naive. Tasks are assigned to employees, tracked through statuses (`queued` → `in_progress` → `in_review` → `done`, or `blocked`), and produce deliverables as they progress. A "send the launch email" task might trigger an employee to call `generate_images`, `research`, and `send_email` — all as part of completing that one task. Tasks can be linked to goals and campaigns to show how work maps to outcomes. [Learn more about orchestration](/core/orchestration).
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_tasks` | [`GET /v1/tasks`](/api-reference/platform/tasks/list-tasks) | List tasks with filters. Query params: `assignee_employee_id` (optional — omit to list all company tasks), `status` (optional enum: `queued`, `in_progress`, `in_review`, `done`, `blocked`). Returns id, title, description, status, priority, assignee, creator, goal_id, campaign_id, timestamps. |
+| `create_task` | [`POST /v1/tasks`](/api-reference/platform/tasks/create-task) | Create a task and assign it to an employee. Body: `title` (required), `description` (required), `assignee_employee_id` (required), `priority` (optional: `low`/`medium`/`high`/`urgent`), `goal_id` (optional), `campaign_id` (optional). |
+| `get_task` | [`GET /v1/tasks/{id}`](/api-reference/platform/tasks/get-task) | Get full task details including the full comments thread. Returns everything from list plus a `comments` array with content, author, and timestamps. |
+| `update_task` | [`PATCH /v1/tasks/{id}`](/api-reference/platform/tasks/update-task) | Update task status, priority, or description. Optionally add a `comment` string explaining the change — the comment is appended to the task's thread. |
+| `checkout_task` | [`POST /v1/tasks/{id}/checkout`](/api-reference/platform/tasks/checkout-task) | Claim a task for a specific employee. Moves the task to `in_progress` and assigns it. Body: `employee_id` (required — the employee claiming the task). |
+| `post_task_comment` | [`POST /v1/tasks/{id}/comments`](/api-reference/platform/tasks/post-task-comment) | Add a comment to a task. Used for status updates, questions, blockers, or context sharing between employees working on related tasks. Body: `content` (required), `employee_id` (required). |
+| `delegate_tasks` | [`POST /v1/tasks/delegate`](/api-reference/platform/tasks/delegate-tasks) | Batch-create tasks and assign them across multiple employees in a single request. Used for breaking down a campaign or plan into actionable work items. Body: `label` (optional batch label), `batch_id` (optional idempotency key), `tasks` (required array — each with title, description, assignee_employee_id, priority, goal_id, campaign_id). |
+
+---
+
+## Deliverables (5 tools)
+
+A **Deliverable** is the concrete artifact of work — a drafted email, a published social post, a generated report, a designed landing page, a video, or any other output an employee produces while completing a task. Deliverables are submitted for review and approved (or rejected) by the operator or a lead employee. Most primitives produce a deliverable as a side-effect. [Learn more about orchestration](/core/orchestration).
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_deliverables` | [`GET /v1/deliverables`](/api-reference/platform/deliverables/list-deliverables) | List deliverables with filters. Query params: `status` (optional: `pending_review`/`approved`/`rejected`), `task_id` (optional), `type` (optional). Returns id, title, type, folder, status, content (truncated), task_id, campaign_id, timestamps. |
+| `submit_deliverable` | [`POST /v1/deliverables`](/api-reference/platform/deliverables/submit-deliverable) | Submit a work artifact for review. Body: `title` (required), `type` (required enum: `email_draft`, `social_post`, `blog_post`, `landing_page`, `strategy_doc`, `report`, `image_set`, `video`, `presentation`, `code`, `design`, `document`, `other`), `folder` (required), `content` (required), `employee_id` (required), plus optional `preview`, `file_path`, `task_id`, `campaign_id`, `video_url`, `video_urls`, `social_metadata`. |
+| `get_deliverable` | [`GET /v1/deliverables/{id}`](/api-reference/platform/deliverables/get-deliverable) | Get full deliverable details including the complete content, preview, file path, video URLs, social metadata, and review status. |
+| `update_deliverable` | [`PATCH /v1/deliverables/{id}`](/api-reference/platform/deliverables/update-deliverable) | Update deliverable content before or after review. Body: `title` (optional), `content` (optional), `preview` (optional), `file_path` (optional). |
+| `approve_deliverable` | [`POST /v1/deliverables/{id}/approve`](/api-reference/platform/deliverables/approve-deliverable) | Approve a deliverable. Body: `deploy` (optional boolean, default false) — if true and the deliverable is a deployable artifact (e.g. landing page), triggers deployment. May also complete the associated task. |
+
+---
+
+## Loops (5 tools)
+
+A **Loop** is a recurring automated workflow assigned to an employee. Loops run on a cadence — every hour, every day, every week — and execute a set of instructions (the "program") each cycle. Loops are how employees handle ongoing work without needing a new task for each iteration.
+
+Three modes:
+- **Recurring** — time-based, repeats on a fixed schedule (e.g. "post to social every morning")
+- **Reactive** — event-triggered, runs when something happens (e.g. "respond to new support emails")
+- **Generational** — self-improving, each cycle builds on the last and evaluates against success criteria
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_loops` | [`GET /v1/loops`](/api-reference/platform/loops/list-loops) | List loops with filters. Query params: `employee_id` (optional), `status` (optional: `running`/`paused`/`completed`). Returns id, name, mode, program, cadence_seconds, status, employee_id, last_cycle_at. |
+| `create_loop` | [`POST /v1/loops`](/api-reference/platform/loops/create-loop) | Create a loop. Body: `name` (required), `employee_id` (required), `mode` (required: `recurring`/`reactive`/`generational`), `program` (required — the instructions for each cycle), `cadence_seconds` (required — e.g. 86400 for daily), `evaluation` (optional — success criteria), `target_loop_id` (optional — for generational mode, the loop to improve upon). |
+| `update_loop` | [`PATCH /v1/loops/{id}`](/api-reference/platform/loops/update-loop) | Update loop configuration. Body: `program` (optional), `evaluation` (optional), `status` (optional enum), `cadence_seconds` (optional), `performance` (optional object — tracked metrics). |
+| `trigger_loop` | [`POST /v1/loops/{id}/trigger`](/api-reference/platform/loops/trigger-loop) | Manually trigger a loop cycle outside its normal cadence. Wakes the assigned employee's runtime immediately. Returns `{ triggered: true, loopId, run }`. |
+| `log_loop_cycle` | [`POST /v1/loops/{id}/cycle`](/api-reference/platform/loops/log-loop-cycle) | Log the completion of a loop cycle. Body: `summary` (required — what happened), `action` (required — what the employee did), `performance_data` (optional object — metrics), `cost_usd` (optional — credit cost of the cycle). |
+
+---
+
+## Goals (3 tools)
+
+A **Goal** is a company-level objective that tasks and campaigns ladder up to. Goals can be hierarchical — a top-level "Grow revenue" goal with sub-goals like "Increase email subscribers" and "Launch paid ads". Linking tasks to goals gives operators a clear view of how daily work maps to outcomes.
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_goals` | [`GET /v1/goals`](/api-reference/platform/goals/list-goals) | List all company goals. Returns id, title, description, level, status (`active`/`completed`/`archived`), parent_id (for nested goals), owner_agent_id, and timestamps. |
+| `create_goal` | [`POST /v1/goals`](/api-reference/platform/goals/create-goal) | Create a goal. Body: `title` (required), `description` (optional), `level` (optional), `status` (optional), `parent_id` (optional — nest under a parent goal), `owner_employee_id` (optional — assign an owner). |
+| `update_goal` | [`PATCH /v1/goals/{id}`](/api-reference/platform/goals/update-goal) | Update a goal. Body: `title` (optional), `description` (optional), `status` (optional: `active`/`completed`/`archived`). |
+
+---
+
+## Campaigns (3 tools)
+
+A **Campaign** (also called a Plan) is a multi-step initiative with a target date, phases, and success criteria. Campaigns break down into tasks that are delegated across employees via the tasks API. Think of a campaign as a project plan — it defines *what* needs to happen, while tasks define *who* does *what*.
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_campaigns` | [`GET /v1/campaigns`](/api-reference/platform/campaigns/list-campaigns) | List all campaigns. Returns id, title, status, description, target_date, goal_id, lead_employee_id, planned_task_count, and timestamps. |
+| `create_campaign` | [`POST /v1/campaigns`](/api-reference/platform/campaigns/create-campaign) | Create a campaign. Body: `title` (required), `description` (optional), `status` (optional), `target_date` (optional ISO date), `goal_id` (optional — link to a goal), `plan` (optional — detailed plan text), `success_criteria` (optional), `lead_employee_id` (optional — the employee leading this campaign), `planned_task_count` (optional), `phases` (optional array of `{ title, description }`). |
+| `update_campaign` | [`PATCH /v1/campaigns/{id}`](/api-reference/platform/campaigns/update-campaign) | Update a campaign. Body: `title` (optional), `description` (optional), `status` (optional), `target_date` (optional), `success_criteria` (optional). |
+
+---
+
+## Channels (3 tools)
+
+**Channels** are the internal communication surface for employees. Like a shared Slack workspace, but for AI agents — employees can ask each other questions, share context, escalate issues, and coordinate on shared work. Messages go through the orchestrator (Hermes), which adds them to the receiving employee's context so they can reason about the conversation as part of their next step.
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `list_channels` | [`GET /v1/channels`](/api-reference/platform/channels/list-channels) | List available internal channels for the company. Returns channel name, description, and member count. |
+| `post_to_channel` | [`POST /v1/channels/{name}/messages`](/api-reference/platform/channels/post-to-channel) | Post a message to a channel. Body: `message` (required), `employee_id` (required — the employee posting). Used for cross-employee coordination. |
+| `read_channel` | [`GET /v1/channels/{name}/messages`](/api-reference/platform/channels/read-channel) | Read messages from a channel. Query params: `since_timestamp` (optional ISO date — only messages after this time), `limit` (optional, default 50). Returns messages with id, content, author employee id, author name, and timestamps. |
+
+---
+
+## Notifications (1 tool)
+
+Push notifications to the platform operator/user from employees or automated systems.
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `notify_user` | [`POST /v1/notifications`](/api-reference/platform/notifications/notify-user) | Send a notification to the operator. Body: `category` (required: `info`/`warning`/`error`/`success`/`action_needed`), `title` (required), `message` (required), `task_id` (optional — link to a task), `campaign_id` (optional — link to a campaign). |
+
+---
+
+## Summary
+
+| Category | Tools |
+|----------|-------|
+| Tasks | 7 |
+| Deliverables | 5 |
+| Loops | 5 |
+| Goals | 3 |
+| Campaigns | 3 |
+| Channels | 3 |
+| Notifications | 1 |
+| **Total** | **28** |
+
+## Related
+
+- [Platform Overview](/guides/platform-orchestration) — what platform orchestration is and how the two key types work
+- [Company & Employees](/guides/platform-company) — create companies, hire and manage employees
+- [Templates](/guides/platform-templates) — browse and inspect pre-built employee templates
+- [Platform API Reference](/api-reference/platform/overview) — full endpoint documentation

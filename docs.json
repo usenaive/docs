@@ -101,7 +101,10 @@
           {
             "group": "Platform Orchestration",
             "pages": [
-              "guides/platform-orchestration"
+              "guides/platform-orchestration",
+              "guides/platform-company",
+              "guides/platform-templates",
+              "guides/platform-orchestration-tools"
             ]
           }
         ]

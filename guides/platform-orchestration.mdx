@@ -1,10 +1,10 @@
 ---
-title: "Platform Orchestration"
-description: "Manage companies, employees, tasks, deliverables, and loops through the Platform API — the operator-level layer above primitives."
+title: "Platform Overview"
+description: "What the Platform Orchestration layer is, how it differs from Primitives, the two key types, and how they work together."
 ---
 
 <Info>
-  The Platform Orchestration API is **coming soon**. This guide describes the planned architecture and endpoints.
+  The Platform Orchestration API is **coming soon**. This guide describes the planned architecture.
 </Info>
 
 ## What Platform Orchestration Is
@@ -14,6 +14,12 @@ Naive has two layers:
 1. **Primitives** — atomic tools employees use to act on the real world (email, social, search, images, payments, browser, domains, credentials, research). These are documented in the [Primitives guides](/guides/email) and [API Reference](/api-reference/overview).
 
 2. **Platform Orchestration** — the management layer above primitives. This is how you create companies, hire employees, assign tasks, review deliverables, and run recurring loops. It's the difference between *doing the work* and *managing who does what work*.
+
+The Platform Orchestration API provides **44 tools** across **11 categories**, split into three guide pages:
+
+- [Company & Employees](/guides/platform-company) — companies, employees, and the team roster (14 tools)
+- [Templates](/guides/platform-templates) — pre-built employee configurations (2 tools)
+- [Orchestration](/guides/platform-orchestration-tools) — tasks, deliverables, loops, goals, campaigns, channels, notifications (28 tools)
 
 ## Two Key Types
 
@@ -41,35 +47,6 @@ An employee shouldn't be able to delete its own company. An operator shouldn't n
 - You want to assign tasks, review deliverables, or manage loops via API
 - You're building an orchestration layer on top of Naive
 
-## Core Concepts
-
-### Companies
-A company is the top-level workspace. Employees, domains, billing, and deliverables all belong to one company. [Learn more](/core/companies).
-
-### Employees
-AI agents provisioned inside a company. Each has a role, runtime, API key, and primitive whitelist. Can be created from scratch or from templates. [Learn more](/core/employees).
-
-### Templates
-Pre-built employee configurations with skills, prompts, default tasks, and loops. Browse templates to quickly hire employees with the right capabilities.
-
-### Tasks
-The unit of work. Assigned to employees, tracked through statuses (`queued` → `in_progress` → `in_review` → `done`), and linked to goals and campaigns. [Learn more](/core/orchestration).
-
-### Deliverables
-Artifacts produced by employees — emails drafted, posts published, reports generated. Submitted for review and approved by the operator or a lead employee.
-
-### Loops
-Recurring automated workflows. Run on a cadence (hourly, daily, weekly) and execute a program each cycle. Three modes: recurring, reactive, and generational.
-
-### Goals
-Company-level objectives. Tasks and campaigns ladder up to goals, giving operators visibility into how work maps to outcomes.
-
-### Campaigns
-Multi-step initiatives with phases, target dates, and success criteria. Break down into tasks that are delegated across employees.
-
-### Channels
-Internal communication between employees. Like a shared Slack — employees can ask each other questions, share context, and coordinate.
-
 ## Example Workflow
 
 Here's how the Platform API and Primitives API work together:
@@ -95,28 +72,25 @@ Here's how the Platform API and Primitives API work together:
 
 Steps 1-6 and 11-12 use user-level keys. Steps 8-9 use the marketer's employee key. Step 10 can use either key type.
 
-## API Endpoints
+## Summary
 
-The Platform Orchestration API provides **44 endpoints** across **11 categories**:
-
-| Category | Endpoints | Description |
-|----------|-----------|-------------|
-| [Companies](/api-reference/platform/companies/list-companies) | 5 | Create, read, update, delete companies |
-| [Employees](/api-reference/platform/employees/list-employees) | 8 | Hire, configure, pause/resume, remove employees |
-| [Templates](/api-reference/platform/templates/search-templates) | 2 | Browse and inspect employee templates |
-| [Tasks](/api-reference/platform/tasks/list-tasks) | 7 | Create, assign, delegate, track tasks |
-| [Deliverables](/api-reference/platform/deliverables/list-deliverables) | 5 | Submit, review, approve work artifacts |
-| [Loops](/api-reference/platform/loops/list-loops) | 5 | Create and manage recurring workflows |
-| [Goals](/api-reference/platform/goals/list-goals) | 3 | Company-level objectives |
-| [Campaigns](/api-reference/platform/campaigns/list-campaigns) | 3 | Multi-step initiatives |
-| [Channels](/api-reference/platform/channels/list-channels) | 3 | Internal employee communication |
-| [Notifications](/api-reference/platform/notifications/notify-user) | 1 | Push notifications to operator |
-| [Team](/api-reference/platform/team/get-team) | 1 | Org-chart roster view |
+| Category | Tools | Guide |
+|----------|-------|-------|
+| Companies | 5 | [Company & Employees](/guides/platform-company) |
+| Employees | 8 | [Company & Employees](/guides/platform-company) |
+| Team | 1 | [Company & Employees](/guides/platform-company) |
+| Templates | 2 | [Templates](/guides/platform-templates) |
+| Tasks | 7 | [Orchestration](/guides/platform-orchestration-tools) |
+| Deliverables | 5 | [Orchestration](/guides/platform-orchestration-tools) |
+| Loops | 5 | [Orchestration](/guides/platform-orchestration-tools) |
+| Goals | 3 | [Orchestration](/guides/platform-orchestration-tools) |
+| Campaigns | 3 | [Orchestration](/guides/platform-orchestration-tools) |
+| Channels | 3 | [Orchestration](/guides/platform-orchestration-tools) |
+| Notifications | 1 | [Orchestration](/guides/platform-orchestration-tools) |
+| **Total** | **44** | |
 
 ## Related
 
-- [Companies](/core/companies) — what a company is and why it matters
-- [Employees](/core/employees) — what an employee is and how hiring works
-- [Orchestration](/core/orchestration) — tasks, deliverables, hand-offs, and channels
-- [Platform API Reference](/api-reference/platform/overview) — full endpoint documentation
+- [Platform API Reference](/api-reference/platform/overview) — full endpoint documentation with request/response schemas
 - [Primitives API Reference](/api-reference/overview) — the employee-level tools API
+- [Authentication](/getting-started/authentication) — how both key types work

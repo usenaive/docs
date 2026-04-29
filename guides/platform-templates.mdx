@@ -1,0 +1,60 @@
+---
+title: "Templates"
+description: "Browse and inspect pre-built employee templates — packaged agent configurations with skills, prompts, default tasks, and loops. 2 tools using user-level keys."
+---
+
+<Info>
+  The Platform Orchestration API is **coming soon**. This guide describes the planned tools and their behavior.
+</Info>
+
+This guide covers the **employee template system** in the Platform API. Templates let you hire fully-configured employees in one call instead of building them from scratch. These tools use **user-level keys** (`nv_pk_...`) and don't require a `X-Company-Id` header — templates are global, not company-scoped.
+
+---
+
+## What Templates Are
+
+**Templates** are pre-built employee configurations authored in `naive-container-prompts` and seeded into the platform database. Each template packages everything needed to hire a production-ready employee:
+
+- **Runtime base** — the foundational agent type (writer, hunter, builder, legal, engineer)
+- **Skills** — composable capability modules (e.g. content-writing, lead-gen, customer-support)
+- **Prompt files** — the agent's instructions (CLAUDE.md), heartbeat behavior (HEARTBEAT.md), and persona (PERSONA.md)
+- **Default tasks** — work items the employee starts with immediately after hiring
+- **Default loops** — recurring workflows that activate automatically (e.g. "check inbox daily")
+- **Partials** — shared prompt fragments composed via `{{> partial-slug}}` syntax
+
+Templates are organized by department and searchable by capabilities. When you hire an employee from a template via [`POST /v1/employees/from-template`](/api-reference/platform/employees/create-employee-from-template), the platform applies all of the above — the employee is ready to work immediately.
+
+## How Templates Work
+
+```
+1. Browse templates                (GET /v1/templates?q=marketer)
+2. Inspect a template              (GET /v1/templates/content-marketer)
+3. Hire from template              (POST /v1/employees/from-template)
+        │
+        ▼
+4. Employee is provisioned with:
+   - Runtime base: writer
+   - Skills: content-writing, seo, social-media
+   - Prompt files synced from template
+   - Default tasks created and assigned
+   - Default loops activated
+   - API key generated
+```
+
+---
+
+## Templates (2 tools)
+
+| Tool | Endpoint | Description |
+|------|----------|-------------|
+| `search_templates` | [`GET /v1/templates`](/api-reference/platform/templates/search-templates) | Search available employee templates. Query params: `q` (search string), `department` (filter by department), `requires` (required capabilities), `limit` (default 20). No `X-Company-Id` needed. Returns slug, name, department, description, skills, and runtime base per template. |
+| `get_template` | [`GET /v1/templates/{slug}`](/api-reference/platform/templates/get-template) | Get full template details for a specific slug. Returns the composed file set (CLAUDE.md, HEARTBEAT.md, PERSONA.md), default tasks, default loops, required skills, runtime base, and department. No `X-Company-Id` needed. |
+
+---
+
+## Related
+
+- [Platform Overview](/guides/platform-orchestration) — what platform orchestration is and how the two key types work
+- [Company & Employees](/guides/platform-company) — hire employees from templates or from scratch
+- [Orchestration](/guides/platform-orchestration-tools) — tasks, deliverables, loops, goals, campaigns, channels
+- [Platform API Reference](/api-reference/platform/overview) — full endpoint documentation
