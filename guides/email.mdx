@@ -203,43 +203,27 @@ To send emails from your own domain instead of `*.usenaive.ai`:
   </Step>
 </Steps>
 
-## Email Marketing Primitives
+## Advanced Email Operations
 
-Beyond basic sending and inbox, Naive provides a full suite of email marketing primitives:
+Beyond basic sending and inbox, Naive provides additional email operations:
 
 <CardGroup cols={2}>
-  <Card title="Contacts" icon="users" href="/api-reference/communication/email-create-contact">
-    Create, update, and manage your contact list with custom properties
-  </Card>
-  <Card title="Segments" icon="layer-group" href="/api-reference/communication/email-create-segment">
-    Group contacts into segments for targeted campaigns
-  </Card>
-  <Card title="Broadcasts" icon="bullhorn" href="/api-reference/communication/email-create-broadcast">
-    Send marketing email campaigns to segments
-  </Card>
-  <Card title="Templates" icon="file-lines" href="/api-reference/communication/email-create-template">
-    Create reusable email templates with variables
-  </Card>
-  <Card title="Topics" icon="tags" href="/api-reference/communication/email-create-topic">
-    Manage subscription topics for opt-in/opt-out
-  </Card>
   <Card title="Batch Sends" icon="envelopes-bulk" href="/api-reference/communication/email-send-batch">
-    Send up to 100 transactional emails in a single call
+    Send up to 100 individual emails in a single call
+  </Card>
+  <Card title="Delivery Tracking" icon="chart-line" href="/api-reference/communication/email-get-sent-status">
+    Check delivery status, opens, clicks, and bounces
+  </Card>
+  <Card title="Scheduling" icon="clock" href="/api-reference/communication/email-cancel-scheduled">
+    Cancel or update scheduled emails before they send
+  </Card>
+  <Card title="Attachments" icon="paperclip" href="/api-reference/communication/email-list-sent-attachments">
+    List and retrieve attachments from sent emails
   </Card>
 </CardGroup>
 
-### Example: Contact Management + Campaign
-
-```
-email_create_contact({ email: "lead@company.com", first_name: "Alex" })
-email_create_segment({ name: "Webinar Leads" })
-email_add_contact_to_segment({ contact_id: "...", segment_id: "..." })
-email_create_broadcast({ name: "Follow-up", from: "team@acme.com", subject: "Great meeting you", html: "..." , segment_id: "..." })
-email_send_broadcast({ broadcast_id: "..." })
-```
-
 <Info>
-Use `send_email` for individual transactional emails — it handles agent identity, sensitive data blocking, and audit logging. Use the email marketing primitives for contact management, segmentation, and bulk campaigns.
+Use `send_email` for individual sends — it handles agent identity, sensitive data blocking, and audit logging. Use `email_send_batch` for bulk sends (up to 100 emails per call).
 </Info>
 
 ## Typical Workflow
@@ -250,11 +234,6 @@ Agent receives task: "Follow up with leads from yesterday's webinar"
     ├─ list_inbox()                          → Check for any replies first
     │
     ├─ get_email_body({ email_id })          → Read relevant replies
-    │
-    ├─ email_create_contact({                → Add lead to contact list
-    │    email: "lead@company.com",
-    │    first_name: "Alex"
-    │  })
     │
     └─ send_email({                          → Send personalized follow-ups
          to: "lead@company.com",

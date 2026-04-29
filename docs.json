@@ -127,75 +127,9 @@
               "api-reference/communication/email-list-sent",
               "api-reference/communication/email-get-sent-status",
               "api-reference/communication/email-cancel-scheduled",
-              "api-reference/communication/email-update-scheduled"
-            ]
-          },
-          {
-            "group": "Contacts",
-            "pages": [
-              "api-reference/communication/email-create-contact",
-              "api-reference/communication/email-list-contacts",
-              "api-reference/communication/email-get-contact",
-              "api-reference/communication/email-update-contact",
-              "api-reference/communication/email-delete-contact",
-              "api-reference/communication/email-add-contact-to-segment",
-              "api-reference/communication/email-remove-contact-from-segment",
-              "api-reference/communication/email-list-contact-segments",
-              "api-reference/communication/email-get-contact-topics",
-              "api-reference/communication/email-update-contact-topics"
-            ]
-          },
-          {
-            "group": "Contact Properties",
-            "pages": [
-              "api-reference/communication/email-create-contact-property",
-              "api-reference/communication/email-list-contact-properties",
-              "api-reference/communication/email-get-contact-property",
-              "api-reference/communication/email-update-contact-property",
-              "api-reference/communication/email-delete-contact-property"
-            ]
-          },
-          {
-            "group": "Segments",
-            "pages": [
-              "api-reference/communication/email-create-segment",
-              "api-reference/communication/email-list-segments",
-              "api-reference/communication/email-get-segment",
-              "api-reference/communication/email-delete-segment",
-              "api-reference/communication/email-list-segment-contacts"
-            ]
-          },
-          {
-            "group": "Topics",
-            "pages": [
-              "api-reference/communication/email-create-topic",
-              "api-reference/communication/email-list-topics",
-              "api-reference/communication/email-get-topic",
-              "api-reference/communication/email-update-topic",
-              "api-reference/communication/email-delete-topic"
-            ]
-          },
-          {
-            "group": "Broadcasts",
-            "pages": [
-              "api-reference/communication/email-create-broadcast",
-              "api-reference/communication/email-list-broadcasts",
-              "api-reference/communication/email-get-broadcast",
-              "api-reference/communication/email-update-broadcast",
-              "api-reference/communication/email-delete-broadcast",
-              "api-reference/communication/email-send-broadcast"
-            ]
-          },
-          {
-            "group": "Templates",
-            "pages": [
-              "api-reference/communication/email-create-template",
-              "api-reference/communication/email-list-templates",
-              "api-reference/communication/email-get-template",
-              "api-reference/communication/email-update-template",
-              "api-reference/communication/email-delete-template",
-              "api-reference/communication/email-duplicate-template",
-              "api-reference/communication/email-publish-template"
+              "api-reference/communication/email-update-scheduled",
+              "api-reference/communication/email-list-sent-attachments",
+              "api-reference/communication/email-get-sent-attachment"
             ]
           },
           {
