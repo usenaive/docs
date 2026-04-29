@@ -1,0 +1,71 @@
+---
+title: "Revoke Verification Consent"
+description: "Revoke a member's verification consent and schedule vault data for deletion."
+api: "POST /v1/verification/:memberId/revoke"
+---
+
+<ParamField path="memberId" type="string" required>
+  The member ID whose verification consent to revoke.
+</ParamField>
+
+<ParamField body="reason" type="string" required>
+  Reason for revocation. One of `user_request`, `deletion_complete`, `fraud`.
+</ParamField>
+
+<Warning>
+  **Destructive action.** Vault data is scheduled for permanent deletion after revocation. Any formations referencing this member as a party will fail verification checks.
+</Warning>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/verification/mem_xyz789/revoke \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "reason": "user_request"
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/verification/mem_xyz789/revoke",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={"reason": "user_request"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/verification/mem_xyz789/revoke", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ reason: "user_request" }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="member_id" type="string">
+  The member whose consent was revoked.
+</ResponseField>
+
+<ResponseField name="revoked_at" type="string">
+  ISO 8601 timestamp of when the revocation was recorded.
+</ResponseField>
+
+<ResponseField name="retention_purge_eta" type="string">
+  ISO 8601 timestamp of when vault data will be permanently deleted.
+</ResponseField>
+
+```json Example Response
+{
+  "member_id": "mem_xyz789",
+  "revoked_at": "2026-04-29T15:00:00Z",
+  "retention_purge_eta": "2026-05-29T15:00:00Z"
+}
+```

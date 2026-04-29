@@ -1,0 +1,259 @@
+---
+title: "Identity Verification"
+description: "The KYC primitive — verify identities for company formation with government ID, selfie, and AML/sanctions screening. PII never touches Naive servers."
+---
+
+Identity Verification is the primitive that lets Naive verify a real human identity without ever holding sensitive data. When a [company formation](/guides/business-registration) requires identity verification (KYC) for its members and responsible party, this primitive generates a hosted verification flow the user completes in their browser. The verification collects name, date of birth, SSN (for US residents), address, a government-issued ID scan, and a selfie — then runs AML/sanctions/PEP screening. All PII is stored in an encrypted vault; Naive servers never see it.
+
+This guide covers the four tools that power identity verification.
+
+## Tools
+
+| Tool | Type | Description |
+|------|------|-------------|
+| `start_verification` | Extended | Generate a hosted verification URL for a party to complete KYC |
+| `get_verification_status` | Extended | Check verification status for a party |
+| `list_watchlist_hits` | Extended | View watchlist match summaries (no PII) for parties in review |
+| `revoke_verification_consent` | Extended | GDPR/CCPA — revoke vault data retention for a party |
+
+## How It Works
+
+Identity verification is designed around a single principle: agents trigger verification flows and read status flags, but never see PII. The sensitive data lives in an encrypted vault backed by nitro enclaves. When the formation is submitted, PII is hydrated from the vault at the wire — Naive's servers are never in the data path.
+
+```
+1. Agent calls start_verification()
+   └─ Returns a hosted URL the user opens in their browser
+
+2. User completes the hosted flow
+   └─ Enters name, DOB, SSN, address
+   └─ Scans government ID (passport or driver's license)
+   └─ Takes a selfie for liveness verification
+   └─ All data stored directly in the encrypted vault
+
+3. Verification runs automatically
+   └─ Identity match against government records
+   └─ AML/sanctions/PEP watchlist screening
+   └─ AI-driven false-positive filtering on watchlist hits
+
+4. Agent reads the result
+   └─ get_verification_status() returns: passed, failed, or review
+   └─ Agent never sees SSN, DOB, or document images
+```
+
+## Starting Verification
+
+Generate a hosted verification URL for a specific member or responsible party in a formation draft:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/verification/start \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "formation_draft_id": "d8f3a1b2-4c5e-6789-abcd-ef0123456789",
+    "member_id": "m_ada_001",
+    "email": "ada@example.com",
+    "first_name": "Ada",
+    "last_name": "Lovelace",
+    "is_us_resident": true
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "hosted_url": "https://usenaive.ai/verify/abc123",
+  "hosted_url_expires_at": "2026-04-30T12:00:00Z",
+  "playbook_id": "fp_pb_us_resident",
+  "member_id": "m_ada_001"
+}
+```
+
+### Parameters
+
+| Param | Type | Required | Description |
+|-------|------|----------|-------------|
+| `formation_draft_id` | string | Yes | The formation draft this verification is for |
+| `member_id` | string | Yes | The specific member or responsible party to verify |
+| `email` | string | No | Pre-fill the user's email in the verification flow |
+| `first_name` | string | No | Pre-fill first name (will be re-validated during verification) |
+| `last_name` | string | No | Pre-fill last name |
+| `is_us_resident` | boolean | Yes | Selects the verification path — US residents provide SSN, non-US residents provide passport |
+
+The agent presents the `hosted_url` to the user. The user opens it in a browser and completes the verification independently. The agent does not embed the flow or interact with PII at any point.
+
+<Info>
+Two verification paths are supported: **US residents** (SSN required, government ID optional) and **non-US residents** (passport required, no SSN). The `is_us_resident` flag selects the appropriate path.
+</Info>
+
+## Checking Status
+
+After the user starts or completes verification:
+
+```bash
+curl https://api.usenaive.ai/v1/verification/m_ada_001/status \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "member_id": "m_ada_001",
+  "verification_id": "vid_Zfd123",
+  "kyc_status": "passed",
+  "watchlist_hit_count": 0,
+  "document_uploaded": true,
+  "last_updated_at": "2026-04-29T15:30:00Z"
+}
+```
+
+### Verification status values
+
+| Status | Meaning |
+|--------|---------|
+| `pending` | Verification not yet started — URL generated but user hasn't opened it |
+| `passed` | Identity verified, no watchlist hits — party is cleared for formation submission |
+| `failed` | Verification failed — identity could not be confirmed |
+| `review` | Watchlist match detected, awaiting manual review |
+| `revoked` | User's vault data has been revoked (GDPR/CCPA) |
+
+## Watchlist Screening
+
+When a verification completes with watchlist hits, the status is set to `review`. The agent can inspect the hits without seeing PII:
+
+```bash
+curl https://api.usenaive.ai/v1/verification/m_ada_001/watchlist \
+  -H "Authorization: Bearer nv_sk_your_key"
+```
+
+**Response:**
+
+```json
+{
+  "hits": [
+    {
+      "list_name": "OFAC SDN",
+      "match_type": "name",
+      "match_score": 0.72,
+      "ai_classified_as": "likely_false_positive",
+      "hit_summary": "Name match on sanctions list entry — low confidence, different date of birth"
+    }
+  ]
+}
+```
+
+Watchlist hits are screened against AML/sanctions/PEP lists. AI-driven false-positive filtering reduces noise — high-confidence false positives are automatically classified without requiring manual review. Hits classified as `likely_false_positive` may still require human review depending on the configured threshold.
+
+## Revoking Consent
+
+For GDPR/CCPA compliance, a party's vault data can be revoked:
+
+```bash
+curl -X POST https://api.usenaive.ai/v1/verification/m_ada_001/revoke \
+  -H "Authorization: Bearer nv_sk_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{ "reason": "user_request" }'
+```
+
+**Response:**
+
+```json
+{
+  "member_id": "m_ada_001",
+  "revoked_at": "2026-04-29T16:00:00Z",
+  "retention_purge_eta": "2026-05-29T16:00:00Z"
+}
+```
+
+<Warning>
+Revocation is destructive. After revoking consent, the user can no longer authenticate through the verification system, vault data is scheduled for deletion, and any in-flight or future formation submissions referencing this party will fail.
+</Warning>
+
+## Relationship to Company Registration
+
+Identity Verification is a hard prerequisite for [Company Registration](/guides/business-registration). Every member and the responsible party in a formation draft must have `kyc_status: "passed"` and `watchlist_hit_count: 0` before `submit_formation` can be called.
+
+The typical flow:
+
+```
+draft_formation()          → Creates the draft, lists members needing KYC
+    │
+    ├─ start_verification()    → For each member + responsible party
+    │   └─ User completes hosted flow
+    │
+    ├─ get_verification_status()   → Check each party
+    │   └─ All passed, no watchlist hits
+    │
+    └─ submit_formation()      → Identity data hydrated from vault at submission
+```
+
+The vault proxy architecture ensures that at no point does Naive hold raw PII. The formation submission request has template placeholders for sensitive fields; the vault hydrates them at the wire to the filing service.
+
+## Security
+
+### Vault architecture
+
+All PII is stored in an encrypted vault backed by nitro enclaves. Naive servers interact with identity data only through opaque tokens (`fp_id`). The vault proxy — the only system that decrypts PII — runs inside the vault provider's infrastructure, not on Naive servers.
+
+### What agents can and cannot see
+
+| Agents CAN see | Agents CANNOT see |
+|-----------------|-------------------|
+| Verification status (passed/failed/review) | SSN, date of birth |
+| Watchlist hit summaries (list name, match score) | Government ID images |
+| Whether a document was uploaded | Selfie photos |
+| Last update timestamp | Residential address details |
+
+### Compliance
+
+- PCI Level 1 compliant vault storage
+- SOC 2 Type II certified
+- GDPR/CCPA consent revocation supported
+- AML/sanctions/PEP screening on every verification
+
+## Error Handling
+
+| Error | Cause | Recovery |
+|-------|-------|----------|
+| `draft_not_found` | Invalid formation draft ID | Check the draft ID |
+| `member_not_found` | Invalid member ID for this draft | Check the member ID |
+| `kyc_not_in_review` | Tried to view watchlist hits for a party not in review status | Only available when `kyc_status` is `review` |
+| `verification_auth_error` | Verification service API key invalid | Contact support |
+| `playbook_not_found` | No verification path configured for this party type | Contact support |
+| `revoke_rejected` | Vault provider refused revocation (e.g. legal hold) | Contact support |
+
+## All Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| [Start Verification](/api-reference/verification/start-verification) | POST | Generate a hosted verification URL |
+| [Get Verification Status](/api-reference/verification/get-verification-status) | GET | Check verification status for a party |
+| [List Watchlist Hits](/api-reference/verification/list-watchlist-hits) | GET | View watchlist match summaries |
+| [Revoke Verification Consent](/api-reference/verification/revoke-verification-consent) | POST | GDPR/CCPA consent revocation |
+
+## Typical Workflow
+
+```
+Agent receives task: "Verify identity for LLC formation members"
+    │
+    ├─ start_verification({                       → Generate verification URL
+    │    formation_draft_id: "d8f3a1b2",
+    │    member_id: "m_ada_001",
+    │    is_us_resident: true
+    │  })
+    │   → hosted_url for the user
+    │
+    ├─ [Agent presents URL to user]
+    │   "Please visit this link to verify your identity: ..."
+    │
+    ├─ [User completes verification flow in browser]
+    │   → Name, DOB, SSN, government ID, selfie
+    │
+    ├─ get_verification_status({                  → Check result
+    │    member_id: "m_ada_001"
+    │  })
+    │   → kyc_status: "passed", watchlist_hit_count: 0
+    │
+    └─ [Ready for formation submission]
+```

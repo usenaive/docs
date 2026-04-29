@@ -1,0 +1,84 @@
+---
+title: "List Watchlist Hits"
+description: "Retrieve watchlist screening hits for a member under review."
+api: "GET /v1/verification/:memberId/watchlist"
+---
+
+<ParamField path="memberId" type="string" required>
+  The member ID to retrieve watchlist hits for.
+</ParamField>
+
+<Note>
+  Only available when `kyc_status` is `review`. Returns summary information for compliance review — no PII is exposed.
+</Note>
+
+<CodeGroup>
+```bash curl
+curl https://api.usenaive.ai/v1/verification/mem_xyz789/watchlist \
+  -H "Authorization: Bearer nv_sk_your_key_here"
+```
+
+```python Python
+import requests
+
+response = requests.get(
+    "https://api.usenaive.ai/v1/verification/mem_xyz789/watchlist",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/verification/mem_xyz789/watchlist", {
+  headers: { "Authorization": "Bearer nv_sk_your_key_here" },
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="hits" type="array">
+  Array of watchlist match objects.
+
+  <Expandable title="Hit object properties">
+    <ResponseField name="list_name" type="string">
+      Name of the sanctions or watchlist that triggered the match.
+    </ResponseField>
+
+    <ResponseField name="match_type" type="string">
+      How the match was made. One of `name`, `name_and_dob`, `exact`.
+    </ResponseField>
+
+    <ResponseField name="match_score" type="number">
+      Confidence score between `0` and `1`.
+    </ResponseField>
+
+    <ResponseField name="ai_classified_as" type="string | null">
+      AI triage classification. One of `true_positive`, `likely_false_positive`, or `null` if not yet classified.
+    </ResponseField>
+
+    <ResponseField name="hit_summary" type="string">
+      Human-readable summary of the match for review.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+```json Example Response
+{
+  "hits": [
+    {
+      "list_name": "OFAC SDN",
+      "match_type": "name",
+      "match_score": 0.72,
+      "ai_classified_as": "likely_false_positive",
+      "hit_summary": "Partial name match against OFAC Specially Designated Nationals list. Different date of birth and country of residence."
+    },
+    {
+      "list_name": "UN Consolidated",
+      "match_type": "name_and_dob",
+      "match_score": 0.91,
+      "ai_classified_as": null,
+      "hit_summary": "Name and date-of-birth match against UN Consolidated Sanctions list. Manual review recommended."
+    }
+  ]
+}
+```

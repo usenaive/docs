@@ -1,0 +1,111 @@
+---
+title: "Start Verification"
+description: "Initiate identity verification for a formation member. Returns a hosted URL the user opens in their browser."
+api: "POST /v1/verification/start"
+---
+
+<ParamField body="formation_draft_id" type="string" required>
+  The formation draft this verification is associated with.
+</ParamField>
+
+<ParamField body="member_id" type="string" required>
+  Unique identifier of the member to verify.
+</ParamField>
+
+<ParamField body="email" type="string">
+  Email address to pre-fill on the verification form.
+</ParamField>
+
+<ParamField body="first_name" type="string">
+  First name to pre-fill on the verification form.
+</ParamField>
+
+<ParamField body="last_name" type="string">
+  Last name to pre-fill on the verification form.
+</ParamField>
+
+<ParamField body="is_us_resident" type="boolean" required>
+  Whether the member is a US resident. Determines which verification playbook is used.
+</ParamField>
+
+<Note>
+  The returned `hosted_url` should be presented to the user to complete verification in their browser. The agent never interacts with PII directly.
+</Note>
+
+<CodeGroup>
+```bash curl
+curl -X POST https://api.usenaive.ai/v1/verification/start \
+  -H "Authorization: Bearer nv_sk_your_key_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "formation_draft_id": "fd_abc123",
+    "member_id": "mem_xyz789",
+    "email": "jane@example.com",
+    "first_name": "Jane",
+    "last_name": "Doe",
+    "is_us_resident": true
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://api.usenaive.ai/v1/verification/start",
+    headers={"Authorization": "Bearer nv_sk_your_key_here"},
+    json={
+        "formation_draft_id": "fd_abc123",
+        "member_id": "mem_xyz789",
+        "email": "jane@example.com",
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "is_us_resident": True,
+    },
+)
+data = response.json()
+```
+
+```typescript TypeScript
+const response = await fetch("https://api.usenaive.ai/v1/verification/start", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer nv_sk_your_key_here",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    formation_draft_id: "fd_abc123",
+    member_id: "mem_xyz789",
+    email: "jane@example.com",
+    first_name: "Jane",
+    last_name: "Doe",
+    is_us_resident: true,
+  }),
+});
+const data = await response.json();
+```
+</CodeGroup>
+
+<ResponseField name="hosted_url" type="string">
+  URL the member opens to complete identity verification.
+</ResponseField>
+
+<ResponseField name="hosted_url_expires_at" type="string">
+  ISO 8601 timestamp when the hosted URL expires.
+</ResponseField>
+
+<ResponseField name="playbook_id" type="string">
+  The verification playbook selected based on residency.
+</ResponseField>
+
+<ResponseField name="member_id" type="string">
+  The member ID this verification was started for.
+</ResponseField>
+
+```json Example Response
+{
+  "hosted_url": "https://verify.usenaive.ai/session/ses_a1b2c3d4",
+  "hosted_url_expires_at": "2026-04-30T06:00:00Z",
+  "playbook_id": "pb_us_kyc_standard",
+  "member_id": "mem_xyz789"
+}
+```
